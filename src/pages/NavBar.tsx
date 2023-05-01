@@ -1,5 +1,10 @@
 import Link from "next/link";
 import Headroom from 'react-headroom';
+import logo from '../../public/logo.png'
+
+import { MdPhone } from 'react-icons/md'
+import { IoTime } from 'react-icons/io5'
+import { FaFacebook, FaTwitter, FaInstagram } from 'react-icons/fa'
 
 const NavBar = () => {
 
@@ -19,11 +24,40 @@ const NavBar = () => {
 
 
     return (
-        <Headroom className="relative z-10" style={{ WebkitTransition: 'all .5s ease-in-out', MozTransition: 'all .5s ease-in-out', OTransition: 'all .5s ease-in-out', transition: 'all .5s ease-in-out' }}>
+        <Headroom className="relative z-20" style={{ WebkitTransition: 'all .5s ease-in-out', MozTransition: 'all .5s ease-in-out', OTransition: 'all .5s ease-in-out', transition: 'all .5s ease-in-out' }}>
+
+
+            <div className="bg-slate-900 opacity-90 px-5 lg:px-24 xl:px-52 py-2 text-gray-500 flex justify-between">
+
+                <div className="flex items-center gap-5">
+
+                    <div className="flex justify-center items-center gap-2">
+                        <MdPhone />
+                        <span>+0123456789</span>
+                    </div>
+                    <div className="flex justify-center items-center gap-2">
+                        <IoTime />
+                        <span>24/7</span>
+                    </div>
+
+                </div>
+
+                <div className="flex justify-center items-center gap-5">
+                    <Link href="https://www.facebook.com/" target="_blank"><FaFacebook className="w-5 h-5" /> </Link>
+
+                    <Link href="https://www.twitter.com/" target="_blank"><FaTwitter className="w-5 h-5" /></Link>
+
+                    <Link href="https://www.instagram.com/" target="_blank"><FaInstagram className="w-5 h-5" /></Link>
+                </div>
+
+
+            </div>
 
 
 
             <div className="navbar bg-white bg-opacity-90 text-black lg:px-16 xl:px-40">
+
+
 
                 <div className="navbar-start">
                     <div className="dropdown">

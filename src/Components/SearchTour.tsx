@@ -4,7 +4,7 @@ const SearchTour = () => {
         <div className="flex justify-center">
 
 
-            <div className="mx-auto w-[400px] md:w-[90vw] font-serif border rounded-lg p-5 absolute top-[580px] sm:top-[587px] md:top-[640px] lg:top-[670px] z-10 bg-white">
+            <div className="mx-auto w-[400px] md:w-[90vw] font-serif border rounded-lg p-5 absolute top-[630px] sm:top-[640px] md:top-[690px] lg:top-[740px] z-10 bg-white">
 
                 <h3 className="text-center text-2xl text-green-700 italic">Search Tours</h3>
                 <p className="text-center ">Find your dream tour today!</p>
