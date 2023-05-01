@@ -14,7 +14,6 @@ import { Autoplay, Pagination, Navigation } from "swiper";
 import styles from "../styles/Banner.module.css"
 import Fade from 'react-reveal/Fade';
 import Slide from 'react-reveal/Slide';
-import Rotate from 'react-reveal/Rotate';
 import LightSpeed from 'react-reveal/LightSpeed';
 
 
@@ -39,7 +38,7 @@ const Banner = () => {
         modules={[Autoplay, Pagination, Navigation]}
         className="mySwiper"
       >
-        <SwiperSlide>
+        <SwiperSlide className="relative">
           <div className={styles.bannerImg}>
             <img className="h-[550px] md:h-[600px] lg:h-[680px] w-full" src="https://images.unsplash.com/photo-1551524164-7d2f9ff12c70?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2071&q=80" alt="" />
           </div>
@@ -63,7 +62,11 @@ const Banner = () => {
             </LightSpeed>
 
             <Slide bottom>
-              <button className="btn w-36 absolute top-[380px] sm:top-[440px] md:top-[480px] hover:border-warning border-2 shadow-2xl shadow-blue-700">Explore Tour</button>
+              <button className="btn w-36 absolute top-[380px] sm:top-[440px] md:top-[480px] hover:border-warning border-2 shadow-2xl shadow-blue-700 flex justify-center items-center">
+                <span className="relative flex h-5 w-5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
+                </span>
+                <p className="absolute">Explore Tour</p></button>
             </Slide>
           </div>
         </SwiperSlide>
@@ -93,7 +96,11 @@ const Banner = () => {
             </LightSpeed>
 
             <Slide bottom>
-              <button className="btn w-36 absolute top-[380px] sm:top-[440px] md:top-[480px] hover:border-warning border-2 shadow-2xl shadow-blue-700">Explore Tour</button>
+              <button className="btn w-36 absolute top-[380px] sm:top-[440px] md:top-[480px] hover:border-warning border-2 shadow-2xl shadow-blue-700 flex justify-center items-center">
+                <span className="relative flex h-5 w-5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
+                </span>
+                <p className="absolute">Explore Tour</p></button>
             </Slide>
           </div>
         </SwiperSlide>
@@ -123,7 +130,11 @@ const Banner = () => {
             </LightSpeed>
 
             <Slide bottom>
-              <button className="btn w-36 absolute top-[380px] sm:top-[440px] md:top-[480px] hover:border-warning border-2 shadow-2xl shadow-blue-700">Explore Tour</button>
+              <button className="btn w-36 absolute top-[380px] sm:top-[440px] md:top-[480px] hover:border-warning border-2 shadow-2xl shadow-blue-700 flex justify-center items-center">
+                <span className="relative flex h-5 w-5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
+                </span>
+                <p className="absolute">Explore Tour</p></button>
             </Slide>
           </div>
         </SwiperSlide>
@@ -153,7 +164,11 @@ const Banner = () => {
             </LightSpeed>
 
             <Slide bottom>
-              <button className="btn w-36 absolute top-[380px] sm:top-[440px] md:top-[480px] hover:border-warning border-2 shadow-2xl shadow-blue-700">Explore Tour</button>
+              <button className="btn w-36 absolute top-[380px] sm:top-[440px] md:top-[480px] hover:border-warning border-2 shadow-2xl shadow-blue-700 flex justify-center items-center">
+                <span className="relative flex h-5 w-5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
+                </span>
+                <p className="absolute">Explore Tour</p></button>
             </Slide>
           </div>
         </SwiperSlide>
@@ -182,7 +197,11 @@ const Banner = () => {
             </LightSpeed>
 
             <Slide bottom>
-              <button className="btn w-36 absolute top-[380px] sm:top-[440px] md:top-[480px] hover:border-warning border-2 shadow-2xl shadow-blue-700">Explore Tour</button>
+              <button className="btn w-36 absolute top-[380px] sm:top-[440px] md:top-[480px] hover:border-warning border-2 shadow-2xl shadow-blue-700 flex justify-center items-center">
+                <span className="relative flex h-5 w-5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
+                </span>
+                <p className="absolute">Explore Tour</p></button>
             </Slide>
           </div>
         </SwiperSlide>
