@@ -32,37 +32,37 @@ const TourType = () => {
                 className="mySwiper w-[80vw] lg:w-[60vw] mx-auto mt-20 mb-12 text-center h-[250px]"
             >
                 <SwiperSlide>
-                    <img className="h-[100px] w-[100px]" src="https://i.ibb.co/ck79Lz6/864267.png" alt="" />
+                    <img className="mx-auto h-[100px] w-[100px]" src="https://i.ibb.co/ck79Lz6/864267.png" alt="" />
                     <p className="text-xs my-4">ONE WITH NATURE</p>
                     <h1 className="text-xl font-semibold">Hiking</h1>
                 </SwiperSlide>
                 <SwiperSlide>
-                    <img className="h-[100px] w-[100px]" src="https://i.ibb.co/8b64zrd/hot-air-ballon-coloring-page-576561-11.jpg" alt="" />
+                    <img className="mx-auto h-[100px] w-[100px]" src="https://i.ibb.co/9WnFRPc/3942054.png" alt="" />
                     <p className="text-xs my-4">EXCITING BALLOON</p>
                     <h1 className="text-xl font-semibold">Flying</h1>
                 </SwiperSlide>
                 <SwiperSlide>
-                    <img className="h-[100px] w-[100px]" src="https://i.ibb.co/1M4jFdj/6496233.png" alt="" />
+                    <img className="mx-auto h-[100px] w-[100px]" src="https://i.ibb.co/1M4jFdj/6496233.png" alt="" />
                     <p className="text-xs my-4">VISIT THE WORLDS</p>
                     <h1 className="text-xl font-semibold">Wonders</h1>
                 </SwiperSlide>
                 <SwiperSlide>
-                    <img className="h-[100px] w-[100px]" src="https://i.ibb.co/XWcQPyS/images-q-tbn-ANd9-Gc-SE2q-H6-Pt-D5kb-Drzupo-B8-SDr01vyw-Vuj-ILLq-Waj-Grac-La-J5-I-t-Q.png" alt="" />
+                    <img className="mx-auto h-[100px] w-[100px]" src="https://i.ibb.co/McDdSbL/7896904.png" alt="" />
                     <p className="text-xs my-4">SKIING AND SNOW</p>
                     <h1 className="text-xl font-semibold">Mountains</h1>
                 </SwiperSlide>
                 <SwiperSlide>
-                    <img className="h-[100px] w-[100px]" src="https://i.ibb.co/GcyJnTM/1861292.png" alt="" />
+                    <img className="mx-auto h-[100px] w-[100px]" src="https://i.ibb.co/GcyJnTM/1861292.png" alt="" />
                     <p className="text-xs my-4">GREAT HISTORIC</p>
                     <h1 className="text-xl font-semibold">Monuments</h1>
                 </SwiperSlide>
                 <SwiperSlide>
-                    <img className="h-[100px] w-[100px]" src="https://i.ibb.co/J38GXmc/10212726.png" alt="" />
+                    <img className="mx-auto h-[100px] w-[100px]" src="https://i.ibb.co/J38GXmc/10212726.png" alt="" />
                     <p className="text-xs my-4">GO AND TRAVEL</p>
                     <h1 className="text-xl font-semibold">Faraway</h1>
                 </SwiperSlide>
                 <SwiperSlide>
-                    <img className="h-[100px] w-[100px]" src="https://i.ibb.co/PwBFMc4/10364154.png" alt="" />
+                    <img className="mx-auto h-[100px] w-[100px]" src="https://i.ibb.co/PwBFMc4/10364154.png" alt="" />
                     <p className="text-xs my-4">EXPERIENCE HISTORY</p>
                     <h1 className="text-xl font-semibold">Pyramids</h1>
                 </SwiperSlide>
