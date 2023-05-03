@@ -11,7 +11,7 @@ import "swiper/css/navigation";
 // import required modules
 import { Autoplay, Pagination, Navigation } from "swiper";
 
-import styles from "../styles/Banner.module.css"
+import styles from "../../styles/Banner.module.css"
 import Fade from 'react-reveal/Fade';
 import Slide from 'react-reveal/Slide';
 import LightSpeed from 'react-reveal/LightSpeed';
