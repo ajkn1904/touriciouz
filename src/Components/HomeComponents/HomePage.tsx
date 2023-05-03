@@ -4,6 +4,7 @@ import SearchTour from "./SearchTour";
 import AboutUs from "./AboutUs";
 import StatCounter from "./StatCounter";
 import Offer from "./Offer";
+import TourType from "../TourType";
 
 const HomePage = () => {
     return (
@@ -12,9 +13,9 @@ const HomePage = () => {
             <Banner />
             <SearchTour />
             <AboutUs />
-            <StatCounter/>
-
-            <Offer/>
+            <StatCounter />
+            <TourType />
+            <Offer />
         </>
     );
 };

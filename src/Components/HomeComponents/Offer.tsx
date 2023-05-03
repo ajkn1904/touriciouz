@@ -27,11 +27,11 @@ const Offer = () => {
 
 
     return (
-        <div className='flex flex-col lg:flex-row gap-12 lg:gap-7 xl:gap-16 justify-center items-center my-48 max-w-[1440px] mx-auto'>
+        <div className='flex flex-col lg:flex-row gap-12 lg:gap-7 xl:gap-16 justify-center items-center my-48 max-w-[1300px] mx-auto'>
             {
                 offers.map(ofr =>
                     <div className="card w-[85%] lg:w-[70%] shadow-xl h-[350px]" key={ofr.id} style={{backgroundImage: `url(${ofr.img})`, backgroundRepeat: 'no-repeat', backgroundPosition: '220px -60px'}}>
-                        <div className="card-body bg-gradient-to-r from-green-600 bg-blend-overlay bg-purple-500 bg-opacity-20 rounded-xl text-white font-serif border-2 shadow-lg shadow-yellow-200 border-yellow-500">
+                        <div className="card-body bg-gradient-to-r from-green-600 bg-blend-overlay bg-purple-500 bg-opacity-30 rounded-xl text-white font-serif border-2 shadow-lg shadow-yellow-200 border-yellow-500">
                             <h2 className="card-title text-5xl mt-10 mb-8 font-bol text-white">{ofr.title}</h2>
                             <p className='text-2xl font-bold'>{ofr.text}</p>
                             <div className="card-actions justify-start">
