@@ -3,6 +3,7 @@ import Banner from "./Banner";
 import SearchTour from "./SearchTour";
 import AboutUs from "./AboutUs";
 import StatCounter from "./StatCounter";
+import Offer from "./Offer";
 
 const HomePage = () => {
     return (
@@ -12,6 +13,8 @@ const HomePage = () => {
             <SearchTour />
             <AboutUs />
             <StatCounter/>
+
+            <Offer/>
         </>
     );
 };
