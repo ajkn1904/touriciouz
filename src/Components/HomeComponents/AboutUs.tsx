@@ -14,7 +14,7 @@ const AboutUs = () => {
             </div>
             <div className="card-body lg:ml-24 w-[90vw] lg:w-[40%] xl:w-[50%] mx-auto">
                 <div>
-                    <h2 className="card-title text-green-600 italic">Get About Us__________</h2>
+                    <h2 className="card-title text-green-600 italic">Get About Us____</h2>
                     <h1 className="text-3xl font-semibold my-5">We Create Journeys Worth Taking For The Tourists</h1>
                     <p>Progressively impact multidisciplinary leadership skills via e-business leadership skills. Holisticly repurpose multifunctional data before turnkey information. Globally restore client-focused potentialities before scalable core competencies.Progressively impact multidisciplinary leadership skills via e-business leadership skills. Holisticly repurpose multifunctional data before turnkey information. Globally restore client-focused potentialities before scalable core competencies.Progressively impact multidisciplinary leadership skills via e-business leadership skills. Holisticly repurpose multifunctional data before turnkey information.</p>
                 </div>
