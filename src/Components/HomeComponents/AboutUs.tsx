@@ -69,7 +69,7 @@ const AboutUs = () => {
 
                     </div>
                 </div>
-                        <p className='my-1 text-end'> <span className='text-green-600 font-semibold text-xl'>500k+ </span> Happy Customer</p>
+                <p className='my-1 text-end'> <span className='text-green-600 font-semibold text-xl'>500k+ </span> Happy Customer</p>
             </div>
 
 

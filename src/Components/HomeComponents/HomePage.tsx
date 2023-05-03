@@ -4,7 +4,8 @@ import SearchTour from "./SearchTour";
 import AboutUs from "./AboutUs";
 import StatCounter from "./StatCounter";
 import Offer from "./Offer";
-import TourType from "../TourType";
+import TourType from "./TourType";
+import Testimonials from "./Testimonials";
 
 const HomePage = () => {
     return (
@@ -12,10 +13,11 @@ const HomePage = () => {
             <NavBar />
             <Banner />
             <SearchTour />
-            <AboutUs />
-            <StatCounter />
             <TourType />
             <Offer />
+            <StatCounter />
+            <Testimonials/>
+            <AboutUs />
         </>
     );
 };
