@@ -21,7 +21,7 @@ const StatCounter = () => {
                 <div className='border-r w-[200px] md:w-[270px] h-[200px] md:h-[250px] px-3 py-5 md:p-12 lg:h-[200px] lg:w-[210px] lg:p-5'>
                     <TiGroup className='h-24 w-24 rounded-full bg-green-200 border-8 border-green-100 p-5 text-green-800' />
                     <h1 className='text-4xl font-semibold'>
-                        <CountUp start={99700} end={100000} delay={0} enableScrollSpy={true} />
+                        <CountUp start={99900} end={100000} delay={0} enableScrollSpy={true} />
                         <span>+</span>
                     </h1>
                     <p className='text-lg'>Counter One</p>
@@ -30,7 +30,7 @@ const StatCounter = () => {
                 <div className='w-[170px] h-[200px] md:w-[200px] md:h-[300px] p-5 md:p-12 lg:h-[200px] lg:w-[210px] lg:p-5'>
                     <MdOutlineTravelExplore className='h-24 w-24 rounded-full bg-green-200 border-8 border-green-100 p-5 text-green-800' />
                     <h1 className='text-4xl font-semibold'>
-                        <CountUp start={4800} end={5000} delay={0} enableScrollSpy={true} />
+                        <CountUp start={4950} end={5000} delay={0} enableScrollSpy={true} />
                         <span>+</span>
                     </h1>
                     <p className='text-lg'>Destinations</p>
@@ -45,7 +45,7 @@ const StatCounter = () => {
                 <div className='border-r w-[200px] md:w-[230px] h-[200px] md:h-[250px] px-3 py-5 md:px-4 md:py-12 lg:h-[200px] lg:w-[210px] lg:p-5'>
                     <GiHiking className='h-24 w-24 rounded-full bg-green-200 border-8 border-green-100 p-5 text-green-800' />
                     <h1 className='text-4xl font-semibold'>
-                        <CountUp start={9800} end={10000} delay={0} enableScrollSpy={true} />
+                        <CountUp start={9920} end={10000} delay={0} enableScrollSpy={true} />
                         <span>+</span>
                     </h1>
                     <p className='text-lg'>More Trips</p>
@@ -54,7 +54,7 @@ const StatCounter = () => {
                 <div className='w-[170px] h-[200px] p-5 md:w-[200px] md:h-[300px] md:p-12 lg:h-[200px] lg:p-5 lg:w-[210px]'>
                     <RiHotelFill className='h-24 w-24 rounded-full bg-green-200 border-8 border-green-100 p-5 text-green-800' />
                     <h1 className='text-4xl font-semibold'>
-                        <CountUp start={1900} end={2000} delay={0} enableScrollSpy={true} />
+                        <CountUp start={1950} end={2000} delay={0} enableScrollSpy={true} />
                         <span>+</span>
                     </h1>
                     <p className='text-lg'>Luxary Hotel</p>

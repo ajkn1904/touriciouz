@@ -1,16 +1,16 @@
-import React, { useRef, useState } from "react";
+import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-import { Autoplay, Pagination, Navigation } from "swiper";
+import { Autoplay } from "swiper";
 
 import { AiFillStar } from 'react-icons/ai';
 
 const Testimonials = () => {
     return (
         <div className="my-40 mx-auto w-[80vw] font-serif">
-            <h1 className="text-2xl font-semibold text-green-600 italic text-center">Testimonials__________</h1>
+            <h1 className="text-2xl font-semibold text-green-600 italic text-center">Testimonials____</h1>
             <h2 className="text-3xl font-semibold my-10 text-center">What Customer Say About Us</h2>
 
 

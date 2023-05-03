@@ -6,6 +6,8 @@ import StatCounter from "./StatCounter";
 import Offer from "./Offer";
 import TourType from "./TourType";
 import Testimonials from "./Testimonials";
+import FindUs from "./FindUs";
+
 
 const HomePage = () => {
     return (
@@ -18,6 +20,7 @@ const HomePage = () => {
             <StatCounter />
             <Testimonials/>
             <AboutUs />
+            <FindUs/>
         </>
     );
 };

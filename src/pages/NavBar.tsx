@@ -55,7 +55,7 @@ const NavBar = () => {
 
 
 
-            <div className="navbar bg-white bg-opacity-90 text-black lg:px-16 xl:px-40">
+            <div className="navbar bg-white bg-opacity-90 text-black lg:px-16 xl:px-40 border-b border-2">
 
 
 
