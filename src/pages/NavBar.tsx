@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Headroom from 'react-headroom';
-import logo from '../../public/logo.png'
 
 import { MdPhone } from 'react-icons/md'
 import { IoTime } from 'react-icons/io5'
@@ -61,7 +60,7 @@ const NavBar = () => {
 
                 <div className="navbar-start">
                     <div className="dropdown">
-                        <label tabIndex={0} className="btn btn-ghost lg:hidden">
+                        <label tabIndex={0} className="btn btn-ghost bg-green-600 text-white hover:text-black lg:hidden">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-16 6h16" /></svg>
                         </label>
                         <ul tabIndex={0} className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-white border rounded-box w-52">
@@ -72,7 +71,7 @@ const NavBar = () => {
                     </div>
 
 
-                    <img src="https://i.ibb.co/C1Lqqpz/logo-2.png" alt="logo" className="w-14 h-14 rounded-full ml-6" />
+                    <img src="https://i.ibb.co/C1Lqqpz/logo-2.png" alt="logo" className="w-14 h-14 rounded-full ml-6 border-l-2 border-green-600" />
                     <Link href="/" className="mx-2 font-bold normal-case font-serif italic"><span className='text-4xl text-green-700'>Tour</span><span className='text-2xl'>iciouz</span></Link>
                 </div>
 

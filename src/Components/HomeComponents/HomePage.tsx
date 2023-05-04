@@ -9,6 +9,7 @@ import Testimonials from "./Testimonials";
 import FindUs from "./FindUs";
 import OurStory from "./OurStory";
 import Subscriptions from "./Subscriptions";
+import Footer from "../Footer/Footer";
 
 
 const HomePage = () => {
@@ -25,6 +26,7 @@ const HomePage = () => {
             <Testimonials/>
             <FindUs/>
             <Subscriptions/>
+            <Footer/>
         </>
     );
 };
