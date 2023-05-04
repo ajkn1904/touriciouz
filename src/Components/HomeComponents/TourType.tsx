@@ -15,7 +15,7 @@ const TourType = () => {
             <h3 className="text-2xl font-semibold my-4 text-green-600 italic">Your Kind Of Holiday__</h3>
             <h1 className="text-3xl font-semibold my-5">Your world, your way</h1>
             <p className="text-lg w-[60vw] mx-auto">Distinctively re-engineer revolutionary meta-services and premium architectures. Intrinsically incubate intuitive opportunities and real-time potentialities. Appropriately communicate one-to-one technology after plug-and-play networks.</p>
-            <hr className="w-[80vw] mt-10 mx-auto" />
+            <hr className="w-[80vw] mt-10 mx-auto border border-green-600" />
 
 
 
