@@ -8,6 +8,7 @@ import TourType from "./TourType";
 import Testimonials from "./Testimonials";
 import FindUs from "./FindUs";
 import OurStory from "./OurStory";
+import Subscriptions from "./Subscriptions";
 
 
 const HomePage = () => {
@@ -23,6 +24,7 @@ const HomePage = () => {
             <OurStory/>
             <Testimonials/>
             <FindUs/>
+            <Subscriptions/>
         </>
     );
 };
