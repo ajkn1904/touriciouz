@@ -1,51 +1,55 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-import { Autoplay } from "swiper";
+import { Autoplay, Pagination, Navigation } from "swiper";
 
 import { AiFillStar } from 'react-icons/ai';
+import initAOS from "../../../aos";
+
 
 const Testimonials = () => {
+
+    useEffect(() => {
+        initAOS();
+      }, []);
+
     return (
         <div className="bg-gradient-to-r from-green-50 my-8 py-32">
             <div className="mx-auto w-[80vw] font-serif">
-                <h1 className="text-2xl font-semibold text-green-600 italic text-center">Testimonials____</h1>
-                <h2 className="text-3xl font-semibold my-10 text-center">What Customer Say About Us</h2>
+                <h1 className="text-2xl font-semibold text-green-600 italic text-center" data-aos="fade-up" data-aos-offset="10" data-aos-delay="50" data-aos-duration="1000" data-aos-easing="ease-in-out" data-aos-once="false">Testimonials____</h1>
+                <h2 className="text-3xl font-semibold my-10 text-center" data-aos="fade-up" data-aos-offset="10" data-aos-delay="50" data-aos-duration="1000" data-aos-easing="ease-in-out" data-aos-once="false">What Customer Say About Us</h2>
 
 
                 <Swiper
-                    slidesPerView={1}
-                    spaceBetween={10}
+                breakpoints={{
+                    640: {
+                        slidesPerView: 1,
+                        spaceBetween: 20,
+                    },
+                    768: {
+                        slidesPerView: 2,
+                        spaceBetween: 30,
+                    },
+                    1024: {
+                        slidesPerView: 3,
+                        spaceBetween: 50
+                    },
+                }}
+                    loop={true}
                     autoplay={{
                         delay: 5000,
                         disableOnInteraction: false,
                     }}
-                    loop={true}
-                    pagination={{
-                        clickable: true,
-                    }}
-
-                    breakpoints={{
-                        640: {
-                            slidesPerView: 1,
-                            spaceBetween: 20,
-                        },
-                        768: {
-                            slidesPerView: 2,
-                            spaceBetween: 30,
-                        },
-                        1024: {
-                            slidesPerView: 3,
-                            spaceBetween: 50,
-                        },
-                    }}
-                    modules={[Autoplay]}
-                    className="mx-auto"
+                    
+                    navigation={true}
+                    
+                    modules={[Autoplay, Navigation]}
+                    className="mySwiper mx-auto"
                 >
                     <SwiperSlide>
-                        <div className="card bg-base-100 border">
+                        <div className="card bg-base-100 border" data-aos="flip-left" data-aos-offset="10" data-aos-delay="50" data-aos-duration="1000" data-aos-easing="ease-in-out" data-aos-once="false">
                             <div className="card-body">
                                 <div className="flex my-4">
                                     <AiFillStar className="text-yellow-400 h-5 w-5" />
@@ -71,7 +75,7 @@ const Testimonials = () => {
                             </div>
                         </div></SwiperSlide>
                     <SwiperSlide>
-                        <div className="card bg-base-100 border">
+                        <div className="card bg-base-100 border" data-aos="flip-left" data-aos-offset="10" data-aos-delay="50" data-aos-duration="1000" data-aos-easing="ease-in-out" data-aos-once="false">
                             <div className="card-body">
                                 <div className="flex my-4">
                                     <AiFillStar className="text-yellow-400 h-5 w-5" />
@@ -85,11 +89,11 @@ const Testimonials = () => {
                                 <div className="mt-5 flex gap-3 justify-start items-center">
                                     <div className="avatar placeholder">
                                         <div className="bg-neutral-focus text-neutral-content rounded-full w-16">
-                                            <img src="avater1.jpg" className="" alt="" />
+                                            <img src="avater3.jpg" className="" alt="" />
                                         </div>
                                     </div>
                                     <div>
-                                        <h2 className="card-title">Abraham Linklon </h2>
+                                        <h2 className="card-title">Abraham Link</h2>
                                         <p>CEO at AbC</p>
                                     </div>
                                 </div>
@@ -97,7 +101,7 @@ const Testimonials = () => {
                         </div>
                     </SwiperSlide>
                     <SwiperSlide>
-                        <div className="card bg-base-100 border">
+                        <div className="card bg-base-100 border" data-aos="flip-left" data-aos-offset="10" data-aos-delay="50" data-aos-duration="1000" data-aos-easing="ease-in-out" data-aos-once="false">
                             <div className="card-body">
                                 <div className="flex my-4">
                                     <AiFillStar className="text-yellow-400 h-5 w-5" />
@@ -111,12 +115,12 @@ const Testimonials = () => {
                                 <div className="mt-5 flex gap-3 justify-start items-center">
                                     <div className="avatar placeholder">
                                         <div className="bg-neutral-focus text-neutral-content rounded-full w-16">
-                                            <img src="avater1.jpg" className="" alt="" />
+                                            <img src="avater2.jpg" className="" alt="" />
                                         </div>
                                     </div>
                                     <div>
                                         <h2 className="card-title">Albert Pisoor</h2>
-                                        <p>CEO at ADIvah</p>
+                                        <p>CEO at ADLab</p>
                                     </div>
                                 </div>
                             </div>

@@ -4,16 +4,21 @@ import { GiHiking } from 'react-icons/gi';
 import { RiHotelFill } from 'react-icons/ri';
 
 import dynamic from 'next/dynamic';
+import initAOS from '../../../aos';
+import { useEffect } from 'react';
 
-//import CountUp from 'react-countup';
 
 
 const StatCounter = () => {
 
+    useEffect(() => {
+        initAOS();
+    }, []);
+
     const CountUp = dynamic(import('react-countup'), { ssr: false })
 
     return (
-        <div className='w-[85vw] mx-auto flex flex-col lg:flex-row justify-center items-center mt-40 mb-20'>
+        <div className='w-[85vw] mx-auto flex flex-col lg:flex-row justify-center items-center mt-40 mb-20' data-aos="zoom-in" data-aos-offset="10" data-aos-duration="1000" data-aos-easing="ease-in-out" data-aos-once="false">
 
             <div className='flex gap-12 h-[200px] md:h-[250px] lg:h-[200px] border-b lg:border-b-0 lg:border-r md:pr-5 md:gap-r-0 lg:pr-0'>
 

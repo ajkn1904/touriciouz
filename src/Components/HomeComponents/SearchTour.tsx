@@ -1,10 +1,18 @@
+import { useEffect } from 'react';
+import initAOS from '../../../aos';
+
 
 const SearchTour = () => {
+
+    useEffect(() => {
+        initAOS();
+    }, []);
+
     return (
         <div className="flex justify-center h-[400px] md:h-[250px] lg:h-[150px]">
 
 
-            <div className="mx-auto w-[400px] md:w-[90vw] font-serif border border-yellow-400 shadow-xl shadow-blue-200 rounded-lg p-5 absolute top-[630px] sm:top-[640px] md:top-[690px] lg:top-[740px] z-10 bg-white">
+            <div className="mx-auto w-[400px] md:w-[90vw] font-serif border border-yellow-400 shadow-xl shadow-blue-200 rounded-lg p-5 absolute top-[630px] sm:top-[640px] md:top-[690px] lg:top-[740px] z-10 bg-white" data-aos="flip-up" data-aos-offset="10" data-aos-delay="50" data-aos-duration="1000" data-aos-easing="ease-in-out" data-aos-once="false">
 
                 <h3 className="text-center text-2xl text-green-600 italic font-semibold my-3">Search Tours__</h3>
                 <p className="text-center ">Find your dream tour today from here!</p>
@@ -24,6 +32,7 @@ const SearchTour = () => {
 
                 </form>
             </div>
+
         </div>
     );
 };
