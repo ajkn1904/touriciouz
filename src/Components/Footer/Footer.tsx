@@ -11,30 +11,30 @@ const Footer = () => {
             <footer className="flex p-10 bg-slate-900  text-white">
                 <div className="footer ">
                     <div>
-                        <span className="footer-title">Services</span>
-                        <a className="link link-hover">Branding</a>
-                        <a className="link link-hover">Design</a>
-                        <a className="link link-hover">Marketing</a>
-                        <a className="link link-hover">Advertisement</a>
+                        <span className="footer-title text-lg">Quick Links</span>
+                        <a className="link link-hover hover:text-green-400">Destination</a>
+                        <a className="link link-hover hover:text-green-400">Packages</a>
+                        <a className="link link-hover hover:text-green-400">Tours</a>
+                        <a className="link link-hover hover:text-green-400">Blog</a>
                     </div>
                     <div>
-                        <span className="footer-title">Company</span>
-                        <a className="link link-hover">About us</a>
-                        <a className="link link-hover">Contact</a>
-                        <a className="link link-hover">Jobs</a>
-                        <a className="link link-hover">Press kit</a>
+                        <span className="footer-title text-lg">Company</span>
+                        <a className="link link-hover hover:text-green-400">About us</a>
+                        <a className="link link-hover hover:text-green-400">Contact</a>
+                        <a className="link link-hover hover:text-green-400">Jobs</a>
+                        <a className="link link-hover hover:text-green-400">Press kit</a>
                     </div>
                     <div>
-                        <span className="footer-title">Legal</span>
-                        <a className="link link-hover">Terms of use</a>
-                        <a className="link link-hover">Privacy policy</a>
-                        <a className="link link-hover">Cookie policy</a>
+                        <span className="footer-title text-lg">Legal</span>
+                        <a className="link link-hover hover:text-green-400">Terms of use</a>
+                        <a className="link link-hover hover:text-green-400">Privacy policy</a>
+                        <a className="link link-hover hover:text-green-400">Cookie policy</a>
                     </div>
                 </div>
 
 
                 <div className="my-auto md:my-0">
-                    <h1 className="footer-title">Gallery Showcase</h1>
+                    <h1 className="footer-title text-lg">Gallery Showcase</h1>
                     <PhotoProvider>
                         <PhotoView src='https://images.unsplash.com/photo-1465188035480-cf3a60801ea5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80'>
                             <PhotoView src='https://images.unsplash.com/photo-1612278675615-7b093b07772d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1169&q=80'>

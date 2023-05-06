@@ -23,7 +23,7 @@ const OurStory = () => {
                 </div>
 
 
-                <iframe width="370" height="315" className="mx-auto sm:w-[470px] md:w-[560px] shadow-xl shadow-blue-100" src="https://www.youtube.com/embed/FCPdIvXo2rU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen data-aos="fade-right" data-aos-offset="10" data-aos-delay="50" data-aos-duration="1500" data-aos-easing="ease-in-out" data-aos-once="false"></iframe>
+                <iframe width="370" height="315" className="mx-auto sm:w-[470px] md:w-[560px] shadow-xl shadow-blue-100" src="https://www.youtube.com/embed/FCPdIvXo2rU" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen data-aos="fade-right" data-aos-offset="10" data-aos-delay="50" data-aos-duration="1500" data-aos-easing="ease-in-out" data-aos-once="false"></iframe>
             </div>
 
 
