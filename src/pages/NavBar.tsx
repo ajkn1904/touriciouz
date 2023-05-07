@@ -9,14 +9,14 @@ const NavBar = () => {
 
     const menu = <>
 
-        <li><Link href='/' className='btn btn-ghost rounded font-semibold text-black hover:bg-green-600 hover:text-white'>Home</Link></li>
-        <li><Link href='/Tours' className='btn btn-ghost rounded font-semibold text-black hover:bg-green-600 hover:text-white'>Tours</Link></li>
-        <li><Link href='/Booking' className='btn btn-ghost rounded font-semibold text-black hover:bg-green-600 hover:text-white'>Booking</Link></li>
-        <li><Link href='/Blog' className='btn btn-ghost rounded font-semibold text-black hover:bg-green-600 hover:text-white'>Blog</Link></li>
+        <li><Link href='/' className='btn btn-ghost rounded font-semibold font-serif text-black hover:bg-green-600 hover:text-white'>Home</Link></li>
+        <li><Link href='/Tours' className='btn btn-ghost rounded font-semibold font-serif text-black hover:bg-green-600 hover:text-white'>Tours</Link></li>
+        <li><Link href='/Booking' className='btn btn-ghost rounded font-semibold font-serif text-black hover:bg-green-600 hover:text-white'>Booking</Link></li>
+        <li><Link href='/Blog' className='btn btn-ghost rounded font-semibold font-serif text-black hover:bg-green-600 hover:text-white'>Blog</Link></li>
 
-        <li><Link href='/LogIn' className='btn btn-ghost rounded font-semibold text-black hover:bg-green-600 hover:text-white'>Log In</Link></li>
-        <li><Link href='/Registration' className='btn btn-ghost rounded font-semibold text-black hover:bg-green-600 hover:text-white'>Registration</Link></li>
-        <li><Link href='/' className='btn btn-ghost rounded font-semibold text-black hover:bg-green-600 hover:text-white' >Sign Out</Link></li>
+        <li><Link href='/LogIn' className='btn btn-ghost rounded font-semibold font-serif text-black hover:bg-green-600 hover:text-white'>Log In</Link></li>
+        <li><Link href='/Registration' className='btn btn-ghost rounded font-semibold font-serif text-black hover:bg-green-600 hover:text-white'>Registration</Link></li>
+        <li><Link href='/' className='btn btn-ghost rounded font-semibold font-serif text-black hover:bg-green-600 hover:text-white' >Sign Out</Link></li>
 
 
     </>
