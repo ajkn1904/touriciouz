@@ -3,7 +3,7 @@ import { AiFillStar } from 'react-icons/ai';
 import { BiTimeFive, BiDumbbell } from 'react-icons/bi';
 import initAOS from '../../../aos';
 import Link from 'next/link';
-import TourDetails from '@/pages/TourDetails';
+import TourDetails from '@/pages/TourDetails/[id]';
 
 const Packages = ({ data }: any) => {
 
@@ -61,7 +61,7 @@ const Packages = ({ data }: any) => {
 
                     <p className='mb-5 text-gray-400'>per person</p>
 
-                    <button className="btn bg-green-600 text-white border-green-500 hover:border-2 hover:border-yellow-500 shadow-lg shadow-blue-300"><Link href="/TourDetails">View Details</Link></button>
+                    <button className="btn bg-green-600 text-white border-green-500 hover:border-2 hover:border-yellow-500 shadow-lg shadow-blue-300"><Link href={`/TourDetails/${data?._id}`}>View Details</Link></button>
                 </div>
             </div>
         </div>
