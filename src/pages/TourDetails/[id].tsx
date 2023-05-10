@@ -9,40 +9,19 @@ import { ImCross } from "react-icons/im";
 
 
 
-const TourDetails = (/* { pack }: any */) => {
-
-    //console.log(pack);
+const TourDetails = (/* { tours }: any */) => {
 
 
-    /*     const router = useRouter();
+        const router = useRouter();
         const handleBack = () => {
             router.push("/Tours")
         }
     
-        console.log(router.query.id); */
-
-    /*     const [ isLoading, setIsLoading] = useState(true)
-        const [ tours, setTours] = useState({})
-    
-        useEffect(() => {
-            fetch(`http://localhost:5000/packages/${router?.query?.id}`)
-            .then(res => res.json())
-            .then(data => {
-                setTours(data);
-                setIsLoading(false);
-            })
-        }, [router.query.id])
-        
-        
-        
-        if(isLoading){
-            return <h1>Loading....</h1>
-        } */
+        console.log(router.query.id);
 
 
     const [isLoading, setIsLoading] = useState(true);
     const [tours, setTours]: any = useState({})
-    const router = useRouter();
     console.log(router.query.id);
 
     useEffect(() => {
@@ -57,34 +36,24 @@ const TourDetails = (/* { pack }: any */) => {
             }
         }
 
+        if(!router.query.id) return;
+        
+
         fetchData();
     }, [router.query.id]);
 
 
-    /*useEffect(() => {
-         async function fetchData() {
-            const response = await fetch(
-                `http://localhost:5000/packages/${router.query.id}`
-                );
-                const data = await response.json();
-                setTours(data);
-                setIsLoading(false);
-            }  
-            fetchData();
-        }, [router?.query?.id]); */
-
-
-
     /* useEffect(() => {
+        if(!router.query.id) return;
         fetch(`http://localhost:5000/packages/${router?.query?.id}`)
         .then(res => res.json())
         .then(data => {
             setTours(data);
             setIsLoading(false);
         })
-    }, [router.query.id]) */
+    }, [router.query.id])  */
 
-    if (isLoading) {
+     if (isLoading) {
         return <p className="text-gray-400">loading...</p>;
     }
 
@@ -142,6 +111,7 @@ const TourDetails = (/* { pack }: any */) => {
                 </div>
 
 
+                <button className="btn bg-green-600 text-white border-green-500 hover:border-2 hover:border-yellow-500 shadow-lg shadow-blue-300 ml-[80%] md:ml-[85%] lg:ml-[90%] my-5" onClick={handleBack}>Back</button>
 
                 <p className="text-lg my-10 w-[90%] mx-auto">{tours.description}</p>
 
@@ -200,7 +170,7 @@ const TourDetails = (/* { pack }: any */) => {
                 <p className="text-lg my-10 w-[90%] mx-auto">{tours.description}</p>
 
 
-                {/* <button onClick={handleBack}>Back</button> */}
+                
 
             </div>
         </div>
@@ -210,42 +180,36 @@ const TourDetails = (/* { pack }: any */) => {
     );
 };
 
+/* export async function getServerSideProps({params}: any){
+    console.log(params);
+    const res = await fetch(`http://localhost:5000/packages/${params?.id}`);
+    const data = await res.json();
+    console.log(data, res);
+    return {
+        props: {tours:data || []}
+    }
+} */
+
 
 
 /* export const getServerSideProps = async (context: any) => {
+    console.log(context);
 
     const {params} = context;
 
-            const res = await fetch(`http://localhost:5000/packages/${params?.packId}`);
+            const res = await fetch(`http://localhost:5000/packages/${params?.id}`);
             const data = await res.json();
 
             return {
                 props: {
-                pack: data
+                tours: data
         }
-    }
-}
-
-
-
-export const getServerSidePaths = async () => {
-    const res = await fetch('http://localhost:5000/packages');
-            const data = await res.json()
-
-
-    const paths =  data?.map((pack: any) => {
-        return {
-                params: {
-                packId: `${pack._id}`
-            }
-        }
-    })
-
-            return {
-                paths,
-                fallback: false
     }
 } */
+
+
+
+
 
 
 export default TourDetails;
