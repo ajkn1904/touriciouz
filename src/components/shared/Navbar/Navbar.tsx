@@ -13,7 +13,7 @@ const Navbar = () => {
   return (
     <Headroom>
       {/* Top Bar */}
-      <div className="bg-slate-900 opacity-90 px-5 lg:px-24 xl:px-52 py-2 text-gray-500 flex justify-between">
+      <div className="bg-slate-900/90 px-5 lg:px-24 xl:px-52 py-2 text-gray-500 flex justify-between">
         <div className="flex items-center gap-5">
           <div className="flex items-center gap-2">
             <MdPhone />
@@ -38,7 +38,7 @@ const Navbar = () => {
       </div>
 
       {/* Main Navbar */}
-      <nav className="bg-white/90 text-black lg:px-16 xl:px-40 border-b border-2 flex items-center justify-between py-2">
+      <nav className="bg-white/70 text-black lg:px-16 xl:px-40 border-b border-2 flex items-center justify-between py-2">
         {/* Left: Logo */}
         <Link href="/" className="flex items-center gap-2 ml-2 lg:ml-0">
           <Logo />

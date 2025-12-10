@@ -74,7 +74,7 @@ const Testimonials = () => {
                     autoplay={{ delay: 5000, disableOnInteraction: false }}
                     navigation={true}
                     modules={[Autoplay, Navigation]}
-                    className="mx-auto"
+                    className="mx-auto !z-0 !relative"
                 >
                     {testimonialData.map((t, idx) => (
                         <SwiperSlide key={idx}>

@@ -25,7 +25,7 @@ const SearchTour = () => {
             <div
                 className="mx-auto w-[400px] md:w-[90vw] font-serif border border-yellow-400 
         shadow-xl shadow-blue-200 rounded-lg p-5 absolute top-[630px] sm:top-[640px] 
-        md:top-[690px] lg:top-[740px] z-10 bg-white"
+        md:top-[690px] lg:top-[740px] z-0 bg-white"
                 data-aos="flip-up"
             >
                 <h3 className="text-center text-2xl text-green-600 italic font-semibold my-3">

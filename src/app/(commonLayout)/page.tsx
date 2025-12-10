@@ -6,8 +6,8 @@ import AboutUs from "../../components/modules/Home/AboutUs";
 import StatCounter from "../../components/modules/Home/StatCounter";
 import OurStory from "../../components/modules/Home/OurStory";
 import Testimonials from "../../components/modules/Home/Testimonials";
-import FindUs from "../../components/modules/Home/FindUs";
 import Subscriptions from "../../components/modules/Home/Subscriptions";
+import FindUs from "@/src/components/modules/Home/FindUs";
 
 const HomePage = () =>{
   return (

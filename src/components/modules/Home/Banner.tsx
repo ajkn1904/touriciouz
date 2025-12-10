@@ -58,7 +58,7 @@ const Banner = () => {
       pagination={{ clickable: true, type: "progressbar" }}
       navigation={true}
       modules={[Autoplay, Pagination, Navigation]}
-      className="mySwiper"
+      className="mySwiper !z-0 !relative"
     >
       {slides.map((slide, index) => (
         <SwiperSlide key={index} className="relative">
@@ -111,7 +111,7 @@ const Banner = () => {
             >
 
               <span className="relative flex h-5 w-5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400/75"></span>
               </span>
               <p className="absolute">Explore Tour</p>
             </motion.button>
