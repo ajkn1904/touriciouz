@@ -4,13 +4,18 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { Navigation, Pagination } from "swiper/modules";
+import Image from "next/image";
 
 
 
 const TourType = () => {
     useEffect(() => {
-        AOS.init();
+        if (typeof window !== "undefined") {
+            const AOS = require("aos");
+            AOS.init();
+        }
     }, []);
+
 
     return (
         <div className="w-[85vw] mx-auto font-serif mt-40 text-center" data-aos="zoom-in" data-aos-offset="10" data-aos-delay="50" data-aos-duration="1000" data-aos-easing="ease-in-out" data-aos-once="false">
@@ -35,45 +40,45 @@ const TourType = () => {
                 data-aos="fade-down-right" data-aos-offset="10" data-aos-delay="50" data-aos-duration="1000" data-aos-easing="ease-in-out" data-aos-once="false"
             >
                 <SwiperSlide>
-                    <img className="mx-auto h-[100px] w-[100px]" src="https://i.ibb.co/ck79Lz6/864267.png" alt="" />
+                    <Image width={100} height={100} className="mx-auto h-[100px] w-[100px]" src="https://i.ibb.co/ck79Lz6/864267.png" alt="" />
                     <p className="text-xs my-4">ONE WITH NATURE</p>
-                    <h1 className="text-xl font-semibold">Hiking</h1>
+                    <h1 className="text-xl font-semibold">ADVENTURE</h1>
                 </SwiperSlide>
                 <SwiperSlide>
-                    <img className="mx-auto h-[100px] w-[100px]" src="https://i.ibb.co/9WnFRPc/3942054.png" alt="" />
-                    <p className="text-xs my-4">EXCITING BALLOON</p>
-                    <h1 className="text-xl font-semibold">Flying</h1>
-                </SwiperSlide>
-                <SwiperSlide>
-                    <img className="mx-auto h-[100px] w-[100px]" src="https://i.ibb.co/1M4jFdj/6496233.png" alt="" />
-                    <p className="text-xs my-4">VISIT THE WORLDS</p>
-                    <h1 className="text-xl font-semibold">Wonders</h1>
-                </SwiperSlide>
-                <SwiperSlide>
-                    <img className="mx-auto h-[100px] w-[100px]" src="https://i.ibb.co/McDdSbL/7896904.png" alt="" />
+                    <Image width={100} height={100} className="mx-auto h-[100px] w-[100px]" src="https://i.ibb.co/McDdSbL/7896904.png" alt="" />
                     <p className="text-xs my-4">SKIING AND SNOW</p>
-                    <h1 className="text-xl font-semibold">Mountains</h1>
+                    <h1 className="text-xl font-semibold">NATURE</h1>
                 </SwiperSlide>
                 <SwiperSlide>
-                    <img className="mx-auto h-[100px] w-[100px]" src="https://i.ibb.co/GcyJnTM/1861292.png" alt="" />
-                    <p className="text-xs my-4">GREAT HISTORIC</p>
-                    <h1 className="text-xl font-semibold">Monuments</h1>
+                    <Image width={100} height={100} className="mx-auto h-[100px] w-[100px]" src="https://i.ibb.co/9WnFRPc/3942054.png" alt="" />
+                    <p className="text-xs my-4">EXCITING BALLOON</p>
+                    <h1 className="text-xl font-semibold">NIGHTLIFE</h1>
                 </SwiperSlide>
                 <SwiperSlide>
-                    <img className="mx-auto h-[100px] w-[100px]" src="https://i.ibb.co/J38GXmc/10212726.png" alt="" />
-                    <p className="text-xs my-4">GO AND TRAVEL</p>
-                    <h1 className="text-xl font-semibold">Faraway</h1>
+                    <Image width={100} height={100} className="mx-auto h-[100px] w-[100px]" src="https://i.ibb.co/1M4jFdj/6496233.png" alt="" />
+                    <p className="text-xs my-4">VISIT THE WORLDS</p>
+                    <h1 className="text-xl font-semibold">CULTURE</h1>
                 </SwiperSlide>
                 <SwiperSlide>
-                    <img className="mx-auto h-[100px] w-[100px]" src="https://i.ibb.co/PwBFMc4/10364154.png" alt="" />
+                    <Image width={100} height={100} className="mx-auto h-[100px] w-[100px]" src="https://i.ibb.co/PwBFMc4/10364154.png" alt="" />
                     <p className="text-xs my-4">EXPERIENCE HISTORY</p>
-                    <h1 className="text-xl font-semibold">Pyramids</h1>
+                    <h1 className="text-xl font-semibold">PYRAMIDS</h1>
+                </SwiperSlide>
+                <SwiperSlide>
+                    <Image width={100} height={100} className="mx-auto h-[100px] w-[100px]" src="https://i.ibb.co/J38GXmc/10212726.png" alt="" />
+                    <p className="text-xs my-4">GO AND TRAVEL</p>
+                    <h1 className="text-xl font-semibold">FOOD To SHOPPING</h1>
+                </SwiperSlide>
+                <SwiperSlide>
+                    <Image width={100} height={100} className="mx-auto h-[100px] w-[100px]" src="https://i.ibb.co/GcyJnTM/1861292.png" alt="" />
+                    <p className="text-xs my-4">GREAT HISTORIC</p>
+                    <h1 className="text-xl font-semibold">HISTORY</h1>
                 </SwiperSlide>
 
             </Swiper>
 
 
-            <button className="btn bg-green-600 text-white border-green-500 hover:border-2 hover:border-yellow-500 shadow-2xl shadow-blue-700" data-aos="fade-down" data-aos-offset="10" data-aos-delay="50" data-aos-duration="1000" data-aos-easing="ease-in-out" data-aos-once="false">Find the Perfect Tour</button>
+            <button className="px-6 py-3 bg-green-600 text-white font-semibold rounded-md border border-green-500 shadow-2xl shadow-blue-700 transition-all duration-300 hover:border-2 hover:border-yellow-500" data-aos="fade-down" data-aos-offset="10" data-aos-delay="50" data-aos-duration="1000" data-aos-easing="ease-in-out" data-aos-once="false">Find the Perfect Tour</button>
         </div>
     );
 };
