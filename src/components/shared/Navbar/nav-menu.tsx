@@ -5,7 +5,7 @@ import {
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-} from "@/components/ui/navigation-menu";
+} from "@/src/components/ui/navigation-menu";
 import { NavigationMenuProps } from "@radix-ui/react-navigation-menu";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -23,8 +23,8 @@ export const NavMenu = (props: NavigationMenuProps & { orientation?: "horizontal
     <NavigationMenu {...props}>
       <NavigationMenuList
         className={`${props.orientation === "vertical"
-            ? "flex flex-col gap-2"
-            : "flex gap-3"
+          ? "flex flex-col gap-2"
+          : "flex gap-3"
           } font-medium`}
       >
         {menuItems.map((item) => (

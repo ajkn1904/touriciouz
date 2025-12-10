@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/src/components/ui/input";
 import { cn } from "@/lib/utils";
 
 const SearchTour = () => {
