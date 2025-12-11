@@ -46,7 +46,6 @@ export interface ISidebarItems {
     items: {
         title: string;
         url:string;
-        component: ComponentType
     }[];
 }
 

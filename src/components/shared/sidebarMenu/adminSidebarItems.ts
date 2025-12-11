@@ -17,8 +17,7 @@ export const adminSidebarItems: ISidebarItems[] = [
         items: [
             {
                 title: "Analytics",
-                url: "/admin/analytics",
-                component: TourPage
+                url: "/admin/analytics"
             },
         ]
     },
@@ -27,18 +26,15 @@ export const adminSidebarItems: ISidebarItems[] = [
         items: [
             {
                 title: "Manage User",
-                url: "/admin/manage-user",
-                component: TourPage
+                url: "/admin/manage-user"
             },
             {
                 title: "Manage Parcel",
                 url: "/admin/manage-parcel",
-                component: TourPage,
             },
             {
                 title: "Manage Coupon",
-                url: "/admin/manage-coupon",
-                component: TourPage
+                url: "/admin/manage-coupon"
             },
         ]
     },

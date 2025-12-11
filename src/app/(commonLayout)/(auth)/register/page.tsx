@@ -21,6 +21,7 @@ import { toast } from "sonner";
 import { useActionState } from "react";
 
 import { registerUser } from "@/src/services/auth/registerUser";
+import { redirect } from "next/navigation";
 
 export default function RegisterPage() {
 
@@ -44,8 +45,10 @@ export default function RegisterPage() {
     if (state.success) {
       if ("message" in state && state.message) {
         toast.success(state.message);
+        redirect("/login")
       } else {
         toast.success("Registration successful!");
+        redirect("/login")
       }
     } else {
       if ("message" in state && state.message) {

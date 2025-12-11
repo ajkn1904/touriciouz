@@ -12,8 +12,7 @@ export const touristSidebarItems: ISidebarItems[] = [
         items: [
             {
                 title: "History",
-                url: "/tourist/history",
-                component: TourPage
+                url: "/tourist/history"
             },
         ]
     },
@@ -23,7 +22,6 @@ export const touristSidebarItems: ISidebarItems[] = [
             {
                 title: "Parcel",
                 url: "/tourist/parcel",
-                component: TourPage,
             },
         ]
     }
