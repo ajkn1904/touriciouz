@@ -1,4 +1,4 @@
-import FreeMap from "@/src/components/utils/FreeMap";
+import FreeMap from "@/src/utils/FreeMap";
 
 
 const FindUs = () => {
