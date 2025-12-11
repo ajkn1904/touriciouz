@@ -1,5 +1,5 @@
 import { getInputFieldError, IInputErrorState } from "@/src/utils/getInputFieldError";
-import { FieldDescription } from "../ui/field";
+import { FieldDescription } from "../components/ui/field";
 
 interface InputFieldErrorProps {
   field: string;
