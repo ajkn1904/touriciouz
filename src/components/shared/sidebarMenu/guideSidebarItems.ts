@@ -20,11 +20,11 @@ export const guideSidebarItems: ISidebarItems[] = [
     ],
   },
   {
-    title: "Parcel Management",
+    title: "",
     items: [
       {
-        title: "Parcel",
-        url: "/dashboard/guide/parcel",
+        title: "My Tours",
+        url: "/dashboard/guide/guide-tour",
       },
     ],
   },

@@ -33,7 +33,7 @@
     "**/*.ts",
     "**/*.tsx",
     "global.d.ts"
-
+, "src/components/modules/Tour/guide/GuideToursTable"
   ],
   "exclude": ["node_modules"]
 }

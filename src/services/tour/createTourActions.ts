@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use server";
+import { revalidateTag } from "next/cache";
+
 export async function createTourAction(token: string, formData: FormData) {
   try {
     const res = await fetch(
@@ -12,24 +16,23 @@ export async function createTourAction(token: string, formData: FormData) {
     );
 
     const raw = await res.text();
-    console.log("RAW RESPONSE FROM API:", raw);
-
     let result;
     try {
       result = JSON.parse(raw);
-    } catch (e) {
-      console.log("JSON parse failed");
+    } catch {
       throw new Error(raw);
     }
 
     if (!res.ok) {
-      console.log(" Backend returned error:", result);
       return { error: result.message || "API error" };
     }
 
-    return { success: true, data: result.data }; 
-  } catch (error) {
-    console.log(error);
+    // ✅ Revalidate the cache for tours
+    revalidateTag("tours", { expire: 0 });
+
+    return { success: true, data: result.data };
+  } catch (error: any) {
+    console.error(error);
     return { error: "Failed to create tour" };
   }
 }

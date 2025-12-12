@@ -7,7 +7,7 @@ import StatCounter from "../../components/modules/Home/StatCounter";
 import OurStory from "../../components/modules/Home/OurStory";
 import Testimonials from "../../components/modules/Home/Testimonials";
 import Subscriptions from "../../components/modules/Home/Subscriptions";
-import FindUs from "@/src/components/modules/Home/FindUs";
+// import FindUs from "@/src/components/modules/Home/FindUs";
 
 const HomePage = () =>{
   return (
@@ -20,7 +20,7 @@ const HomePage = () =>{
       <StatCounter />
       <OurStory />
       <Testimonials />
-      <FindUs />
+      {/* <FindUs /> */}
       <Subscriptions />
     </>
   )

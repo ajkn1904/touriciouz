@@ -1,12 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+
 import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+
 import { tourFormSchema, TourFormType } from "@/src/zodValidations/tour.validation";
-import { createTourAction } from "@/src/services/tour/createTourActions";
+
+
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
 import { Textarea } from "@/src/components/ui/textarea";
@@ -18,15 +22,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/src/components/ui/select";
+
 import MultipleImageUploader from "@/src/components/MultipleImageUploader";
 import TagsInput from "@/src/utils/TagsInput";
 import ItineraryInput from "@/src/utils/ItineraryInput";
-import { toast } from "sonner";
-
-
+import { createTourAction } from "@/src/services/tour/createTourActions";
 
 function getDefaultDepartureDate() {
-  return new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+  return new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
+    .toISOString()
+    .split("T")[0];
 }
 
 export default function CreateTourPage() {
@@ -34,27 +39,6 @@ export default function CreateTourPage() {
   const [serverError, setServerError] = useState("");
   const { data: session } = useSession();
   const router = useRouter();
-
-  const defaultValues: Partial<TourFormType> = {
-    title: "Test",
-    description: "Testing functionality",
-    category: "HISTORY",
-    packagePrice: 1000,
-    durationDays: 1,
-    location: "Dhaka",
-    physicality: "Medium",
-    departure: getDefaultDepartureDate(),
-    departureTime: "10:00",
-    meetingPoint: "",
-    maxGroupSize: 10,
-    ageLimit: "3",
-    itinerary: [], 
-    includedLocations: [],
-    notIncludedLocations: [],
-    priceIncludes: [],
-    priceExcludes: [],
-    images: [],
-  };
 
   const {
     register,
@@ -64,24 +48,39 @@ export default function CreateTourPage() {
     formState: { errors },
   } = useForm<TourFormType>({
     resolver: zodResolver(tourFormSchema as any),
-    defaultValues,
+    defaultValues: {
+      title: "",
+      description: "",
+      category: "HISTORY",
+      packagePrice: 1000,
+      durationDays: 1,
+      location: "",
+      physicality: "Medium",
+      departure: getDefaultDepartureDate(),
+      departureTime: "10:00",
+      meetingPoint: "",
+      maxGroupSize: 10,
+      ageLimit: "3",
+      itinerary: [],
+      includedLocations: [],
+      notIncludedLocations: [],
+      priceIncludes: [],
+      priceExcludes: [],
+      images: [],
+    },
   });
 
   const onSubmit = async (data: TourFormType) => {
-    //console.log("Form data submitted:", data); 
+    if (!session?.user?.accessToken) {
+      setServerError("User not authenticated");
+      return;
+    }
+
     setLoading(true);
     setServerError("");
 
     const fd = new FormData();
-    const payload: any = {};
-
-    const formattedData = { ...data, itinerary: JSON.stringify(data.itinerary || []) };
-
-    // Append non-file fields
-    Object.entries(formattedData).forEach(([key, value]) => {
-      if (key === "images") return;
-      payload[key] = value;
-    });
+    const payload = { ...data, itinerary: JSON.stringify(data.itinerary || []) };
     fd.append("data", JSON.stringify(payload));
 
     // Append image files
@@ -90,24 +89,25 @@ export default function CreateTourPage() {
       fd.append("files", files[i]);
     }
 
-    const token = session?.user?.accessToken as string;
-    if (!token) {
-      setServerError("User not authenticated");
+    try {
+      // ✅ Call server action
+      const result = await createTourAction(session.user.accessToken, fd);
+
+      if (result.error) {
+        setServerError(result.error);
+        setLoading(false);
+        return;
+      }
+
+      toast.success("Tour Created Successfully!");
+      reset();
+      router.push("/dashboard/guide/guide-tour");
+    } catch (error: any) {
+      console.error(error);
+      setServerError("Failed to create tour");
+    } finally {
       setLoading(false);
-      return;
     }
-
-    const result = await createTourAction(token, fd);
-    setLoading(false);
-
-    if (result.error) {
-      setServerError(result.error);
-      return;
-    }
-
-    reset();
-    toast.success("Tour Created Successfully!");
-    router.push("/tour");
   };
 
   return (
@@ -146,14 +146,13 @@ export default function CreateTourPage() {
                     <SelectValue placeholder="Select Category" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="HISTORY">HISTORY</SelectItem>
-                    <SelectItem value="FOOD">FOOD</SelectItem>
-                    <SelectItem value="NIGHTLIFE">NIGHTLIFE</SelectItem>
-                    <SelectItem value="SHOPPING">SHOPPING</SelectItem>
-                    <SelectItem value="ADVENTURE">ADVENTURE</SelectItem>
-                    <SelectItem value="CULTURE">CULTURE</SelectItem>
-                    <SelectItem value="ART">ART</SelectItem>
-                    <SelectItem value="NATURE">NATURE</SelectItem>
+                    {["HISTORY", "FOOD", "NIGHTLIFE", "SHOPPING", "ADVENTURE", "CULTURE", "ART", "NATURE"].map(
+                      (cat) => (
+                        <SelectItem key={cat} value={cat}>
+                          {cat}
+                        </SelectItem>
+                      )
+                    )}
                   </SelectContent>
                 </Select>
               )}
@@ -171,9 +170,11 @@ export default function CreateTourPage() {
                     <SelectValue placeholder="Physicality" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="High">High</SelectItem>
-                    <SelectItem value="Medium">Medium</SelectItem>
-                    <SelectItem value="Low">Low</SelectItem>
+                    {["High", "Medium", "Low"].map((val) => (
+                      <SelectItem key={val} value={val}>
+                        {val}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               )}
@@ -193,7 +194,7 @@ export default function CreateTourPage() {
           />
         </div>
 
-        {/* PRICE + DURATION */}
+        {/* PACKAGE PRICE + DURATION */}
         <div className="flex gap-3">
           <div className="w-full">
             <Label>Package Price</Label>
@@ -217,7 +218,7 @@ export default function CreateTourPage() {
           <Input {...register("meetingPoint")} />
         </div>
 
-        {/* GROUP SIZE + AGE LIMIT */}
+        {/* MAX GROUP SIZE + AGE LIMIT */}
         <div className="flex gap-3">
           <div className="w-full">
             <Label>Max Group Size</Label>
@@ -253,7 +254,7 @@ export default function CreateTourPage() {
           />
         </div>
 
-        {/* EXCLUDED LOCATIONS */}
+        {/* NOT INCLUDED LOCATIONS */}
         <div>
           <Label>Excluded Locations</Label>
           <Controller
@@ -295,9 +296,7 @@ export default function CreateTourPage() {
           <Controller
             control={control}
             name="images"
-            render={({ field }) => (
-              <MultipleImageUploader onChange={field.onChange} />
-            )}
+            render={({ field }) => <MultipleImageUploader onChange={field.onChange} />}
           />
         </div>
 
