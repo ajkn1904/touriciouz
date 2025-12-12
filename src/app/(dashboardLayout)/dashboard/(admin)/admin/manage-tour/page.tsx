@@ -187,11 +187,11 @@ export default function ManageTours() {
           <Table>
             <TableHeader className="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-gray-700 dark:to-gray-800">
               <TableRow className="border-b dark:border-gray-700">
-                <TableHead className="font-bold text-gray-900 dark:text-white py-4">Tour Details</TableHead>
-                <TableHead className="font-bold text-gray-900 dark:text-white py-4">Guide Information</TableHead>
-                <TableHead className="font-bold text-gray-900 dark:text-white py-4 text-center">Tour Specifications</TableHead>
-                <TableHead className="font-bold text-gray-900 dark:text-white py-4">Status & Dates</TableHead>
-                <TableHead className="font-bold text-gray-900 dark:text-white py-4 text-center">Actions</TableHead>
+                <TableHead className="font-bold text-gray-900 dark:text-white py-4 w-[300px]">Tour Details</TableHead>
+                <TableHead className="font-bold text-gray-900 dark:text-white py-4 w-[250px]">Guide Information</TableHead>
+                <TableHead className="font-bold text-gray-900 dark:text-white py-4 text-center w-[200px]">Tour Specifications</TableHead>
+                <TableHead className="font-bold text-gray-900 dark:text-white py-4 w-[200px]">Status & Dates</TableHead>
+                <TableHead className="font-bold text-gray-900 dark:text-white py-4 text-center w-[150px]">Actions</TableHead>
               </TableRow>
             </TableHeader>
 
@@ -214,7 +214,7 @@ export default function ManageTours() {
                     className="hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer border-b dark:border-gray-700 transition-colors duration-150"
                   >
                     {/* Tour Details */}
-                    <TableCell className="py-4">
+                    <TableCell className="py-4 w-[300px]">
                       <div className="flex items-start space-x-3">
                         {tour.images && tour.images.length > 0 ? (
                           <div className="w-16 h-16 flex-shrink-0">
@@ -231,23 +231,29 @@ export default function ManageTours() {
                             <Package className="h-6 w-6 text-orange-400 dark:text-orange-300" />
                           </div>
                         )}
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <h3 className="font-bold text-gray-900 dark:text-white truncate">
+                        <div className="min-w-0 flex-1 max-w-[200px]">
+                          
+                          <div className="flex items-center gap-2 mb-1 w-[150px]">
+                            <h3 className="font-bold text-gray-900 dark:text-white truncate" 
+                                title={tour.title}>
                               {tour.title}
                             </h3>
-                            <Badge variant="outline" className="text-xs bg-orange-50 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300 border-orange-200">
+                            <Badge variant="outline" className="flex-shrink-0 text-xs bg-orange-50 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300 border-orange-200">
                               {tour.category}
                             </Badge>
                           </div>
-                          <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 mb-2">
+                          
+                         
+                          <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 mb-2 w-[150px]" 
+                             title={tour.description}>
                             {tour.description}
                           </p>
-                          <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
-                            <MapPin className="h-3 w-3 mr-1" />
-                            <span>{tour.location}</span>
-                            <span className="mx-2">•</span>
-                            <Clock className="h-3 w-3 mr-1" />
+                          
+                          <div className="flex items-center text-xs text-gray-500 dark:text-gray-400 truncate">
+                            <MapPin className="h-3 w-3 mr-1 flex-shrink-0" />
+                            <span className="truncate">{tour.location}</span>
+                            <span className="mx-2 flex-shrink-0">•</span>
+                            <Clock className="h-3 w-3 mr-1 flex-shrink-0" />
                             <span>{tour.durationDays} days</span>
                           </div>
                         </div>
@@ -255,12 +261,12 @@ export default function ManageTours() {
                     </TableCell>
 
                     {/* Guide Information */}
-                    <TableCell className="py-4">
+                    <TableCell className="py-4 w-[250px]">
                       {tour.guide ? (
                         <div className="space-y-2">
                           <div className="flex items-center space-x-3">
                             {tour.guide.profilePic ? (
-                              <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-orange-200">
+                              <div className="w-10 h-10 flex-shrink-0 rounded-full overflow-hidden border-2 border-orange-200">
                                 <Image 
                                   width={40}
                                   height={40}
@@ -270,33 +276,40 @@ export default function ManageTours() {
                                 />
                               </div>
                             ) : (
-                              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30 flex items-center justify-center border-2 border-blue-200">
+                              <div className="w-10 h-10 flex-shrink-0 rounded-full bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30 flex items-center justify-center border-2 border-blue-200">
                                 <span className="font-bold text-blue-600 dark:text-blue-300">
                                   {tour.guide.name?.charAt(0) || "G"}
                                 </span>
                               </div>
                             )}
-                            <div>
-                              <h4 className="font-semibold text-gray-900 dark:text-white">{tour.guide.name}</h4>
+                            <div className="min-w-0 flex-1">
+                              <h4 className="font-semibold text-gray-900 dark:text-white truncate" 
+                                  title={tour.guide.name}>
+                                {tour.guide.name}
+                              </h4>
                               <div className="flex items-center gap-1">
-                                <Star className="h-3 w-3 text-amber-500" />
+                                <Star className="h-3 w-3 flex-shrink-0 text-amber-500" />
                                 <span className="text-xs font-medium">{tour.guide.rating?.toFixed(1) || "0.0"}</span>
-                                <span className="text-xs text-gray-500">•</span>
-                                <Trophy className="h-3 w-3 text-purple-500" />
-                                <span className="text-xs text-gray-500">{tour.guide.totalTours || 0} tours</span>
+                                <span className="text-xs text-gray-500 flex-shrink-0">•</span>
+                                <Trophy className="h-3 w-3 flex-shrink-0 text-purple-500" />
+                                <span className="text-xs text-gray-500 truncate">{tour.guide.totalTours || 0} tours</span>
                               </div>
                             </div>
                           </div>
                           
                           <div className="space-y-1 pl-13">
                             <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
-                              <Mail className="h-3 w-3 mr-2 text-gray-400" />
-                              <span className="truncate">{tour.guide.email}</span>
+                              <Mail className="h-3 w-3 mr-2 flex-shrink-0 text-gray-400" />
+                              <span className="truncate" title={tour.guide.email}>
+                                {tour.guide.email}
+                              </span>
                             </div>
                             {tour.guide.phone && (
                               <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
-                                <Phone className="h-3 w-3 mr-2 text-gray-400" />
-                                <span>{tour.guide.phone}</span>
+                                <Phone className="h-3 w-3 mr-2 flex-shrink-0 text-gray-400" />
+                                <span className="truncate" title={tour.guide.phone}>
+                                  {tour.guide.phone}
+                                </span>
                               </div>
                             )}
                             <Button
@@ -320,12 +333,12 @@ export default function ManageTours() {
                     </TableCell>
 
                     {/* Tour Specifications */}
-                    <TableCell className="py-4 text-center">
+                    <TableCell className="py-4 text-center w-[200px]">
                       <div className="flex flex-col items-center space-y-3">
                         <div className="flex flex-col items-center">
                           <div className="flex items-center gap-1">
                             <DollarSign className="h-4 w-4 text-green-500" />
-                            <span className="font-bold text-lg text-gray-900 dark:text-white">
+                            <span className="font-bold text-lg text-gray-900 dark:text-white truncate">
                               {formatPrice(tour.packagePrice)}
                             </span>
                           </div>
@@ -336,7 +349,7 @@ export default function ManageTours() {
                           <div className="text-center p-2 bg-gray-50 dark:bg-gray-700 rounded">
                             <Users className="h-4 w-4 text-purple-500 mx-auto mb-1" />
                             <span className="text-sm font-medium">{tour.maxGroupSize}</span>
-                            <p className="text-xs text-gray-500">Max Group</p>
+                            <p className="text-xs text-gray-500 truncate">Max Group</p>
                           </div>
                           <div className="text-center p-2 bg-gray-50 dark:bg-gray-700 rounded">
                             <Calendar className="h-4 w-4 text-blue-500 mx-auto mb-1" />
@@ -347,7 +360,7 @@ export default function ManageTours() {
                         
                         <Badge 
                           variant="secondary" 
-                          className={`text-xs ${
+                          className={`text-xs truncate ${
                             tour.physicality === "EASY" ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300" :
                             tour.physicality === "MODERATE" ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300" :
                             "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
@@ -359,41 +372,43 @@ export default function ManageTours() {
                     </TableCell>
 
                     {/* Status & Dates */}
-                    <TableCell className="py-4">
+                    <TableCell className="py-4 w-[200px]">
                       <div className="space-y-3">
                         <div>
-                          <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                          <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium truncate ${
                             tour.status === "ACTIVE" ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300" :
                             tour.status === "INACTIVE" ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300" :
                             tour.status === "PENDING" ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300" :
                             tour.status === "COMPLETED" ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300" :
                             "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300"
                           }`}>
-                            <div className="w-2 h-2 rounded-full mr-2 bg-current"></div>
-                            {tour.status || "ACTIVE"}
+                            <div className="w-2 h-2 rounded-full mr-2 bg-current flex-shrink-0"></div>
+                            <span className="truncate">{tour.status || "ACTIVE"}</span>
                           </div>
                         </div>
                         
                         <div className="space-y-1 text-sm">
                           <div className="flex items-center text-gray-600 dark:text-gray-300">
-                            <Calendar className="h-3 w-3 mr-2 text-gray-400" />
-                            <span>Created: {formatDate(tour.createdAt)}</span>
+                            <Calendar className="h-3 w-3 mr-2 text-gray-400 flex-shrink-0" />
+                            <span className="truncate">Created: {formatDate(tour.createdAt)}</span>
                           </div>
                           <div className="flex items-center text-gray-500 dark:text-gray-400 text-xs">
-                            <Clock className="h-3 w-3 mr-2" />
-                            <span>Updated: {formatDate(tour.updatedAt)}</span>
+                            <Clock className="h-3 w-3 mr-2 flex-shrink-0" />
+                            <span className="truncate">Updated: {formatDate(tour.updatedAt)}</span>
                           </div>
                         </div>
                         
                         <div className="text-xs">
-                          <p className="text-gray-500 dark:text-gray-400">Departure:</p>
-                          <p className="font-medium truncate">{tour.departure}</p>
+                          <p className="text-gray-500 dark:text-gray-400 truncate">Departure:</p>
+                          <p className="font-medium truncate" title={tour.departure}>
+                            {tour.departure}
+                          </p>
                         </div>
                       </div>
                     </TableCell>
 
                     {/* Actions */}
-                    <TableCell className="py-4">
+                    <TableCell className="py-4 w-[150px]">
                       <div className="flex flex-col sm:flex-row justify-center gap-2">
                         <Button
                           variant="outline"
@@ -403,7 +418,7 @@ export default function ManageTours() {
                           title="View Tour Details"
                         >
                           <Eye className="h-4 w-4 mr-2" />
-                          View
+                          <span className="truncate">View</span>
                         </Button>
                         
                         <BlockOrDeleteConfirmation
@@ -419,7 +434,7 @@ export default function ManageTours() {
                             title="Delete Tour"
                           >
                             <Trash2 className="h-4 w-4 mr-2" />
-                            Delete
+                            <span className="truncate">Delete</span>
                           </Button>
                         </BlockOrDeleteConfirmation>
                       </div>
