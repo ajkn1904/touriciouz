@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation"; // Add this import
 import { toast } from "sonner";
 import { UserService, User } from "@/src/services/user/userServiceActions";
 import BlockOrDeleteConfirmation from "@/src/components/BlockOrCancelOrDeleteConfirmation";
@@ -18,7 +19,7 @@ import {
 } from "@/src/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/src/components/ui/table";
 import GetPagination from "@/src/utils/GetPagination";
-import { Check, Ban, Trash2, RotateCcw } from "lucide-react";
+import { Check, Ban, Trash2, RotateCcw, Eye } from "lucide-react";
 
 // Define types - Update if your User type doesn't include DELETED
 type UserStatus = "ACTIVE" | "INACTIVE" | "DELETED";
@@ -30,6 +31,7 @@ interface LocalUser extends Omit<User, 'status'> {
 }
 
 export default function ManageUser() {
+  const router = useRouter(); // Initialize router
   const [users, setUsers] = useState<LocalUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedRoleFilter, setSelectedRoleFilter] = useState<string>("all");
@@ -128,6 +130,26 @@ export default function ManageUser() {
     }
   };
 
+  // Handle row click to navigate to user details
+  const handleRowClick = (userId: string, e: React.MouseEvent) => {
+    // Prevent navigation if clicking on select or button elements
+    const target = e.target as HTMLElement;
+    if (
+      target.closest('select') || 
+      target.closest('button') || 
+      target.closest('[role="combobox"]')
+    ) {
+      return;
+    }
+    
+    router.push(`/dashboard/admin/manage-user/user-details/${userId}`);
+  };
+
+  // Add view details button handler
+  const handleViewDetails = (userId: string) => {
+    router.push(`/dashboard/admin/manage-user/user-details/${userId}`);
+  };
+
   const filteredUsers =
     selectedRoleFilter && selectedRoleFilter !== "all"
       ? users.filter((user) => user.role.toLowerCase() === selectedRoleFilter.toLowerCase())
@@ -181,7 +203,7 @@ export default function ManageUser() {
               <TableHead className="uppercase font-bold text-center">Current Status</TableHead>
               <TableHead className="uppercase font-bold border-l-2 text-center">Update Status</TableHead>
               <TableHead className="uppercase font-bold border-l-2 text-center">Update Role</TableHead>
-              <TableHead className="uppercase font-bold border-l-2 text-center">Action</TableHead>
+              <TableHead className="uppercase font-bold border-l-2 text-center">Actions</TableHead>
             </TableRow>
           </TableHeader>
 
@@ -194,7 +216,7 @@ export default function ManageUser() {
               return (
                 <TableRow
                   key={user.id}
-                  onClick={() => setActiveRow(user.id)}
+                  onClick={(e) => handleRowClick(user.id, e)}
                   onMouseEnter={() => setHoveredRow(user.id)}
                   onMouseLeave={() => {
                     setActiveRow(null);
@@ -211,10 +233,14 @@ export default function ManageUser() {
                     {(currentPage - 1) * usersPerPage + index + 1}
                   </TableCell>
                   <TableCell className="font-medium">
-                    {user.name}
-                    {user.status === "DELETED" && (
-                      <span className="ml-2 text-xs text-red-500 font-semibold">(Deleted)</span>
-                    )}
+                    <div className="flex items-center">
+                      <div>
+                        {user.name}
+                        {user.status === "DELETED" && (
+                          <span className="ml-2 text-xs text-red-500 font-semibold">(Deleted)</span>
+                        )}
+                      </div>
+                    </div>
                   </TableCell>
                   <TableCell className="font-medium">{user.email}</TableCell>
                   
@@ -317,73 +343,85 @@ export default function ManageUser() {
                   </TableCell>
 
                   {/* Action Buttons */}
-                  <TableCell className="border-l-2 text-center">
-                    {user.status === "DELETED" ? (
-                      <BlockOrDeleteConfirmation
-                        onConfirm={() => {
-                          // For restoring, we'll update status to ACTIVE
-                          handleStatusChange(user.id, "ACTIVE");
-                          handleUpdateUser(user.id);
-                        }}
-                        actionType="restore"
-                        customTitle={`Restore User: ${user.email}`}
-                        customDescription="Are you sure you want to restore this user?"
+                  <TableCell className="border-l-2">
+                    <div className="flex gap-2 justify-center">
+                      {/* View Details Button */}
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleViewDetails(user.id)}
+                        className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                        title="View User Details"
                       >
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="text-green-600 hover:text-green-700 hover:bg-green-50 border-green-300"
+                        <Eye size={16} />
+                      </Button>
+
+                      {/* Update/Restore/Delete Button */}
+                      {user.status === "DELETED" ? (
+                        <BlockOrDeleteConfirmation
+                          onConfirm={() => {
+                            // For restoring, we'll update status to ACTIVE
+                            handleStatusChange(user.id, "ACTIVE");
+                            handleUpdateUser(user.id);
+                          }}
+                          actionType="restore"
+                          customTitle={`Restore User: ${user.email}`}
+                          customDescription="Are you sure you want to restore this user?"
                         >
-                          <RotateCcw size={16} className="mr-1" />
-                          Restore
-                        </Button>
-                      </BlockOrDeleteConfirmation>
-                    ) : selectedStatus !== user.status || selectedRole !== user.role ? (
-                      <BlockOrDeleteConfirmation
-                        onConfirm={() => handleUpdateUser(user.id)}
-                        actionType={selectedStatus === "DELETED" ? "delete" : "update"}
-                        customTitle={
-                          selectedStatus === "DELETED" 
-                            ? `Delete User: ${user.email}`
-                            : `Update ${user.email}`
-                        }
-                        customDescription={
-                          selectedStatus === "DELETED"
-                            ? "Are you sure you want to delete this user? This action cannot be undone."
-                            : undefined
-                        }
-                      >
-                        <Button
-                          variant={selectedStatus === "DELETED" ? "destructive" : "outline"}
-                          size="sm"
-                          className={
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="text-green-600 hover:text-green-700 hover:bg-green-50 border-green-300"
+                          >
+                            <RotateCcw size={16} className="mr-1" />
+                            Restore
+                          </Button>
+                        </BlockOrDeleteConfirmation>
+                      ) : selectedStatus !== user.status || selectedRole !== user.role ? (
+                        <BlockOrDeleteConfirmation
+                          onConfirm={() => handleUpdateUser(user.id)}
+                          actionType={selectedStatus === "DELETED" ? "delete" : "update"}
+                          customTitle={
+                            selectedStatus === "DELETED" 
+                              ? `Delete User: ${user.email}`
+                              : `Update ${user.email}`
+                          }
+                          customDescription={
                             selectedStatus === "DELETED"
-                              ? "hover:bg-red-700"
-                              : activeRow === user.id || hoveredRow === user.id
-                                ? "bg-blue-500 text-white"
-                                : "text-blue-500 hover:bg-blue-600 hover:text-white"
+                              ? "Are you sure you want to delete this user? This action cannot be undone."
+                              : undefined
                           }
                         >
-                          {selectedStatus === "DELETED" ? (
-                            <>
-                              <Trash2 size={16} className="mr-1" />
-                              Delete User
-                            </>
-                          ) : (
-                            "Update"
-                          )}
+                          <Button
+                            variant={selectedStatus === "DELETED" ? "destructive" : "outline"}
+                            size="sm"
+                            className={
+                              selectedStatus === "DELETED"
+                                ? "hover:bg-red-700"
+                                : "text-blue-500 hover:bg-blue-600 hover:text-white"
+                            }
+                          >
+                            {selectedStatus === "DELETED" ? (
+                              <>
+                                <Trash2 size={16} className="mr-1" />
+                                Delete
+                              </>
+                            ) : (
+                              "Update"
+                            )}
+                          </Button>
+                        </BlockOrDeleteConfirmation>
+                      ) : (
+                        <Button
+                          variant={"ghost"}
+                          size="sm"
+                          disabled
+                          className="text-gray-400"
+                        >
+                          No changes
                         </Button>
-                      </BlockOrDeleteConfirmation>
-                    ) : (
-                      <Button
-                        variant={"ghost"}
-                        size="sm"
-                        disabled
-                        className="text-gray-400"
-                      >
-                        No changes
-                      </Button>
-                    )}
+                      )}
+                    </div>
                   </TableCell>
                 </TableRow>
               );
