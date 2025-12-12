@@ -10,30 +10,38 @@ import { lazy } from "react";
 // const Coupon = lazy(() => import("@/pages/guide/Coupon"))
 
 export const guideSidebarItems: ISidebarItems[] = [
-  {
+      {
+        title: "TOURICIOUZ",
+        items: [
+            {
+                title: "Home",
+                url: "/"
+            },
+        ]
+    },
+    {
     title: "Dashboard",
     items: [
       {
-        title: "Create Tour",
-        url: "/dashboard/guide/create-tour",
+        title: "My Profile",
+        url: "/dashboard/guide/my-profile",
       },
     ],
   },
   {
-    title: "",
+    title: "Management",
     items: [
       {
-        title: "My Tours",
+        title: "All Tours",
         url: "/dashboard/guide/guide-tour",
       },
-    ],
-  },
-  {
-    title: "Coupon Management",
-    items: [
       {
-        title: "Coupon",
-        url: "/dashboard/guide/coupon",
+        title: "Add Tour",
+        url: "/dashboard/guide/create-tour",
+      },
+      {
+        title: "Bookings",
+        url: "/dashboard/guide/tourist-booking",
       },
     ],
   },

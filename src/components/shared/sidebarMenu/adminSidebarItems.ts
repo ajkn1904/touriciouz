@@ -13,28 +13,37 @@ import { lazy } from "react";
 
 export const adminSidebarItems: ISidebarItems[] = [
     {
-        title: "Dashboard",
+        title: "TOURICIOUZ",
         items: [
             {
-                title: "Analytics",
-                url: "/admin/analytics"
+                title: "Home",
+                url: "/"
             },
         ]
     },
     {
-        title: "Parcel Management",
+        title: "Dashboard",
+        items: [
+            {
+                title: "My profile",
+                url: "/admin/my-profile"
+            },
+        ]
+    },
+    {
+        title: "Management",
         items: [
             {
                 title: "Manage User",
                 url: "/admin/manage-user"
             },
             {
-                title: "Manage Parcel",
-                url: "/admin/manage-parcel",
+                title: "Manage Tour",
+                url: "/admin/manage-tour",
             },
             {
-                title: "Manage Coupon",
-                url: "/admin/manage-coupon"
+                title: "Manage Booking",
+                url: "/admin/manage-booking"
             },
         ]
     },

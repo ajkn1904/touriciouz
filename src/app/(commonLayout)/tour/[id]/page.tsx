@@ -43,7 +43,7 @@ export default function TourDetailsPage() {
   if (loading) return <p className="text-gray-400 text-center p-6">Loading tour details...</p>;
   if (!tour) return <p className="text-red-500 text-center p-6">Tour not found</p>;
 
-  const handleBack = () => router.push("/tour");
+  const handleBack = () => window.history.back();
   const handleBookNow = () => alert("Booking feature coming soon!");
 
   return (

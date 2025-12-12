@@ -1,17 +1,14 @@
-"use server"
+"use server";
+
 import { revalidateTag } from "next/cache";
 
 export async function deleteTourAction(id: string, token: string) {
   try {
     const res = await fetch(
-      `${
-        process.env.NEXT_PUBLIC_BASE_API_URL || "http://localhost:5000/api"
-      }/tours/${id}`,
+      `${process.env.NEXT_PUBLIC_BASE_API_URL || "http://localhost:5000/api"}/tours/${id}`,
       {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       }
     );
 
@@ -30,11 +27,13 @@ export async function deleteTourAction(id: string, token: string) {
       console.log("Backend returned error:", result);
       return { error: result.message || "API error" };
     }
+
     if (res.ok && result.success) {
-      // Invalidate caches after delete
+      // Invalidate caches so page updates automatically
       revalidateTag("tours", { expire: 0 });
       revalidateTag(`tour-${id}`, { expire: 0 });
     }
+
     return { success: true, data: result.data };
   } catch (error) {
     console.log(error);

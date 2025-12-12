@@ -5,7 +5,7 @@ import { Button } from "@/src/components/ui/button"
 import { useEffect, type Dispatch } from "react";
 
 export default function MultipleImageUploader({onChange}: {onChange: Dispatch<React.SetStateAction<[] | (File | FileMetadata)[]>>;}) {
-  const maxSizeMB = 5;
+  const maxSizeMB = 10;
   const maxSize = maxSizeMB * 1024 * 1024; // 5MB default
   const maxFiles = 3;
 

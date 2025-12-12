@@ -9,6 +9,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import Link from "next/link";
 import GetPagination from "@/src/utils/GetPagination";
 import { getGuideTours } from "@/src/services/tour/getGuideTour";
+import { deleteTourAction } from "@/src/services/tour/deleteTour";
+import BlockOrCancelOrDeleteConfirmation from "@/src/components/BlockOrCancelOrDeleteConfirmation";
 
 
 interface Tour {
@@ -17,6 +19,8 @@ interface Tour {
   category: string;
   packagePrice: number;
   durationDays: number;
+  departure: Date;
+  departureTime: string;
   status?: string;
 }
 
@@ -30,14 +34,12 @@ export default function GuideTours() {
   const [totalPages, setTotalPages] = useState(1);
 
   const fetchTours = async (page: number) => {
-    const token=session?.user.accessToken;
-
+    const token = session?.user.accessToken;
     if (!token) return;
 
     setLoading(true);
     try {
-      const data = await getGuideTours(token, currentPage, toursPerPage);
-
+      const data = await getGuideTours(token, page, toursPerPage);
 
       if (!data || !data.data) throw new Error("Failed to fetch tours");
 
@@ -53,29 +55,18 @@ export default function GuideTours() {
   };
 
   useEffect(() => {
-    if (status === "authenticated") {
-      fetchTours(currentPage);
-    }
+    if (status === "authenticated") fetchTours(currentPage);
   }, [status, currentPage]);
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this tour?")) return;
     if (!session?.user?.accessToken) return;
 
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API_URL}/tours/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${session.user.accessToken}` },
-      });
-
-      const data = await res.json();
-      if (!data.success) throw new Error(data.message || "Failed to delete tour");
-
+    const result = await deleteTourAction(id, session.user.accessToken);
+    if (result.error) {
+      toast.error(result.error);
+    } else {
       toast.success("Tour deleted successfully");
-      fetchTours(currentPage); // refresh current page
-    } catch (err: any) {
-      console.error(err);
-      toast.error(err.message || "Failed to delete tour");
+      fetchTours(currentPage);
     }
   };
 
@@ -89,7 +80,7 @@ export default function GuideTours() {
       <div className="flex justify-between items-center my-8">
         <h1 className="text-4xl font-bold text-green-600">MY TOURS: {total}</h1>
         <Button className="my-8">
-          <Link href="/guide/tour/create">CREATE TOUR</Link>
+          <Link href="/dashboard/guide/create-tour">CREATE TOUR</Link>
         </Button>
       </div>
 
@@ -102,6 +93,7 @@ export default function GuideTours() {
               <TableHead>Category</TableHead>
               <TableHead>Price</TableHead>
               <TableHead>Duration</TableHead>
+              <TableHead>Departure</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-center">Actions</TableHead>
             </TableRow>
@@ -114,21 +106,29 @@ export default function GuideTours() {
                 <TableCell>{tour.category}</TableCell>
                 <TableCell>${tour.packagePrice}</TableCell>
                 <TableCell>{tour.durationDays} Days</TableCell>
+                <TableCell>{new Date(tour.departure).toLocaleDateString()} at {tour.departureTime}</TableCell>
                 <TableCell>{tour.status || "Active"}</TableCell>
                 <TableCell className="flex justify-center gap-2">
-                  <Link href={`/guide/tour/edit/${tour.id}`}>
+                  <Link href={`/tour/${tour.id}`}>
+                    <Button size="sm" variant="outline" className="text-green-700 hover:bg-green-500 hover:text-white">
+                      View
+                    </Button>
+                  </Link>
+                  <Link href={`/dashboard/guide/edit-tour/${tour.id}`}>
                     <Button size="sm" variant="outline" className="text-blue-500 hover:bg-blue-500 hover:text-white">
                       Edit
                     </Button>
                   </Link>
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    className="text-red-600 hover:bg-red-500 hover:text-white"
-                    onClick={() => handleDelete(tour.id)}
+
+                  <BlockOrCancelOrDeleteConfirmation
+                    actionType="delete"
+                    customTitle={tour.title}
+                    onConfirm={() => handleDelete(tour.id)}
                   >
-                    Delete
-                  </Button>
+                    <Button size="sm" variant="destructive" className="text-white hover:bg-red-500">
+                      Delete
+                    </Button>
+                  </BlockOrCancelOrDeleteConfirmation>
                 </TableCell>
               </TableRow>
             ))}
