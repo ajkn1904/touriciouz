@@ -34,15 +34,15 @@ export const adminSidebarItems: ISidebarItems[] = [
     items: [
       {
         title: "Manage User",
-        url: "/admin/manage-user",
+        url: "/dashboard/admin/manage-user",
       },
       {
         title: "Manage Tour",
-        url: "/admin/manage-tour",
+        url: "/dashboard/admin/manage-tour",
       },
       {
         title: "Manage Booking",
-        url: "/admin/manage-booking",
+        url: "/dashboard/admin/manage-booking",
       },
     ],
   },

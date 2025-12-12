@@ -66,4 +66,47 @@ export const UserService = {
     const data = await res.json();
     return data.data ?? data;
   },
+
+    /** Get all users (admin) */
+  getAllUsers: async (): Promise<User[]> => {
+    const headers = await getAuthHeaders();
+    const res = await fetch(`${API_URL}`, { headers, cache: "no-store" });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message || "Failed to fetch users");
+    }
+    const data = await res.json();
+    return data.data ?? data;
+  },
+
+  /** Get single user by ID (admin) */
+  getUserById: async (id: string): Promise<User> => {
+    const headers = await getAuthHeaders();
+    const res = await fetch(`${API_URL}/${id}`, { headers, cache: "no-store" });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message || "Failed to fetch user");
+    }
+    const data = await res.json();
+    return data.data ?? data;
+  },
+
+  /** Update user role or status (admin) */
+  updateUserRoleOrStatus: async (id: string, payload: any): Promise<User> => {
+    const headers = await getAuthHeaders();
+    const res = await fetch(`${API_URL}/user-update/${id}`, {
+      method: "PATCH",
+      headers: {
+        ...headers,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message || "Failed to update user");
+    }
+    const data = await res.json();
+    return data.data ?? data;
+  },
 };
