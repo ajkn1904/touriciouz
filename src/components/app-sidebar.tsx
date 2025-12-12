@@ -20,7 +20,7 @@ import { getSidebarItems } from "../utils/getSidebarItems";
 import { TRole } from "../types";
 
 export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
-  const { data: session } = useSession(); 
+  const { data: session } = useSession();
   const navMain = getSidebarItems(session?.user.role as TRole);
   const pathname = usePathname();
 
@@ -40,17 +40,25 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
                     <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton
                         asChild
-                        className={`${
-                          isActive
+                        className={`${isActive
                             ? "text-primary dark:text-foreground font-semibold border-b-2 border-b-primary hover:border-b-primary"
                             : "text-muted-foreground hover:text-primary dark:text-muted-foreground"
-                        }`}
+                          }`}
                       >
-                        <Link href={item.url}>{item.title}</Link>
+                        {item.url ? (
+                          <Link href={item.url}>{item.title}</Link>
+                        ) : item.onClick ? (
+                          <button type="button" onClick={item.onClick} className="w-full text-left">
+                            {item.title}
+                          </button>
+                        ) : (
+                          <span>{item.title}</span>
+                        )}
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   );
                 })}
+
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>

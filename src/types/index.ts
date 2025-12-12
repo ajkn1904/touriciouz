@@ -45,8 +45,9 @@ export interface ISidebarItems {
     title: string;
     items: {
         title: string;
-        url:string;
-    }[];
+        url?: string; 
+        onClick?: () => void; 
+    }[]; 
 }
 
 

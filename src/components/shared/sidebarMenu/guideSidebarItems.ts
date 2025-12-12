@@ -3,6 +3,7 @@
 //import Parcel from "@/pages/guide/Parcel";
 
 import { ISidebarItems } from "@/src/types";
+import { signOut } from "next-auth/react";
 import { lazy } from "react";
 
 // const History = lazy(() => import("@/pages/guide/History"))
@@ -10,21 +11,20 @@ import { lazy } from "react";
 // const Coupon = lazy(() => import("@/pages/guide/Coupon"))
 
 export const guideSidebarItems: ISidebarItems[] = [
-      {
-        title: "TOURICIOUZ",
-        items: [
-            {
-                title: "Home",
-                url: "/"
-            },
-        ]
-    },
-    {
+  {
+    title: "TOURICIOUZ",
+    items: [
+      { title: "Home", url: "/" },
+
+      { title: "Logout", onClick: () => signOut({ callbackUrl: "/login" }) },
+    ],
+  },
+  {
     title: "Dashboard",
     items: [
       {
         title: "My Profile",
-        url: "/dashboard/guide/my-profile",
+        url: "/dashboard/my-profile",
       },
     ],
   },

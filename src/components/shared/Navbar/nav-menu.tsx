@@ -24,8 +24,8 @@ export const NavMenu = (props: NavigationMenuProps & { orientation?: "horizontal
   // Auth menu items
   const authItems = session
     ? [
-        { href: "/dashboard", label: "Dashboard" },
-        { onClick: () => signOut({ callbackUrl: "/" }), label: "Logout" },
+        { href: "/dashboard/my-profile", label: "Dashboard" },
+        { onClick: () => signOut({ callbackUrl: "/login" }), label: "Logout" },
       ]
     : [
         { href: "/login", label: "Log In" }

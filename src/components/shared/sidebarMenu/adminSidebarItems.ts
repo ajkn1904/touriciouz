@@ -3,8 +3,8 @@
 // import ManageUser from "@/pages/Admin/ManageUser";
 import TourPage from "@/src/app/(commonLayout)/tour/page";
 import { ISidebarItems } from "@/src/types";
+import { signOut } from "next-auth/react";
 import { lazy } from "react";
-
 
 // const Analytics = lazy(() => import("@/pages/Admin/Analytics"))
 // const ManageCoupon = lazy(() => import("@/pages/Admin/ManageCoupon"))
@@ -12,39 +12,38 @@ import { lazy } from "react";
 // const ManageUser = lazy(() => import("@/pages/Admin/ManageUser"))
 
 export const adminSidebarItems: ISidebarItems[] = [
-    {
-        title: "TOURICIOUZ",
-        items: [
-            {
-                title: "Home",
-                url: "/"
-            },
-        ]
-    },
-    {
-        title: "Dashboard",
-        items: [
-            {
-                title: "My profile",
-                url: "/admin/my-profile"
-            },
-        ]
-    },
-    {
-        title: "Management",
-        items: [
-            {
-                title: "Manage User",
-                url: "/admin/manage-user"
-            },
-            {
-                title: "Manage Tour",
-                url: "/admin/manage-tour",
-            },
-            {
-                title: "Manage Booking",
-                url: "/admin/manage-booking"
-            },
-        ]
-    },
-]
+  {
+    title: "TOURICIOUZ",
+    items: [
+      { title: "Home", url: "/" },
+
+      { title: "Logout", onClick: () => signOut({ callbackUrl: "/login" }) },
+    ],
+  },
+  {
+    title: "Dashboard",
+    items: [
+      {
+        title: "My profile",
+        url: "/dashboard/my-profile",
+      },
+    ],
+  },
+  {
+    title: "Management",
+    items: [
+      {
+        title: "Manage User",
+        url: "/admin/manage-user",
+      },
+      {
+        title: "Manage Tour",
+        url: "/admin/manage-tour",
+      },
+      {
+        title: "Manage Booking",
+        url: "/admin/manage-booking",
+      },
+    ],
+  },
+];

@@ -1,36 +1,21 @@
-import TourPage from "@/src/app/(commonLayout)/tour/page";
+import { signOut } from "next-auth/react";
 import type { ISidebarItems } from "@/src/types";
-import { lazy } from "react";
-
-// const History = lazy(() => import("@/pages/tourist/History"))
-// const Parcel = lazy(() => import("@/pages/tourist/Parcel"))
 
 export const touristSidebarItems: ISidebarItems[] = [
   {
     title: "TOURICIOUZ",
     items: [
-      {
-        title: "Home",
-        url: "/",
-      },
+      { title: "Home", url: "/" },
+
+      { title: "Logout", onClick: () => signOut({ callbackUrl: "/login" }) },
     ],
   },
   {
     title: "Dashboard",
-    items: [
-      {
-        title: "My Profile",
-        url: "/dashboard/tourist/my-profile",
-      },
-    ],
+    items: [{ title: "My Profile", url: "/dashboard/my-profile" }],
   },
   {
     title: "Management",
-    items: [
-      {
-        title: "My Bookings",
-        url: "/dashboard/tourist/booking",
-      },
-    ],
+    items: [{ title: "My Bookings", url: "/dashboard/tourist/booking" }],
   },
 ];

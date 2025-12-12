@@ -30,7 +30,7 @@ export default function LoginPage() {
         email,
         password,
         redirect: false,
-        callbackUrl: "/dashboard",
+        callbackUrl: "/dashboard/my-profile",
       });
 
       setIsPending(false);
