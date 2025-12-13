@@ -32,8 +32,8 @@ export async function getAllTours({
   });
 
   const text = await res.text();
-  console.log("Fetch tours status:", res.status);
-  console.log("Fetch tours body:", text);
+  // console.log("Fetch tours status:", res.status);
+  // console.log("Fetch tours body:", text);
 
   if (!res.ok) throw new Error(`Failed to fetch tours: ${text}`);
   if (res.ok) revalidateTag("tours", { expire: 0 });

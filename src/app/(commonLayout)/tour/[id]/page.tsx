@@ -47,43 +47,9 @@ export default function TourDetailsPage() {
   const [tour, setTour] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [bookingLoading, setBookingLoading] = useState(false);
-  const [hasTouristProfile, setHasTouristProfile] = useState<boolean | null>(null);
-
-  // Check if user has tourist profile
-  useEffect(() => {
-    const checkTouristProfile = async () => {
-      if (!session?.user || session.user.role !== "TOURIST") {
-        setHasTouristProfile(null);
-        return;
-      }
-
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_API_URL || "http://localhost:5000/api"}/tourist/my-profile`,
-          {
-            headers: {
-              Authorization: `Bearer ${session?.user?.accessToken}`,
-            },
-          }
-        );
-        
-        if (response.ok) {
-          setHasTouristProfile(true);
-        } else if (response.status === 404) {
-          setHasTouristProfile(false);
-        } else {
-          setHasTouristProfile(null);
-        }
-      } catch (error) {
-        console.error("Error checking tourist profile:", error);
-        setHasTouristProfile(null);
-      }
-    };
-
-    if (session?.user) {
-      checkTouristProfile();
-    }
-  }, [session]);
+  const [bookingId, setBookingId] = useState<string | null>(null);
+  const [bookingStatus, setBookingStatus] = useState<string | null>(null);
+  const [hasActiveBooking, setHasActiveBooking] = useState<boolean>(false);
 
   // Fetch tour data
   useEffect(() => {
@@ -113,78 +79,357 @@ export default function TourDetailsPage() {
     fetchTour();
   }, [id]);
 
-const handleBookNow = async () => {
-  // Check if user is logged in
-  if (!session?.user) {
-    toast.error("Please login to book a tour");
-    router.push("/login");
-    return;
-  }
+  // Function to check existing bookings
+  const checkExistingBooking = async () => {
+    if (!session?.user || !tour?.id) return;
 
-  // Check if user is a tourist
-  if (session.user.role !== "TOURIST") {
-    toast.error("Only tourists can book tours");
-    return;
-  }
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL || "http://localhost:5000/api"}/booking/my-bookings`,
+        {
+          headers: {
+            Authorization: `Bearer ${session?.user?.accessToken}`,
+          },
+        }
+      );
 
-  // Check if tour is active
-  if (!tour?.isActive) {
-    toast.error("This tour is not available for booking");
-    return;
-  }
+      if (response.ok) {
+        const result = await response.json();
+        const bookings = result.data || result;
+        
+        // Find ALL bookings for this tour (including active ones)
+        const allBookingsForThisTour = bookings.filter((booking: any) => 
+          booking.tour?.id === tour.id
+        );
+        
+        //console.log("All bookings for this tour:", allBookingsForThisTour);
+        
+        // Check for active bookings (not cancelled or completed)
+        const activeBooking = allBookingsForThisTour.find((booking: any) => 
+          !['CANCELLED', 'COMPLETED'].includes(booking.status)
+        );
+        
+        // Check for pending/failed/cancelled bookings
+        const existingBooking = allBookingsForThisTour.find((booking: any) => 
+          booking.tour?.id === tour.id && 
+          (booking.status === 'PENDING' || booking.status === 'FAILED' || booking.status === 'CANCELLED')
+        );
+        
+        if (activeBooking) {
+          //console.log("Found active booking:", activeBooking);
+          setHasActiveBooking(true);
+          setBookingId(activeBooking.id);
+          setBookingStatus(activeBooking.status);
+          
+          // Store in localStorage
+          localStorage.setItem('pendingBooking', JSON.stringify({
+            bookingId: activeBooking.id,
+            tourId: tour.id,
+            status: activeBooking.status,
+            tourTitle: tour.title
+          }));
+        } else if (existingBooking) {
+          //console.log("Found existing booking (pending/failed/cancelled):", existingBooking);
+          setHasActiveBooking(false);
+          setBookingId(existingBooking.id);
+          setBookingStatus(existingBooking.status);
+          
+          // Store in localStorage
+          localStorage.setItem('pendingBooking', JSON.stringify({
+            bookingId: existingBooking.id,
+            tourId: tour.id,
+            status: existingBooking.status,
+            tourTitle: tour.title
+          }));
+        } else {
+          // No existing booking found, clear everything
+          //console.log("No existing booking found");
+          setHasActiveBooking(false);
+          setBookingId(null);
+          setBookingStatus(null);
+          localStorage.removeItem('pendingBooking');
+        }
+      }
+    } catch (error) {
+      console.error("Error checking existing bookings:", error);
+    }
+  };
 
-  try {
-    setBookingLoading(true);
-    console.log("Starting booking process...");
-    console.log("Tour ID:", tour.id);
-    console.log("Session user:", session.user);
-    
-    // Create booking
-    const result = await BookingService.createBooking({
-      tourId: tour.id,
-      date: new Date().toISOString(),
-    });
+  // Check for existing booking
+  useEffect(() => {
+    if (session?.user && tour?.id) {
+      checkExistingBooking();
+    }
+  }, [session, tour]);
 
-    console.log("Booking result:", result);
-    
-    // Check if booking was successful
-    if (result.booking) {
-      toast.success("Booking created successfully!");
+  // Handle payment callback when returning from SSLCommerz
+  useEffect(() => {
+    const checkPaymentStatus = async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const status = urlParams.get('status');
+      const transactionId = urlParams.get('transactionId');
+      const tranId = urlParams.get('tran_id');
       
-      // Redirect to tourist's bookings page
-      setTimeout(() => {
-        router.push("/dashboard/tourist/my-booking");
-      }, 1500);
-    } else if (result.paymentUrl) {
-      // If payment URL is returned, go to payment
-      toast.success("Booking created! Redirecting to payment...");
-      window.location.href = result.paymentUrl;
-    } else {
-      toast.success("Booking created!");
-      router.push("/dashboard/tourist/my-booking");
-    }
-    
-  } catch (error: any) {
-    console.error("Booking error details:", error);
-    
-    // Handle specific error messages
-    if (error.message.includes("Tourist profile not found") || 
-        error.message.includes("complete your tourist profile")) {
-      toast.error("Please complete your tourist profile first");
-      router.push("/profile/tourist");
-    } else if (error.message.includes("session has expired") || 
-               error.message.includes("No session found")) {
-      toast.error("Your session has expired. Please login again.");
+      if (status && (transactionId || tranId)) {
+        try {
+          // Clear URL parameters
+          const newUrl = window.location.pathname;
+          window.history.replaceState({}, document.title, newUrl);
+          
+          if (status === 'success') {
+            toast.success("Payment successful! Booking confirmed.");
+            
+            // Clear stored data and refresh
+            localStorage.removeItem('pendingBooking');
+            setBookingId(null);
+            setBookingStatus(null);
+            setHasActiveBooking(true);
+            
+            // Refresh booking data
+            setTimeout(() => {
+              checkExistingBooking();
+            }, 1000);
+            
+            // Redirect to bookings page
+            setTimeout(() => {
+              router.push("/dashboard/tourist/my-booking");
+            }, 1500);
+          } else if (status === 'fail' || status === 'cancel') {
+            toast.error("Payment failed or cancelled. You can try again.");
+            
+            // Keep the booking for retry
+            const storedBooking = localStorage.getItem('pendingBooking');
+            if (storedBooking) {
+              const bookingData = JSON.parse(storedBooking);
+              setBookingId(bookingData.bookingId);
+              setBookingStatus('FAILED');
+              setHasActiveBooking(false);
+            }
+          }
+        } catch (error) {
+          console.error("Payment status check error:", error);
+        }
+      }
+    };
+
+    checkPaymentStatus();
+  }, [router]);
+
+  const handleBookNow = async () => {
+    if (!session?.user) {
+      toast.error("Please login to book a tour");
       router.push("/login");
-    } else if (error.message.includes("Zod Error")) {
-      toast.error("Invalid booking data. Please try again.");
-    } else {
-      toast.error(error.message || "Failed to create booking");
+      return;
     }
-  } finally {
-    setBookingLoading(false);
-  }
-};
+
+    // Check if user is a tourist
+    if (session.user.role !== "TOURIST") {
+      toast.error("Only tourists can book tours");
+      return;
+    }
+
+    // Check if tour is active
+    if (!tour?.isActive) {
+      toast.error("This tour is not available for booking");
+      return;
+    }
+
+    // Check if user already has an active booking for this tour
+    if (hasActiveBooking && bookingStatus && !['CANCELLED', 'COMPLETED'].includes(bookingStatus)) {
+      toast.error("You already have an active booking for this tour");
+      return;
+    }
+
+    try {
+      setBookingLoading(true);
+      //console.log("Starting booking process...");
+      //console.log("Tour ID:", tour.id);
+      //console.log("Session user:", session.user);
+      
+      // Check if booking already exists 
+      if (bookingId && (bookingStatus === 'PENDING' || bookingStatus === 'FAILED')) {
+        //console.log("Existing booking found, initiating payment:", bookingId);
+        
+        // Initiate payment for existing booking
+        const initResponse = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_API_URL || "http://localhost:5000/api"}/payment/init/${bookingId}`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${session?.user?.accessToken}`,
+            },
+          }
+        );
+
+        if (!initResponse.ok) {
+          const error = await initResponse.json();
+          throw new Error(error.message || "Failed to initiate payment");
+        }
+
+        const initResult = await initResponse.json();
+        //console.log("Payment initiation result:", initResult);
+        
+        if (initResult.data?.paymentUrl) {
+          toast.success("Redirecting to payment...");
+          window.location.href = initResult.data.paymentUrl;
+          return;
+        }
+      }
+      
+      //console.log("Creating new booking...");
+      const result = await BookingService.createBooking({
+        tourId: tour.id,
+        date: new Date().toISOString(),
+      });
+
+      //console.log("Booking result:", result);
+      
+      if (result.booking?.id) {
+        localStorage.setItem('pendingBooking', JSON.stringify({
+          bookingId: result.booking.id,
+          tourId: tour.id,
+          tourTitle: tour.title,
+        }));
+        setBookingId(result.booking.id);
+        setBookingStatus('PENDING');
+        setHasActiveBooking(true);
+      }
+      
+      if (result.paymentUrl) {
+        toast.success("Booking created! Redirecting to payment...");
+        window.location.href = result.paymentUrl;
+      } else {
+        toast.success("Booking created!");
+        router.push("/dashboard/tourist/my-booking");
+      }
+      
+    } catch (error: any) {
+      console.error("Booking error details:", error);
+      
+      if (error.message.includes("Tourist profile not found") || 
+          error.message.includes("complete your tourist profile")) {
+        toast.error("Please complete your tourist profile first");
+        router.push("/dashboard/my-profile");
+      } else if (error.message.includes("session has expired") || 
+                error.message.includes("No session found")) {
+        toast.error("Your session has expired. Please login again.");
+        router.push("/login");
+      } else if (error.message.includes("Zod Error")) {
+        toast.error("Invalid booking data. Please try again.");
+      } else if (error.message.includes("Booking already paid")) {
+        toast.success("Booking already paid! Redirecting to your bookings...");
+        localStorage.removeItem('pendingBooking');
+        setTimeout(() => {
+          router.push("/dashboard/tourist/my-booking");
+        }, 1500);
+      } else if (error.message.includes("already booked") || 
+                error.message.includes("already have an active booking")) {
+        toast.error("You already have an active booking for this tour");
+        // Refresh booking data
+        checkExistingBooking();
+      } else {
+        toast.error(error.message || "Failed to create booking");
+      }
+    } finally {
+      setBookingLoading(false);
+    }
+  };
+
+  const handleCancelBooking = async () => {
+    if (!bookingId || !session?.user) {
+      toast.error("No booking to cancel");
+      return;
+    }
+
+    // Confirm before cancelling
+    if (!confirm("Are you sure you want to cancel this booking?")) {
+      return;
+    }
+
+    try {
+      setBookingLoading(true);
+      
+      const url = `${process.env.NEXT_PUBLIC_BASE_API_URL || "http://localhost:5000/api"}/booking/status/${bookingId}`;
+      const requestBody = { status: "CANCELLED" };
+      const requestHeaders = {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${session.user.accessToken}`
+      };
+
+      //console.log("Sending cancel request to:", url);
+      //console.log("Request body:", requestBody);
+      //console.log("Setting status to CANCELLED for booking:", bookingId);
+      //console.log("Current booking status:", bookingStatus);
+      
+      const response = await fetch(url, {
+        method: "PATCH",
+        headers: requestHeaders,
+        body: JSON.stringify(requestBody)
+      });
+
+      // Get the raw response text first
+      const responseText = await response.text();
+      //console.log("Raw Response:", responseText);
+      //console.log("Status Code:", response.status);
+      
+      let result;
+      try {
+        result = JSON.parse(responseText);
+        //console.log("Parsed Response:", result);
+      } catch (e) {
+        console.error("Failed to parse JSON response:", e);
+        result = { message: responseText };
+      }
+      
+      if (response.ok) {
+        //console.log("Cancel booking successful");
+        
+        // Clear local storage
+        localStorage.removeItem('pendingBooking');
+        
+        // Update state
+        setBookingId(null);
+        setBookingStatus(null);
+        setHasActiveBooking(false);
+        
+        // Show success message
+        toast.success("Booking cancelled successfully");
+        
+        // Refetch existing bookings to update UI
+        setTimeout(() => {
+          checkExistingBooking();
+        }, 500);
+        
+      } else {
+        console.error("Cancel booking failed:", result);
+        
+        // Handle specific error cases
+        if (response.status === 400) {
+          toast.error("Invalid request. Please try again.");
+        } else if (response.status === 401) {
+          toast.error("Session expired. Please login again.");
+          router.push("/login");
+        } else if (response.status === 403) {
+          toast.error("You don't have permission to cancel this booking.");
+        } else if (response.status === 404) {
+          toast.error("Booking not found. It may have been already cancelled.");
+          setBookingId(null);
+          setBookingStatus(null);
+          setHasActiveBooking(false);
+          localStorage.removeItem('pendingBooking');
+        } else if (response.status === 409) {
+          toast.error("Cannot cancel booking. It may already be confirmed or paid.");
+        } else {
+          throw new Error(result.message || `HTTP error! status: ${response.status}`);
+        }
+      }
+    } catch (error: any) {
+      console.error("Cancel booking error:", error);
+      toast.error(error.message || "Failed to cancel booking. Please try again.");
+    } finally {
+      setBookingLoading(false);
+    }
+  };
 
   const handleBack = () => window.history.back();
   const handleViewGuide = () => {
@@ -201,39 +446,7 @@ const handleBookNow = async () => {
     });
   };
 
-  if (loading) {
-    return (
-      <div className="w-full max-w-7xl mx-auto px-5 py-8">
-        <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-1/4 mb-6"></div>
-          <div className="h-12 bg-gray-200 rounded mb-6"></div>
-          <div className="h-64 bg-gray-200 rounded"></div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!tour) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-4">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Tour Not Found</h1>
-          <p className="text-gray-600 mb-6">The tour you`&apos;`re looking for doesn`&apos;`t exist or has been removed.</p>
-          <Button onClick={() => router.push("/tours")}>
-            Browse Tours
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  const calculateTotalPrice = () => {
-    const basePrice = tour?.packagePrice || 0;
-    const guideFee = tour?.guideFee || (tour?.guide?.dailyRate || 0) * (tour?.durationDays || 1);
-    return basePrice + guideFee;
-  };
-
-  // Updated BookNowButton with profile check
+  // Updated BookNowButton with retry/cancel options
   const BookNowButton = () => {
     if (bookingLoading) {
       return (
@@ -295,8 +508,54 @@ const handleBookNow = async () => {
       );
     }
 
-    // Check tourist profile
+    // Check if user has an active booking (not cancelled or completed)
+    if (hasActiveBooking && bookingStatus && !['CANCELLED', 'COMPLETED'].includes(bookingStatus)) {
+      if (bookingStatus === 'PENDING' || bookingStatus === 'FAILED') {
+        return (
+          <div className="flex gap-2">
+            <Button
+              className="bg-green-600 text-white hover:bg-green-700"
+              onClick={handleBookNow}
+            >
+              {bookingStatus === 'FAILED' ? 'Retry Payment' : 'Pay Now'}
+            </Button>
+            <Button
+              variant="outline"
+              className="border-red-500 text-red-600 hover:bg-red-50"
+              onClick={handleCancelBooking}
+            >
+              Cancel Booking
+            </Button>
+          </div>
+        );
+      } else {
+        return (
+          <Button
+            className="bg-blue-500 text-white cursor-not-allowed"
+            disabled
+            title="You already have an active booking for this tour"
+          >
+            Already Booked ({bookingStatus})
+          </Button>
+        );
+      }
+    }
 
+    // If booking was cancelled or completed, show option to create new booking
+    if (bookingStatus === 'COMPLETED') {
+      return (
+        <div className="flex gap-2">
+          <Button
+            className="bg-yellow-500 text-white hover:bg-yellow-600"
+            onClick={handleBookNow}
+          >
+            Book Again
+          </Button>
+        </div>
+      );
+    }
+
+    // No existing booking, show Book Now button
     return (
       <Button
         className="bg-yellow-500 text-white border-yellow-600 hover:bg-yellow-600 hover:text-white shadow-lg"
@@ -306,6 +565,32 @@ const handleBookNow = async () => {
       </Button>
     );
   };
+
+  if (loading) {
+    return (
+      <div className="w-full max-w-7xl mx-auto px-5 py-8">
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-200 rounded w-1/4 mb-6"></div>
+          <div className="h-12 bg-gray-200 rounded mb-6"></div>
+          <div className="h-64 bg-gray-200 rounded"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!tour) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-4">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Tour Not Found</h1>
+          <p className="text-gray-600 mb-6">The tour you&apos;re looking for doesn&apos;t exist or has been removed.</p>
+          <Button onClick={() => router.push("/tour")}>
+            Browse Tours
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="font-serif">
@@ -339,6 +624,17 @@ const handleBookNow = async () => {
             }`}>
               {tour.isActive ? "Available" : "Unavailable"}
             </Badge>
+            {bookingId && bookingStatus && (
+              <Badge variant="outline" className={`ml-2 ${
+                bookingStatus === 'PENDING' ? 'bg-yellow-500/20 text-yellow-300 border-yellow-400/30' :
+                bookingStatus === 'COMPLETED' ? 'bg-purple-500/20 text-purple-300 border-purple-400/30' :
+                'bg-blue-500/20 text-blue-300 border-blue-400/30'
+              }`}>
+                {bookingStatus === 'PENDING' ? 'Payment Pending' :
+                 bookingStatus === 'COMPLETED' ? 'Completed' :
+                 'Active'}
+              </Badge>
+            )}
           </div>
         </div>
       </div>
@@ -351,6 +647,7 @@ const handleBookNow = async () => {
           <div className="border shadow-lg rounded-xl p-6 bg-white dark:bg-gray-800">
             <h1 className="text-3xl font-bold mb-3 text-gray-900 dark:text-white">{tour.title}</h1>
             <p className="text-lg text-gray-600 dark:text-gray-300 mb-5">{tour.category}</p>
+
 
             {/* Info Cards */}
             <div className="flex flex-col gap-3 mb-5">
@@ -483,19 +780,9 @@ const handleBookNow = async () => {
                         </span>
                       </div>
                     )}
-                    <div>
+  
                       <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{tour.guide.name}</h3>
-                      <div className="flex items-center gap-2 mt-2">
-                        <div className="flex items-center">
-                          <RiStarFill className="h-5 w-5 text-amber-500" />
-                          <span className="ml-1 font-bold">{tour.guide.rating?.toFixed(1) || "0.0"}</span>
-                        </div>
-                        <div className="flex items-center text-gray-500 dark:text-gray-400">
-                          <FaTrophy className="h-4 w-4 text-purple-500 mr-1" />
-                          <span>{tour.guide.totalTours || 0} tours</span>
-                        </div>
-                      </div>
-                    </div>
+                    
                   </div>
 
                   {/* Contact Information */}
@@ -589,9 +876,9 @@ const handleBookNow = async () => {
             <div className="flex flex-col md:flex-row gap-3 my-5">
               <h3 className="text-lg font-semibold italic md:w-[40%] text-blue-600 dark:text-blue-400 flex items-center gap-2">
                 <MdLocationOn />
-                DEPARTURE / MEETING POINT
+                MEETING POINT / DEPARTURE
               </h3>
-              <p className="md:w-[60%] text-gray-700 dark:text-gray-300">{tour.departure || "To be confirmed"} / {tour.meetingPoint || "To be confirmed"}</p>
+              <p className="md:w-[60%] text-gray-700 dark:text-gray-300">{tour.meetingPoint || "To be confirmed"} on {tour.departure || "To be confirmed"} at {tour.departureTime || "To be confirmed"} </p>
             </div>
 
             <hr className="border-gray-200 dark:border-gray-700" />
@@ -678,7 +965,7 @@ const handleBookNow = async () => {
                   </h3>
                   <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
                     <ul className="space-y-2">
-                      {tour.itinerary.split("\n").map((item: string, i: number) => (
+                      {tour.itinerary.split(",\n").map((item: string, i: number) => (
                         <li key={i} className="flex items-start gap-2 text-gray-700 dark:text-gray-300">
                           <div className="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center flex-shrink-0">
                             <span className="text-xs font-bold text-blue-600 dark:text-blue-300">{i + 1}</span>
@@ -695,10 +982,6 @@ const handleBookNow = async () => {
 
             {/* Tour Metadata */}
             <div className="flex flex-wrap gap-4 text-sm text-gray-500 dark:text-gray-400 mt-5">
-              <div className="flex items-center gap-2">
-                <span className="font-medium">Tour ID:</span>
-                <code className="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">{tour.id}</code>
-              </div>
               <div className="flex items-center gap-2">
                 <span className="font-medium">Created:</span>
                 <span>{formatDate(tour.createdAt)}</span>
@@ -750,36 +1033,96 @@ const handleBookNow = async () => {
             )}
           </div>
 
-          {/* Quick Stats Card */}
-          <div className="border shadow-lg rounded-xl p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900">
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Quick Stats</h3>
-            <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600 dark:text-gray-400">Category</span>
-                <Badge variant="secondary">{tour.category}</Badge>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600 dark:text-gray-400">Physicality</span>
-                <span className="font-medium text-gray-900 dark:text-white">{tour.physicality}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600 dark:text-gray-400">Max Group</span>
-                <span className="font-medium text-gray-900 dark:text-white">{tour.maxGroupSize} people</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600 dark:text-gray-400">Age Limit</span>
-                <span className="font-medium text-gray-900 dark:text-white">{tour.ageLimit || "None"}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600 dark:text-gray-400">Duration</span>
-                <span className="font-medium text-gray-900 dark:text-white">{tour.durationDays} days</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600 dark:text-gray-400">Total Price</span>
-                <span className="font-bold text-green-600 dark:text-green-400">${calculateTotalPrice().toFixed(2)}</span>
+          {/* Booking Status Card */}
+          {bookingId && bookingStatus && (
+            <div className="border shadow-lg rounded-xl p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Booking Status</h3>
+              <div className="space-y-4">
+                <div className={`p-3 rounded-lg ${
+                  bookingStatus === 'PENDING' ? 'bg-yellow-100 dark:bg-yellow-900/30' :
+                  bookingStatus === 'COMPLETED' ? 'bg-purple-100 dark:bg-purple-900/30' :
+                  'bg-green-100 dark:bg-green-900/30'
+                }`}>
+                  <div className="flex items-center gap-3">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                      bookingStatus === 'PENDING' ? 'bg-yellow-500' :
+                      bookingStatus === 'COMPLETED' ? 'bg-purple-500' :
+                      'bg-green-500'
+                    }`}>
+                      {bookingStatus === 'PENDING' ? (
+                        <BiTimeFive className="h-5 w-5 text-white" />
+                      ) : bookingStatus === 'COMPLETED' ? (
+                        <TiTick className="h-5 w-5 text-white" />
+                      ) : (
+                        <TiTick className="h-5 w-5 text-white" />
+                      )}
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-900 dark:text-white">
+                        {bookingStatus === 'PENDING' ? 'Payment Pending' :
+                         bookingStatus === 'COMPLETED' ? 'Tour Completed' :
+                         'Booking Active'}
+                      </p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        {bookingStatus === 'PENDING' ? 'Complete payment to confirm' :
+                         bookingStatus === 'COMPLETED' ? 'This tour has been completed' :
+                         'Your booking is confirmed'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Booking ID:</p>
+                  <code className="block bg-gray-100 dark:bg-gray-700 p-2 rounded text-sm font-mono text-gray-800 dark:text-gray-300 break-all">
+                    {bookingId}
+                  </code>
+                </div>
+
+                {(bookingStatus === 'PENDING' || bookingStatus === 'FAILED') && (
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={handleBookNow}
+                      className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+                      size="sm"
+                    >
+                      {bookingStatus === 'FAILED' ? 'Retry Payment' : 'Pay Now'}
+                    </Button>
+                    <Button
+                      onClick={handleCancelBooking}
+                      variant="outline"
+                      className="flex-1 border-red-300 text-red-600 hover:bg-red-50"
+                      size="sm"
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                )}
+              
+                
+                {bookingStatus === 'COMPLETED' && (
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={handleBookNow}
+                      className="flex-1 bg-yellow-600 hover:bg-yellow-700 text-white"
+                      size="sm"
+                    >
+                      Book Again
+                    </Button>
+                  </div>
+                )}
+                
+                {hasActiveBooking && !['PENDING', 'COMPLETED'].includes(bookingStatus) && (
+                  <div className="text-center p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                    <p className="text-sm text-green-700 dark:text-green-300">
+                      ✓ You have an active booking for this tour
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
-          </div>
+          )}
+
 
           {/* Status Card */}
           <div className="border shadow-lg rounded-xl p-6 bg-white dark:bg-gray-800">

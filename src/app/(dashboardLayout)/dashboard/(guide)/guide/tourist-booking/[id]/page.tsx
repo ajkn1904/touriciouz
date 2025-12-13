@@ -76,7 +76,7 @@ export default function GuideBookingDetailsPage() {
         try {
             setLoading(true);
             const data = await BookingService.getBookingById(id as string);
-            console.log("Booking data:", data);
+            //console.log("Booking data:", data);
             setBooking(data);
             setSelectedStatus(data.status);
         } catch (error: any) {
@@ -91,7 +91,7 @@ export default function GuideBookingDetailsPage() {
     const fetchTouristUserInfo = async (userId: string) => {
         try {
             setLoadingTourist(true);
-            console.log("Fetching tourist user info for ID:", userId);
+            //console.log("Fetching tourist user info for ID:", userId);
 
             const response = await fetch(
                 `${process.env.NEXT_PUBLIC_BASE_API_URL || "http://localhost:5000/api"}/user/${userId}`,
@@ -109,7 +109,7 @@ export default function GuideBookingDetailsPage() {
             }
 
             const data = await response.json();
-            console.log("Tourist user data:", data);
+            //console.log("Tourist user data:", data);
 
             if (data.success && data.data) {
                 setTouristUser(data.data);

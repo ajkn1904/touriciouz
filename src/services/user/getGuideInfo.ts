@@ -7,12 +7,12 @@ export async function getGuideInfo(guideId: string) {
   try {
     const url = `${process.env.NEXT_PUBLIC_BASE_API_URL || "http://localhost:5000/api"}/user/guide/${guideId}`;
     
-    console.log(`Fetching guide info for ID: ${guideId}`);
-    console.log(`API URL: ${url}`);
+    // console.log(`Fetching guide info for ID: ${guideId}`);
+    // console.log(`API URL: ${url}`);
     
     const res = await fetch(url, {
       next: { 
-        revalidate: 3600, // Revalidate every hour (3600 seconds)
+        revalidate: 3600*30*10,
         tags: [`guide-${guideId}`] // Cache tag for revalidation
       }
     });
@@ -30,7 +30,7 @@ export async function getGuideInfo(guideId: string) {
       throw new Error(data.message || "Failed to fetch guide information");
     }
 
-    console.log("Guide data fetched successfully:", data.data?.name);
+    // console.log("Guide data fetched successfully:", data.data?.name);
     return {
       guide: data.data || null,
       success: true,
@@ -50,7 +50,7 @@ export async function getGuideInfo(guideId: string) {
 export async function revalidateGuide(guideId: string) {
   try {
     revalidateTag(`guide-${guideId}`, {expire: 0});
-    console.log(`Revalidated guide cache for ID: ${guideId}`);
+    // console.log(`Revalidated guide cache for ID: ${guideId}`);
     return { success: true, message: "Guide cache revalidated" };
   } catch (error: any) {
     console.error("Error revalidating guide:", error);

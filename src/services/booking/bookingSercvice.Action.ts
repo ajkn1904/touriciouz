@@ -99,29 +99,27 @@ async function authenticatedFetch(url: string, options: RequestInit = {}) {
     ...options.headers,
   };
 
-  console.log(`Making request to: ${url}`);
-  console.log('Request headers:', headers);
-  console.log('Request body:', options.body);
+  // console.log(`Making request to: ${url}`);
+  // console.log('Request headers:', headers);
+  // console.log('Request body:', options.body);
 
   const response = await fetch(url, {
     ...options,
     headers,
   });
 
-  console.log('Response status:', response.status);
+  //console.log('Response status:', response.status);
   return response;
 }
 
 export const BookingService = {
-  /** ============================
-   *  🚀 Create Booking (Tourist)
-   *  ============================ */
+ 
   createBooking: async (payload: { tourId: string; date: string }): Promise<{ 
     booking: Booking; 
     paymentUrl: string 
   }> => {
     try {
-      console.log("Creating booking with payload:", payload);
+      //console.log("Creating booking with payload:", payload);
       
       // Validate payload
       if (!payload.tourId) {
@@ -138,7 +136,7 @@ export const BookingService = {
       });
 
       const responseText = await res.text();
-      console.log("Raw response:", responseText);
+      //console.log("Raw response:", responseText);
 
       let responseData;
       try {
@@ -154,7 +152,7 @@ export const BookingService = {
         throw new Error(responseData.message || `Booking failed with status ${res.status}`);
       }
 
-      console.log("Booking successful:", responseData);
+      //console.log("Booking successful:", responseData);
       return responseData.data || responseData;
 
     } catch (error: any) {
@@ -173,15 +171,14 @@ export const BookingService = {
     }
   },
 
-  /** ======================================
-   *  📌 Get My Bookings (Tourist)
-   *  ====================================== */
+
+
   getMyBookings: async (query: Record<string, any> = {}): Promise<PaginatedBookings> => {
     try {
       const qs = new URLSearchParams(query).toString();
       const url = `${API_URL}/my-bookings?${qs}`;
       
-      console.log("Fetching bookings from:", url);
+      //console.log("Fetching bookings from:", url);
 
       const res = await authenticatedFetch(url, {
         cache: "no-store",
@@ -194,7 +191,7 @@ export const BookingService = {
       }
 
       const data = await res.json();
-      console.log("Bookings data received:", data);
+      // console.log("Bookings data received:", data);
       
       return {
         data: data.data || [],
@@ -206,15 +203,14 @@ export const BookingService = {
     }
   },
 
-  /** ======================================
-   *  🧭 Get Guide Bookings (Guide)
-   *  ====================================== */
+  
+
   getGuideBookings: async (query: Record<string, any> = {}): Promise<PaginatedBookings> => {
     try {
       const qs = new URLSearchParams(query).toString();
       const url = `${API_URL}/guide/my-bookings?${qs}`;
       
-      console.log("Fetching guide bookings from:", url);
+      // console.log("Fetching guide bookings from:", url);
 
       const res = await authenticatedFetch(url, {
         cache: "no-store",
@@ -227,7 +223,7 @@ export const BookingService = {
       }
 
       const data = await res.json();
-      console.log("Guide bookings data received:", data);
+      // console.log("Guide bookings data received:", data);
       
       return {
         data: data.data || [],
@@ -239,9 +235,7 @@ export const BookingService = {
     }
   },
 
-  /** ===============================
-   *  📍 Get Booking By ID
-   *  =============================== */
+
   getBookingById: async (id: string): Promise<Booking> => {
     try {
       if (!id) {

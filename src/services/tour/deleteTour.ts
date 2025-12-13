@@ -13,7 +13,7 @@ export async function deleteTourAction(id: string, token: string) {
     );
 
     const raw = await res.text();
-    console.log("RAW RESPONSE FROM API:", raw);
+    // console.log("RAW RESPONSE FROM API:", raw);
 
     let result;
     try {

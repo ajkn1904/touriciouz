@@ -155,9 +155,9 @@ export default function EditTourPage() {
       const existingImageUrls = allImages.filter((img: any) => typeof img === 'string');
       const newImageFiles = allImages.filter((img: any) => img instanceof File);
 
-      console.log("=== Image Processing ===");
-      console.log("Existing URLs:", existingImageUrls.length);
-      console.log("New files to compress:", newImageFiles.length);
+      // console.log("=== Image Processing ===");
+      // console.log("Existing URLs:", existingImageUrls.length);
+      // console.log("New files to compress:", newImageFiles.length);
 
       // Compress new image files
       const compressedFiles: File[] = [];

@@ -48,7 +48,7 @@ async function getGuideInfo(guideId: string) {
   try {
     const url = `${process.env.NEXT_PUBLIC_BASE_API_URL || "http://localhost:5000/api"}/user/guide/${guideId}`;
     
-    console.log(`Fetching guide info for ID: ${guideId}`);
+    //console.log(`Fetching guide info for ID: ${guideId}`);
     
     const res = await fetch(url, {
       next: { 
@@ -70,7 +70,7 @@ async function getGuideInfo(guideId: string) {
       throw new Error(data.message || "Failed to fetch guide information");
     }
 
-    console.log("Guide data fetched successfully:", data.data?.name);
+    //console.log("Guide data fetched successfully:", data.data?.name);
     return {
       guide: data.data || null,
       success: true,
@@ -95,7 +95,7 @@ async function refreshGuideData(guideId: string) {
     const res = await fetch(url, {
       cache: 'no-store', // Force fresh fetch
       next: { 
-        revalidate: 0 // Don't cache this request
+        revalidate: 3600 * 24 // Don't cache this request
       }
     });
 

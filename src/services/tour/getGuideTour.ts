@@ -14,8 +14,8 @@ export async function getGuideTours(accessToken: string, page = 1, limit = 10) {
   );
 
   const text = await res.text();
-  console.log("Fetch guide tours status:", res.status);
-  console.log("Fetch guide tours body:", text);
+  // console.log("Fetch guide tours status:", res.status);
+  // console.log("Fetch guide tours body:", text);
 
   if (!res.ok) throw new Error(`Failed to fetch tours: ${text}`);
 

@@ -12,7 +12,7 @@ export const touristSidebarItems: ISidebarItems[] = [
   },
   {
     title: "Dashboard",
-    items: [{ title: "My Profile", url: "/dashboard/my-profile" }],
+    items: [{ title: "My Profile", url: "/dashboard/my-profile" }, {title: "Tours", url:"/tour"}],
   },
   {
     title: "Management",

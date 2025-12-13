@@ -132,7 +132,7 @@ export default function BookingDetailsPage() {
     try {
       setLoading(true);
       const data = await BookingService.getBookingById(id as string);
-      console.log("Booking data received:", data);
+      //console.log("Booking data received:", data);
       setBooking(data as any);
     } catch (error: any) {
       console.error("Error fetching booking details:", error);
@@ -148,7 +148,7 @@ export default function BookingDetailsPage() {
 
     try {
       setGuideLoading(true);
-      console.log("Fetching guide info for ID:", booking.guideId);
+      //console.log("Fetching guide info for ID:", booking.guideId);
 
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_API_URL || "http://localhost:5000/api"}/user/guide/${booking.guideId}`,
@@ -162,10 +162,10 @@ export default function BookingDetailsPage() {
       }
 
       const data = await response.json();
-      console.log("Full guide API response:", data);
+      //console.log("Full guide API response:", data);
 
       if (data.success && data.data) {
-        console.log("Guide data fetched:", data.data);
+        //console.log("Guide data fetched:", data.data);
         setGuide(data.data);
       } else {
         console.warn("No guide data found or API returned unsuccessful");

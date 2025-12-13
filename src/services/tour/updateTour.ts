@@ -15,8 +15,8 @@ export async function updateTourAction(id: string, token: string, formData: Form
         });
 
         const raw = await response.text();
-        console.log("Response status:", response.status);
-        console.log("Response raw (first 500 chars):", raw.substring(0, 500));
+        // console.log("Response status:", response.status);
+        // console.log("Response raw (first 500 chars):", raw.substring(0, 500));
         
         let result;
         try {

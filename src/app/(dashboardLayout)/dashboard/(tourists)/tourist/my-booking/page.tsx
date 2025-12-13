@@ -16,14 +16,6 @@ import {
   TableRow,
 } from "@/src/components/ui/table";
 import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/src/components/ui/pagination";
-import {
   Calendar,
   MapPin,
   User,
@@ -50,16 +42,20 @@ export default function TouristBookingsPage() {
   const fetchBookings = async (page = 1) => {
     try {
       setLoading(true);
+      //console.log("Fetching bookings for page:", page); // Debug log
+      
       const query: any = {
         page,
         limit,
       };
 
       const result = await BookingService.getMyBookings(query);
-      setBookings(result.data);
-      setTotalBookings(result.meta.total);
-      setTotalPages(result.meta.totalPage);
-      setCurrentPage(result.meta.page);
+      //console.log("API Response:", result); // Debug log
+      
+      setBookings(result.data || []);
+      setTotalBookings(result.meta?.total || 0);
+      setTotalPages(result.meta?.totalPage || 1);
+      setCurrentPage(result.meta?.page || 1);
     } catch (error: any) {
       console.error("Error fetching bookings:", error);
       toast.error(error.message || "Failed to load bookings");
@@ -69,15 +65,8 @@ export default function TouristBookingsPage() {
   };
 
   useEffect(() => {
-    fetchBookings();
-  }, []);
-
-
-  const handlePageChange = (page: number) => {
-    if (page < 1 || page > totalPages) return;
-    setCurrentPage(page);
-    fetchBookings(page);
-  };
+    fetchBookings(currentPage);
+  }, [currentPage]); // Add currentPage as dependency
 
   const getStatusBadge = (status: BookingStatus) => {
     switch (status) {
@@ -258,7 +247,10 @@ export default function TouristBookingsPage() {
                 <Calendar className="w-12 h-12 text-gray-400" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">No bookings found</h3>
-              
+              <p className="text-gray-500 mb-4">You haven`&apos;`t made any bookings yet</p>
+              <Button onClick={() => router.push("/tours")}>
+                Browse Tours
+              </Button>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -289,7 +281,7 @@ export default function TouristBookingsPage() {
                       <TableCell>
                         <div className="flex items-center">
                           <Calendar className="w-4 h-4 mr-2 text-gray-400" />
-                          {formatDate(booking.date)}
+                          {new Date(booking.date).toLocaleString()}
                         </div>
                       </TableCell>
                       <TableCell>
@@ -340,28 +332,16 @@ export default function TouristBookingsPage() {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <CardFooter>
-            <div className="flex items-center justify-between w-full">
-              <div className="text-sm text-gray-500">
-                Showing {(currentPage - 1) * limit + 1} to{" "}
-                {Math.min(currentPage * limit, totalBookings)} of {totalBookings} bookings
-              </div>
-               {totalPages > 1 && (
-                      <div className="flex justify-center mt-10">
-                        <GetPagination
-                          totalItems={totalBookings}
-                          currentPage={currentPage}
-                          setCurrentPage={setCurrentPage}
-                          itemsPerPage={limit}
-                        />
-                      </div>
-                    )}
-            </div>
+          <CardFooter className="flex justify-center">
+            <GetPagination
+              totalItems={totalBookings}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              itemsPerPage={limit}
+            />
           </CardFooter>
         )}
       </Card>
-
-
     </div>
   );
 }
