@@ -1,82 +1,110 @@
-"use client";
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useParams, useRouter } from "next/navigation";
+"use client";
+
 import { useEffect, useState } from "react";
-import { BiDumbbell, BiTimeFive } from "react-icons/bi";
-import { TiGlobeOutline, TiTick } from "react-icons/ti";
-import { RiUserStarLine, RiMailLine, RiPhoneLine, RiUser3Line, RiStarFill } from "react-icons/ri";
-import { FcOvertime } from "react-icons/fc";
-import { ImCross } from "react-icons/im";
-import { MdEmail, MdPhone, MdLocationOn, MdCalendarToday } from "react-icons/md";
-import { FaUser, FaStar, FaTrophy, FaLanguage } from "react-icons/fa";
-import { PhotoProvider, PhotoView } from "react-photo-view";
-import "react-photo-view/dist/react-photo-view.css";
+import { useParams, useRouter } from "next/navigation";
+import { toast } from "sonner";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
 import { Button } from "@/src/components/ui/button";
 import { Badge } from "@/src/components/ui/badge";
-
-interface Tour {
-  id: string;
-  title: string;
-  description: string;
-  category: string;
-  packagePrice: number;
-  durationDays: number;
-  location: string;
-  physicality: string;
-  departure: string;
-  meetingPoint?: string;
-  maxGroupSize: number;
-  guideId: string;
-  guide?: {
-    id: string;
-    userId: string;
-    name: string;
-    email: string;
-    profilePic?: string;
-    phone?: string;
-    bio?: string;
-    languages?: string[];
-    expertise: string[];
-    dailyRate: number;
-    rating: number;
-    totalTours: number;
-    createdAt?: string;
-  } | null;
-  images?: string[];
-  status?: string;
-  ageLimit?: string;
-  departureTime?: string;
-  guideFee?: number;
-  includedLocations?: string[];
-  notIncludedLocations?: string[];
-  priceIncludes?: string[];
-  priceExcludes?: string[];
-  itinerary?: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import {
+  BiDumbbell,
+  BiTimeFive,
+} from "react-icons/bi";
+import {
+  TiGlobeOutline,
+  TiTick,
+} from "react-icons/ti";
+import {
+  RiUserStarLine,
+  RiStarFill,
+} from "react-icons/ri";
+import { FcOvertime } from "react-icons/fc";
+import { ImCross } from "react-icons/im";
+import {
+  MdEmail,
+  MdPhone,
+  MdLocationOn,
+  MdCalendarToday,
+} from "react-icons/md";
+import {
+  FaUser,
+  FaStar,
+  FaTrophy,
+  FaLanguage,
+} from "react-icons/fa";
+import { PhotoProvider, PhotoView } from "react-photo-view";
+import "react-photo-view/dist/react-photo-view.css";
+import { BookingService } from "@/src/services/booking/bookingSercvice.Action";
 
 export default function TourDetailsPage() {
   const params = useParams();
   const router = useRouter();
+  const { data: session, status: sessionStatus } = useSession();
   const { id } = params || {};
 
-  const [tour, setTour] = useState<Tour | null>(null);
+  const [tour, setTour] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
+  const [bookingLoading, setBookingLoading] = useState(false);
+  const [hasTouristProfile, setHasTouristProfile] = useState<boolean | null>(null);
 
+  // Check if user has tourist profile
+  useEffect(() => {
+    const checkTouristProfile = async () => {
+      if (!session?.user || session.user.role !== "TOURIST") {
+        setHasTouristProfile(null);
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_API_URL || "http://localhost:5000/api"}/tourist/my-profile`,
+          {
+            headers: {
+              Authorization: `Bearer ${session?.user?.accessToken}`,
+            },
+          }
+        );
+        
+        if (response.ok) {
+          setHasTouristProfile(true);
+        } else if (response.status === 404) {
+          setHasTouristProfile(false);
+        } else {
+          setHasTouristProfile(null);
+        }
+      } catch (error) {
+        console.error("Error checking tourist profile:", error);
+        setHasTouristProfile(null);
+      }
+    };
+
+    if (session?.user) {
+      checkTouristProfile();
+    }
+  }, [session]);
+
+  // Fetch tour data
   useEffect(() => {
     if (!id) return;
 
     const fetchTour = async () => {
       try {
-        const res = await fetch(
+        setLoading(true);
+        const response = await fetch(
           `${process.env.NEXT_PUBLIC_BASE_API_URL || "http://localhost:5000/api"}/tours/${id}`
         );
-        const data = await res.json();
-        setTour(data?.data || data);
-      } catch (error) {
+        
+        if (!response.ok) {
+          throw new Error("Failed to fetch tour");
+        }
+        
+        const data = await response.json();
+        setTour(data.data || data);
+      } catch (error: any) {
         console.error("Error fetching tour:", error);
+        toast.error(error.message || "Failed to load tour details");
       } finally {
         setLoading(false);
       }
@@ -85,13 +113,82 @@ export default function TourDetailsPage() {
     fetchTour();
   }, [id]);
 
-  if (loading) return <p className="text-gray-400 text-center p-6">Loading tour details...</p>;
-  if (!tour) return <p className="text-red-500 text-center p-6">Tour not found</p>;
+const handleBookNow = async () => {
+  // Check if user is logged in
+  if (!session?.user) {
+    toast.error("Please login to book a tour");
+    router.push("/login");
+    return;
+  }
+
+  // Check if user is a tourist
+  if (session.user.role !== "TOURIST") {
+    toast.error("Only tourists can book tours");
+    return;
+  }
+
+  // Check if tour is active
+  if (!tour?.isActive) {
+    toast.error("This tour is not available for booking");
+    return;
+  }
+
+  try {
+    setBookingLoading(true);
+    console.log("Starting booking process...");
+    console.log("Tour ID:", tour.id);
+    console.log("Session user:", session.user);
+    
+    // Create booking
+    const result = await BookingService.createBooking({
+      tourId: tour.id,
+      date: new Date().toISOString(),
+    });
+
+    console.log("Booking result:", result);
+    
+    // Check if booking was successful
+    if (result.booking) {
+      toast.success("Booking created successfully!");
+      
+      // Redirect to tourist's bookings page
+      setTimeout(() => {
+        router.push("/dashboard/tourist/my-booking");
+      }, 1500);
+    } else if (result.paymentUrl) {
+      // If payment URL is returned, go to payment
+      toast.success("Booking created! Redirecting to payment...");
+      window.location.href = result.paymentUrl;
+    } else {
+      toast.success("Booking created!");
+      router.push("/dashboard/tourist/my-booking");
+    }
+    
+  } catch (error: any) {
+    console.error("Booking error details:", error);
+    
+    // Handle specific error messages
+    if (error.message.includes("Tourist profile not found") || 
+        error.message.includes("complete your tourist profile")) {
+      toast.error("Please complete your tourist profile first");
+      router.push("/profile/tourist");
+    } else if (error.message.includes("session has expired") || 
+               error.message.includes("No session found")) {
+      toast.error("Your session has expired. Please login again.");
+      router.push("/login");
+    } else if (error.message.includes("Zod Error")) {
+      toast.error("Invalid booking data. Please try again.");
+    } else {
+      toast.error(error.message || "Failed to create booking");
+    }
+  } finally {
+    setBookingLoading(false);
+  }
+};
 
   const handleBack = () => window.history.back();
-  const handleBookNow = () => alert("Booking feature coming soon!");
   const handleViewGuide = () => {
-    if (tour.guide?.id) {
+    if (tour?.guide?.id) {
       router.push(`/guide/${tour.guide.id}`);
     }
   };
@@ -104,17 +201,128 @@ export default function TourDetailsPage() {
     });
   };
 
+  if (loading) {
+    return (
+      <div className="w-full max-w-7xl mx-auto px-5 py-8">
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-200 rounded w-1/4 mb-6"></div>
+          <div className="h-12 bg-gray-200 rounded mb-6"></div>
+          <div className="h-64 bg-gray-200 rounded"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!tour) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-4">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Tour Not Found</h1>
+          <p className="text-gray-600 mb-6">The tour you`&apos;`re looking for doesn`&apos;`t exist or has been removed.</p>
+          <Button onClick={() => router.push("/tours")}>
+            Browse Tours
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  const calculateTotalPrice = () => {
+    const basePrice = tour?.packagePrice || 0;
+    const guideFee = tour?.guideFee || (tour?.guide?.dailyRate || 0) * (tour?.durationDays || 1);
+    return basePrice + guideFee;
+  };
+
+  // Updated BookNowButton with profile check
+  const BookNowButton = () => {
+    if (bookingLoading) {
+      return (
+        <Button
+          className="bg-yellow-500 text-white border-yellow-600 hover:bg-yellow-600 hover:text-white shadow-lg"
+          disabled
+        >
+          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+          Processing...
+        </Button>
+      );
+    }
+
+    if (sessionStatus === "loading") {
+      return (
+        <Button
+          className="bg-gray-300 text-white"
+          disabled
+        >
+          Loading...
+        </Button>
+      );
+    }
+
+    if (!tour?.isActive) {
+      return (
+        <Button
+          className="bg-gray-400 text-white cursor-not-allowed"
+          disabled
+          title="Tour is not available for booking"
+        >
+          Not Available
+        </Button>
+      );
+    }
+
+    if (!session?.user) {
+      return (
+        <Button
+          className="bg-yellow-500 text-white hover:bg-yellow-600"
+          onClick={() => {
+            toast.error("Please login to book");
+            router.push("/login");
+          }}
+        >
+          Login to Book
+        </Button>
+      );
+    }
+
+    if (session?.user.role !== "TOURIST") {
+      return (
+        <Button
+          className="bg-purple-500 text-white hover:bg-purple-600"
+          onClick={() => toast.info("Only tourists can book tours")}
+        >
+          View Details
+        </Button>
+      );
+    }
+
+    // Check tourist profile
+
+    return (
+      <Button
+        className="bg-yellow-500 text-white border-yellow-600 hover:bg-yellow-600 hover:text-white shadow-lg"
+        onClick={handleBookNow}
+      >
+        Book Now
+      </Button>
+    );
+  };
+
   return (
     <div className="font-serif">
-
       {/* ---------- Banner ---------- */}
       <div className="relative w-full h-[500px] rounded-md overflow-hidden">
-        <Image
-          src={tour.images?.[0] || "/placeholder.png"}
-          alt={tour.title}
-          fill
-          className="object-cover"
-        />
+        {tour.images?.[0] ? (
+          <Image
+            src={tour.images[0]}
+            alt={tour.title}
+            fill
+            className="object-cover"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-orange-100 to-amber-100 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center">
+            <BiTimeFive className="h-24 w-24 text-orange-400 dark:text-orange-300" />
+          </div>
+        )}
 
         <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-4" style={{ backgroundColor: "rgba(17, 24, 39, 0.6)" }}>
           <h1 className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg">
@@ -123,24 +331,20 @@ export default function TourDetailsPage() {
           <p className="text-lg md:text-xl text-white mt-2 drop-shadow-md">{tour.title}</p>
           <div className="mt-4">
             <Badge variant="outline" className="bg-white/20 backdrop-blur-sm text-white border-white/30">
-              {tour.category}
+              {tour.category || "Tour"}
             </Badge>
-            {tour.status && (
-              <Badge variant="outline" className={`ml-2 ${
-                tour.status === "ACTIVE" ? "bg-green-500/20 text-green-300 border-green-400/30" :
-                tour.status === "INACTIVE" ? "bg-red-500/20 text-red-300 border-red-400/30" :
-                "bg-yellow-500/20 text-yellow-300 border-yellow-400/30"
-              }`}>
-                {tour.status}
-              </Badge>
-            )}
+            <Badge variant="outline" className={`ml-2 ${
+              tour.isActive ? "bg-green-500/20 text-green-300 border-green-400/30" :
+              "bg-red-500/20 text-red-300 border-red-400/30"
+            }`}>
+              {tour.isActive ? "Available" : "Unavailable"}
+            </Badge>
           </div>
         </div>
       </div>
 
       {/* ---------- Main Layout (Flex) ---------- */}
       <div className="w-[85vw] mx-auto my-6 flex flex-col lg:flex-row gap-6">
-
         {/* ---------- Left Side Content ---------- */}
         <div className="lg:w-[70%] w-full flex flex-col gap-6">
           {/* Tour Details Card */}
@@ -155,7 +359,7 @@ export default function TourDetailsPage() {
                 <div className="flex-1 min-w-[180px] max-w-[calc(25%-0.75rem)] flex items-center gap-3 border p-4 rounded-lg bg-gray-50 dark:bg-gray-700">
                   <BiTimeFive className="h-6 w-6 text-green-700 dark:text-green-400" />
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{tour.durationDays} Days</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{tour.durationDays || 1} Days</h3>
                     <p className="text-gray-400 text-sm">Duration</p>
                   </div>
                 </div>
@@ -163,7 +367,7 @@ export default function TourDetailsPage() {
                 <div className="flex-1 min-w-[180px] max-w-[calc(25%-0.75rem)] flex items-center gap-3 border p-4 rounded-lg bg-gray-50 dark:bg-gray-700">
                   <BiDumbbell className="h-6 w-6 text-green-700 dark:text-green-400" />
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{tour.physicality || "N/A"}</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{tour.physicality || "MODERATE"}</h3>
                     <p className="text-gray-400 text-sm">Physicality</p>
                   </div>
                 </div>
@@ -171,7 +375,7 @@ export default function TourDetailsPage() {
                 <div className="flex-1 min-w-[180px] max-w-[calc(25%-0.75rem)] flex items-center gap-3 border p-4 rounded-lg bg-gray-50 dark:bg-gray-700">
                   <TiGlobeOutline className="h-6 w-6 text-green-700 dark:text-green-400" />
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{tour.location}</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">{tour.location}</h3>
                     <p className="text-gray-400 text-sm">Location</p>
                   </div>
                 </div>
@@ -179,7 +383,7 @@ export default function TourDetailsPage() {
                 <div className="flex-1 min-w-[180px] max-w-[calc(25%-0.75rem)] flex items-center gap-3 border p-4 rounded-lg bg-gray-50 dark:bg-gray-700">
                   <RiUserStarLine className="h-6 w-6 text-green-700 dark:text-green-400" />
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{tour.ageLimit || "N/A"}</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{tour.ageLimit || "All ages"}</h3>
                     <p className="text-gray-400 text-sm">Age</p>
                   </div>
                 </div>
@@ -190,7 +394,7 @@ export default function TourDetailsPage() {
                 <div className="flex-1 min-w-[180px] max-w-[calc(25%-0.75rem)] flex items-center gap-3 border p-4 rounded-lg bg-gray-50 dark:bg-gray-700">
                   <FcOvertime className="h-6 w-6 text-green-700 dark:text-green-400" />
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{tour.departureTime || "N/A"}</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{tour.departureTime || "To be confirmed"}</h3>
                     <p className="text-gray-400 text-sm">Departure Time</p>
                   </div>
                 </div>
@@ -198,7 +402,7 @@ export default function TourDetailsPage() {
                 <div className="flex-1 min-w-[180px] max-w-[calc(25%-0.75rem)] flex items-center gap-3 border p-4 rounded-lg bg-gray-50 dark:bg-gray-700">
                   <TiTick className="h-6 w-6 text-green-700 dark:text-green-400" />
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{tour.maxGroupSize}</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{tour.maxGroupSize || "N/A"}</h3>
                     <p className="text-gray-400 text-sm">Max Group Size</p>
                   </div>
                 </div>
@@ -206,7 +410,7 @@ export default function TourDetailsPage() {
                 <div className="flex-1 min-w-[180px] max-w-[calc(25%-0.75rem)] flex items-center gap-3 border p-4 rounded-lg bg-gray-50 dark:bg-gray-700">
                   <TiTick className="h-6 w-6 text-green-700 dark:text-green-400" />
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">${tour.packagePrice}</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">${tour.packagePrice || 0}</h3>
                     <p className="text-gray-400 text-sm">Package Price</p>
                   </div>
                 </div>
@@ -230,22 +434,17 @@ export default function TourDetailsPage() {
               >
                 Back
               </Button>
-              <Button
-                className="bg-yellow-500 text-white border-yellow-600 hover:bg-yellow-600 hover:text-white shadow-lg"
-                onClick={handleBookNow}
-              >
-                Book Now
-              </Button>
+              <BookNowButton />
             </div>
 
             {/* Description */}
             <div className="my-5">
               <h3 className="text-lg font-semibold text-blue-600 dark:text-blue-400 mb-2">Description</h3>
-              <p className="text-gray-700 dark:text-gray-300">{tour.description}</p>
+              <p className="text-gray-700 dark:text-gray-300">{tour.description || "No description available for this tour."}</p>
             </div>
           </div>
 
-          {/* Guide Information Card */}
+          {/* Guide Information Card - Keep as is */}
           {tour.guide && (
             <div className="border shadow-lg rounded-xl p-6 bg-white dark:bg-gray-800">
               <div className="flex items-center justify-between mb-4">
@@ -338,7 +537,7 @@ export default function TourDetailsPage() {
                           Languages
                         </p>
                         <div className="flex flex-wrap gap-2">
-                          {tour.guide.languages.map((lang, index) => (
+                          {tour.guide.languages.map((lang: string, index: number) => (
                             <Badge key={index} variant="secondary" className="bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
                               {lang}
                             </Badge>
@@ -352,7 +551,7 @@ export default function TourDetailsPage() {
                       <div className="mt-4">
                         <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Areas of Expertise</p>
                         <div className="flex flex-wrap gap-2">
-                          {tour.guide.expertise.map((exp, index) => (
+                          {tour.guide.expertise.map((exp: string, index: number) => (
                             <Badge key={index} variant="outline" className="bg-orange-50 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300 border-orange-200">
                               {exp}
                             </Badge>
@@ -384,7 +583,7 @@ export default function TourDetailsPage() {
             </div>
           )}
 
-          {/* Tour Details Sections */}
+          {/* Tour Details Sections - Keep as is */}
           <div className="border shadow-lg rounded-xl p-6 bg-white dark:bg-gray-800">
             {/* Departure / Meeting Point */}
             <div className="flex flex-col md:flex-row gap-3 my-5">
@@ -392,73 +591,86 @@ export default function TourDetailsPage() {
                 <MdLocationOn />
                 DEPARTURE / MEETING POINT
               </h3>
-              <p className="md:w-[60%] text-gray-700 dark:text-gray-300">{tour.departure} / {tour.meetingPoint || "To be confirmed"}</p>
+              <p className="md:w-[60%] text-gray-700 dark:text-gray-300">{tour.departure || "To be confirmed"} / {tour.meetingPoint || "To be confirmed"}</p>
             </div>
 
             <hr className="border-gray-200 dark:border-gray-700" />
 
             {/* Included Locations */}
-            <div className="flex flex-col md:flex-row gap-3 my-5">
-              <h3 className="text-lg font-semibold italic md:w-[40%] text-blue-600 dark:text-blue-400">INCLUDED LOCATIONS</h3>
-              <div className="flex flex-wrap md:w-[60%] gap-2">
-                {tour.includedLocations?.map((inc: string, i: number) => (
-                  <div key={i} className="flex items-center gap-2 mx-2">
-                    <TiTick className="text-green-600 h-6 w-6" />
-                    <p className="text-gray-700 dark:text-gray-300">{inc}</p>
+            {tour.includedLocations?.length > 0 && (
+              <>
+                <div className="flex flex-col md:flex-row gap-3 my-5">
+                  <h3 className="text-lg font-semibold italic md:w-[40%] text-blue-600 dark:text-blue-400">INCLUDED LOCATIONS</h3>
+                  <div className="flex flex-wrap md:w-[60%] gap-2">
+                    {tour.includedLocations.map((inc: string, i: number) => (
+                      <div key={i} className="flex items-center gap-2 mx-2">
+                        <TiTick className="text-green-600 h-6 w-6" />
+                        <p className="text-gray-700 dark:text-gray-300">{inc}</p>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </div>
-
-            <hr className="border-gray-200 dark:border-gray-700" />
+                </div>
+                <hr className="border-gray-200 dark:border-gray-700" />
+              </>
+            )}
 
             {/* Not Included Locations */}
-            <div className="flex flex-col md:flex-row gap-3 my-5">
-              <h3 className="text-lg font-semibold italic md:w-[40%] text-blue-600 dark:text-blue-400">NOT INCLUDED LOCATIONS</h3>
-              <div className="flex flex-wrap md:w-[60%] gap-2">
-                {tour.notIncludedLocations?.map((inc: string, i: number) => (
-                  <div key={i} className="flex items-center gap-2 mx-2">
-                    <ImCross className="text-red-700 h-4 w-4" />
-                    <p className="text-gray-700 dark:text-gray-300">{inc}</p>
+            {tour.notIncludedLocations?.length > 0 && (
+              <>
+                <div className="flex flex-col md:flex-row gap-3 my-5">
+                  <h3 className="text-lg font-semibold italic md:w-[40%] text-blue-600 dark:text-blue-400">NOT INCLUDED LOCATIONS</h3>
+                  <div className="flex flex-wrap md:w-[60%] gap-2">
+                    {tour.notIncludedLocations.map((inc: string, i: number) => (
+                      <div key={i} className="flex items-center gap-2 mx-2">
+                        <ImCross className="text-red-700 h-4 w-4" />
+                        <p className="text-gray-700 dark:text-gray-300">{inc}</p>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </div>
-
-            <hr className="border-gray-200 dark:border-gray-700" />
+                </div>
+                <hr className="border-gray-200 dark:border-gray-700" />
+              </>
+            )}
 
             {/* Price Includes */}
-            <div className="flex flex-col md:flex-row gap-3 my-5">
-              <h3 className="text-lg font-semibold italic md:w-[40%] text-blue-600 dark:text-blue-400">PRICE INCLUDES</h3>
-              <div className="flex flex-wrap md:w-[60%] gap-2">
-                {tour.priceIncludes?.map((inc: string, i: number) => (
-                  <div key={i} className="flex items-center gap-2 mx-2">
-                    <TiTick className="text-green-600 h-6 w-6" />
-                    <p className="text-gray-700 dark:text-gray-300">{inc}</p>
+            {tour.priceIncludes?.length > 0 && (
+              <>
+                <div className="flex flex-col md:flex-row gap-3 my-5">
+                  <h3 className="text-lg font-semibold italic md:w-[40%] text-blue-600 dark:text-blue-400">PRICE INCLUDES</h3>
+                  <div className="flex flex-wrap md:w-[60%] gap-2">
+                    {tour.priceIncludes.map((inc: string, i: number) => (
+                      <div key={i} className="flex items-center gap-2 mx-2">
+                        <TiTick className="text-green-600 h-6 w-6" />
+                        <p className="text-gray-700 dark:text-gray-300">{inc}</p>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </div>
-
-            <hr className="border-gray-200 dark:border-gray-700" />
+                </div>
+                <hr className="border-gray-200 dark:border-gray-700" />
+              </>
+            )}
 
             {/* Price Excludes */}
-            <div className="flex flex-col md:flex-row gap-3 my-5">
-              <h3 className="text-lg font-semibold italic md:w-[40%] text-blue-600 dark:text-blue-400">PRICE EXCLUDES</h3>
-              <div className="flex flex-wrap md:w-[60%] gap-2">
-                {tour.priceExcludes?.map((inc: string, i: number) => (
-                  <div key={i} className="flex items-center gap-2 mx-2">
-                    <ImCross className="text-red-700 h-4 w-4" />
-                    <p className="text-gray-700 dark:text-gray-300">{inc}</p>
+            {tour.priceExcludes?.length > 0 && (
+              <>
+                <div className="flex flex-col md:flex-row gap-3 my-5">
+                  <h3 className="text-lg font-semibold italic md:w-[40%] text-blue-600 dark:text-blue-400">PRICE EXCLUDES</h3>
+                  <div className="flex flex-wrap md:w-[60%] gap-2">
+                    {tour.priceExcludes.map((inc: string, i: number) => (
+                      <div key={i} className="flex items-center gap-2 mx-2">
+                        <ImCross className="text-red-700 h-4 w-4" />
+                        <p className="text-gray-700 dark:text-gray-300">{inc}</p>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </div>
+                </div>
+                <hr className="border-gray-200 dark:border-gray-700" />
+              </>
+            )}
 
             {/* Itinerary */}
             {tour.itinerary && (
               <>
-                <hr className="border-gray-200 dark:border-gray-700" />
                 <div className="my-5">
                   <h3 className="text-lg font-semibold text-blue-600 dark:text-blue-400 mb-2 flex items-center gap-2">
                     <MdCalendarToday />
@@ -477,11 +689,11 @@ export default function TourDetailsPage() {
                     </ul>
                   </div>
                 </div>
+                <hr className="border-gray-200 dark:border-gray-700" />
               </>
             )}
 
             {/* Tour Metadata */}
-            <hr className="border-gray-200 dark:border-gray-700" />
             <div className="flex flex-wrap gap-4 text-sm text-gray-500 dark:text-gray-400 mt-5">
               <div className="flex items-center gap-2">
                 <span className="font-medium">Tour ID:</span>
@@ -564,7 +776,7 @@ export default function TourDetailsPage() {
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-gray-600 dark:text-gray-400">Total Price</span>
-                <span className="font-bold text-green-600 dark:text-green-400">${tour.packagePrice}</span>
+                <span className="font-bold text-green-600 dark:text-green-400">${calculateTotalPrice().toFixed(2)}</span>
               </div>
             </div>
           </div>
@@ -573,24 +785,17 @@ export default function TourDetailsPage() {
           <div className="border shadow-lg rounded-xl p-6 bg-white dark:bg-gray-800">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Tour Status</h3>
             <div className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium ${
-              tour.status === "ACTIVE" ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300" :
-              tour.status === "INACTIVE" ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300" :
-              tour.status === "PENDING" ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300" :
-              "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300"
+              tour.isActive ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300" :
+              "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
             }`}>
-              <div className={`w-3 h-3 rounded-full mr-2 ${
-                tour.status === "ACTIVE" ? "bg-green-500" :
-                tour.status === "INACTIVE" ? "bg-red-500" :
-                tour.status === "PENDING" ? "bg-yellow-500" :
-                "bg-gray-500"
-              }`}></div>
-              {tour.status || "ACTIVE"}
+              <div className={`w-3 h-3 rounded-full mr-2 ${tour.isActive ? "bg-green-500" : "bg-red-500"}`}></div>
+              {tour.isActive ? "Available for Booking" : "Currently Unavailable"}
             </div>
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-3">
-              {tour.status === "ACTIVE" ? "This tour is currently available for booking." :
-               tour.status === "INACTIVE" ? "This tour is currently not available." :
-               tour.status === "PENDING" ? "This tour is pending approval." :
-               "Status unknown."}
+              {tour.isActive 
+                ? "This tour is ready to book. Click 'Book Now' to proceed with payment."
+                : "This tour is not accepting bookings at the moment."
+              }
             </p>
           </div>
         </div>

@@ -16,6 +16,6 @@ export const touristSidebarItems: ISidebarItems[] = [
   },
   {
     title: "Management",
-    items: [{ title: "My Bookings", url: "/dashboard/tourist/booking" }],
+    items: [{ title: "My Bookings", url: "/dashboard/tourist/my-booking" }],
   },
 ];
