@@ -25,6 +25,8 @@ export interface Booking {
     durationDays: number;
     location: string;
     rating: number;
+    maxGroupSize?: number;
+    departureTime?: string;
   };
 
   guide: {
@@ -172,7 +174,7 @@ export const BookingService = {
   },
 
   /** ======================================
-   *  📌 Get My Bookings (Tourist, Guide, Admin)
+   *  📌 Get My Bookings (Tourist)
    *  ====================================== */
   getMyBookings: async (query: Record<string, any> = {}): Promise<PaginatedBookings> => {
     try {
@@ -201,6 +203,39 @@ export const BookingService = {
     } catch (error: any) {
       console.error("Error in getMyBookings:", error);
       throw new Error(error.message || "Failed to fetch bookings");
+    }
+  },
+
+  /** ======================================
+   *  🧭 Get Guide Bookings (Guide)
+   *  ====================================== */
+  getGuideBookings: async (query: Record<string, any> = {}): Promise<PaginatedBookings> => {
+    try {
+      const qs = new URLSearchParams(query).toString();
+      const url = `${API_URL}/guide/my-bookings?${qs}`;
+      
+      console.log("Fetching guide bookings from:", url);
+
+      const res = await authenticatedFetch(url, {
+        cache: "no-store",
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error("Failed to fetch guide bookings:", errorText);
+        throw new Error(`Failed to fetch guide bookings: ${res.status}`);
+      }
+
+      const data = await res.json();
+      console.log("Guide bookings data received:", data);
+      
+      return {
+        data: data.data || [],
+        meta: data.meta || { total: 0, page: 1, totalPage: 1, limit: 10 },
+      };
+    } catch (error: any) {
+      console.error("Error in getGuideBookings:", error);
+      throw new Error(error.message || "Failed to fetch guide bookings");
     }
   },
 
