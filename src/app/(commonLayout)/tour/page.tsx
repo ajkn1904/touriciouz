@@ -93,7 +93,7 @@ export default function ToursPage() {
 
   return (
     <div className="max-w-5xl mx-auto p-6">
-      <TourSearchFilter onFilterChange={(newFilters) => {
+      <TourSearchFilter onFilterChange={(newFilters: any) => {
         setFilters(newFilters);
         setCurrentPage(1); 
       }} />
