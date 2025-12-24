@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
+
 "use client"
 import { useEffect } from 'react';
-import AOS from "aos";
 import "aos/dist/aos.css";
 
 const OurStory = () => {
@@ -14,7 +15,7 @@ const OurStory = () => {
 
 
     return (
-        <div className="w-[90vw] sm:w-[85vw] mx-auto font-serif mt-36">
+        <div className="w-[95%] max-w-7xl mx-auto font-serif mt-36 overflow-hidden">
             <h2 className="text-2xl font-semibold text-green-600 italic mb-3">Watch Our Story____</h2>
             <div className="flex flex-col-reverse lg:flex-row justify-between items-center gap-12 lg:gap-16">
                 {/* Text Content */}
@@ -34,7 +35,7 @@ const OurStory = () => {
                 </div>
 
                 {/* Video */}
-                <div className="w-full sm:w-[470px] md:w-[560px] flex justify-center" data-aos="fade-right" data-aos-offset="10" data-aos-delay="50" data-aos-duration="1500" data-aos-easing="ease-in-out" data-aos-once="false">
+                <div className="w-full lg:w-[50%] flex justify-center" data-aos="fade-right" data-aos-offset="10" data-aos-delay="50" data-aos-duration="1500" data-aos-easing="ease-in-out" data-aos-once="false">
                     <iframe
                         className="w-full h-[215px] sm:h-[315px] md:h-[350px] shadow-xl rounded-lg"
                         src="https://www.youtube.com/embed/FCPdIvXo2rU"

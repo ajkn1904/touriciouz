@@ -1,6 +1,7 @@
 "use client"
+/* eslint-disable @typescript-eslint/no-require-imports */
+
 import { useEffect } from "react";
-import AOS from "aos";
 import "aos/dist/aos.css";
 
 const Subscriptions = () => {
@@ -15,7 +16,7 @@ const Subscriptions = () => {
 
     return (
         <div
-            className="w-[90vw] sm:w-[80vw] lg:w-[60vw] mx-auto rounded-2xl font-serif bg-gradient-to-b from-green-600 to-blue-400 shadow-2xl shadow-blue-700 p-8 py-20 my-24 flex flex-col items-center"
+            className="max-w-7xl w-[95%] mx-auto rounded-2xl font-serif bg-gradient-to-b from-green-600 to-blue-400 shadow-2xl shadow-blue-700 p-8 py-20 my-24 flex flex-col items-center"
             data-aos="zoom-in-left"
             data-aos-offset="10"
             data-aos-delay="50"

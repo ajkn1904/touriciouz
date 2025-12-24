@@ -1,10 +1,12 @@
 "use client"
+/* eslint-disable @typescript-eslint/no-require-imports */
+
 import { useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { Navigation, Pagination } from "swiper/modules";
 import Image from "next/image";
+import Link from "next/link";
 
 
 
@@ -18,10 +20,14 @@ const TourType = () => {
 
 
     return (
-        <div className="w-[85vw] mx-auto font-serif mt-40 text-center" data-aos="zoom-in" data-aos-offset="10" data-aos-delay="50" data-aos-duration="1000" data-aos-easing="ease-in-out" data-aos-once="false">
+        <div className="max-w-7xl w-[95%] mx-auto font-serif mt-40 text-center" data-aos="zoom-in" data-aos-offset="10" data-aos-delay="50" data-aos-duration="1000" data-aos-easing="ease-in-out" data-aos-once="false">
             <h3 className="text-2xl font-semibold my-4 text-green-600 italic">Your Kind Of Holiday__</h3>
             <h1 className="text-3xl font-semibold my-5">Your world, your way</h1>
-            <p className="text-lg w-[60vw] mx-auto">Distinctively re-engineer revolutionary meta-services and premium architectures. Intrinsically incubate intuitive opportunities and real-time potentialities. Appropriately communicate one-to-one technology after plug-and-play networks.</p>
+            <p className="text-lg w-[60vw] mx-auto">
+                Discover tours tailored to your travel style. Whether you seek adrenaline-fueled adventures, 
+                cultural immersions, or relaxing getaways, we offer diverse experiences led by expert local guides. 
+                Find your perfect journey with our curated categories.
+            </p>
             <hr className="w-[80vw] mt-10 mx-auto border border-green-600" />
 
 
@@ -36,7 +42,7 @@ const TourType = () => {
                 loop={true}
                 navigation={true}
                 modules={[Pagination, Navigation]}
-                className="mySwiper w-[80vw] lg:w-[60vw] mx-auto mt-20 mb-12 text-center h-[250px]"
+                className="mySwiper mx-auto mt-20 mb-12 text-center h-[250px]"
                 data-aos="fade-down-right" data-aos-offset="10" data-aos-delay="50" data-aos-duration="1000" data-aos-easing="ease-in-out" data-aos-once="false"
             >
                 <SwiperSlide>
@@ -78,7 +84,7 @@ const TourType = () => {
             </Swiper>
 
 
-            <button className="px-6 py-3 bg-green-600 text-white font-semibold rounded-md border border-green-500 shadow-2xl shadow-blue-700 transition-all duration-300 hover:border-2 hover:border-yellow-500" data-aos="fade-down" data-aos-offset="10" data-aos-delay="50" data-aos-duration="1000" data-aos-easing="ease-in-out" data-aos-once="false">Find the Perfect Tour</button>
+            <Link href={"/tour"} className="px-6 py-3 bg-green-600 text-white font-semibold rounded-md border border-green-500 shadow-2xl shadow-blue-700 transition-all duration-300 hover:border-2 hover:border-yellow-500" data-aos="fade-down" data-aos-offset="10" data-aos-delay="50" data-aos-duration="1000" data-aos-easing="ease-in-out" data-aos-once="false">Find the Perfect Tour</Link>
         </div>
     );
 };

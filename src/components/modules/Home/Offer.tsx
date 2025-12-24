@@ -1,8 +1,8 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 "use client";
 
 import { useEffect } from 'react';
 import styles from '../../../styles/Offer.module.css';
-import AOS from "aos";
 import "aos/dist/aos.css";
 
 const Offer = () => {
@@ -35,11 +35,11 @@ const Offer = () => {
         ];
 
     return (
-        <div className='flex flex-col lg:flex-row gap-12 lg:gap-7 xl:gap-16 justify-center items-center my-48 max-w-[1300px] mx-auto'>
+        <div className='flex flex-col lg:flex-row gap-12 lg:gap-7 xl:gap-16 justify-center items-center my-48 max-w-7xl w-[95%] mx-auto'>
             {offers.map(ofr => (
                 <div
                     key={ofr.id}
-                    className="relative w-[85%] lg:w-[70%] h-[350px] shadow-xl rounded-xl overflow-hidden"
+                    className="relative w-full h-[350px] shadow-xl rounded-xl overflow-hidden"
                     style={{
                         backgroundImage: `url(${ofr.img})`,
                         backgroundRepeat: 'no-repeat',
