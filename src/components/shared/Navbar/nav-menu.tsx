@@ -19,6 +19,8 @@ export const NavMenu = (props: NavigationMenuProps & { orientation?: "horizontal
   const menuItems = [
     { href: "/", label: "Home" },
     { href: "/tour", label: "Tours" },
+    { href: "/about", label: "About" },
+    { href: "/contact", label: "Contact" },
   ];
 
   // Auth menu items
