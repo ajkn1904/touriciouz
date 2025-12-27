@@ -78,15 +78,15 @@ export default function GuideTours() {
   return (
     <div className="w-full max-w-6xl mx-auto px-5">
       <div className="flex justify-between items-center my-8">
-        <h1 className="text-4xl font-bold text-green-600">MY TOURS: {total}</h1>
-        <Button className="my-8">
+        <h1 className="text-4xl font-bold text-green-600 uppercase">MY TOURS: {total}</h1>
+        <Button className="px-6 py-3 bg-green-600 text-white font-semibold rounded-md border border-green-500 shadow-lg transition-all duration-300 hover:border-2 my-8">
           <Link href="/dashboard/guide/create-tour">CREATE TOUR</Link>
         </Button>
       </div>
 
-      <div className="border border-muted rounded-md">
+      <div className="border border-muted rounded-md overflow-hidden">
         <Table>
-          <TableHeader className="bg-green-200">
+          <TableHeader className="bg-gradient-to-r from-green-50 to-teal-50 dark:from-gray-700 dark:to-gray-800 uppercase">
             <TableRow>
               <TableHead>No.</TableHead>
               <TableHead>Title</TableHead>

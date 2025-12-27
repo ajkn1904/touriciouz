@@ -193,9 +193,9 @@ export default function GuideBookingsPage() {
 
     try {
       setUpdatingStatus(selectedBooking.id);
-      
+
       await BookingService.updateBookingStatus(selectedBooking.id, selectedStatus);
-      
+
       toast.success(`Booking status updated to ${selectedStatus}`);
       setDialogOpen(false);
       fetchBookings(currentPage);
@@ -265,7 +265,7 @@ export default function GuideBookingsPage() {
     <div className="container mx-auto px-4 py-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">My Tour Bookings</h1>
+        <h1 className="text-4xl font-bold text-green-600 uppercase">My Tour Bookings</h1>
         <p className="text-gray-600 mt-2">
           Manage and track all bookings for your tours
         </p>
@@ -392,7 +392,7 @@ export default function GuideBookingsPage() {
       {/* Bookings Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Booking Management</CardTitle>
+          <CardTitle className="text-2xl">Booking Management</CardTitle>
           <CardDescription>
             {totalBookings} booking{totalBookings !== 1 ? "s" : ""} found
           </CardDescription>
@@ -413,7 +413,7 @@ export default function GuideBookingsPage() {
           ) : (
             <div className="overflow-x-auto">
               <Table>
-                <TableHeader>
+                <TableHeader className="bg-gradient-to-r from-green-50 to-teal-50 dark:from-gray-700 dark:to-gray-800 uppercase">
                   <TableRow>
                     <TableHead>Tourist</TableHead>
                     <TableHead>Tour</TableHead>
@@ -428,54 +428,22 @@ export default function GuideBookingsPage() {
                   {bookings.map((booking) => (
                     <TableRow key={booking.id} className="hover:bg-gray-50">
                       <TableCell>
-                        <div>
-                          <p className="font-medium flex items-center">
-                            <UserCircle className="w-4 h-4 mr-2 text-gray-400" />
-                            {booking.tourist?.user?.name || "N/A"}
-                          </p>
-                          <div className="flex items-center text-sm text-gray-500 mt-1">
-                            <Mail className="w-3 h-3 mr-1" />
-                            {booking.tourist?.user?.email || "No email"}
-                          </div>
-                          {booking.tourist?.user?.phone && (
-                            <div className="flex items-center text-sm text-gray-500 mt-1">
-                              <Phone className="w-3 h-3 mr-1" />
-                              {booking.tourist.user.phone}
-                            </div>
-                          )}
-                        </div>
+                        {booking.tourist?.user?.email || "No email"}
                       </TableCell>
                       <TableCell>
                         <div>
                           <p className="font-medium">{booking.tour.title}</p>
-                          <div className="flex items-center text-sm text-gray-500 mt-1">
-                            <MapPin className="w-3 h-3 mr-1" />
-                            {booking.tour.location}
-                          </div>
+                          
                           <div className="text-xs text-gray-400 mt-1">
                             {booking.tour.durationDays} day{booking.tour.durationDays !== 1 ? 's' : ''}
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell>
-                        <div className="flex items-center">
-                          <Calendar className="w-4 h-4 mr-2 text-gray-400" />
-                          {formatDate(booking.date)}
-                        </div>
-                        <div className="text-xs text-gray-400 mt-1">
-                          Booked: {formatDate(booking.createdAt)}
-                        </div>
+                      <TableCell>                          
+                          {formatDate(booking.date)}                        
                       </TableCell>
                       <TableCell>
-                        <div className="flex items-center">
-                          <DollarSign className="w-4 h-4 mr-2 text-green-600" />
-                          <div>
-                            <p className="font-medium">{formatCurrency(booking.payment?.amount || 0)}</p>
-                            <p className="text-xs text-gray-500">
-                              Guide: {formatCurrency((booking.payment?.amount || 0) * 0.9)}
-                            </p>
-                          </div>
-                        </div>
+                           {formatCurrency(booking.payment?.amount || 0)}
                       </TableCell>
                       <TableCell>
                         <div className="flex flex-col gap-1">
@@ -494,12 +462,11 @@ export default function GuideBookingsPage() {
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
                           <Button
-                            size="sm"
                             variant="outline"
+                            className="bg-green-200"
                             onClick={() => viewBookingDetails(booking.id)}
                           >
-                            <Eye className="w-4 h-4 mr-2" />
-                            View
+                            <Eye className="w-4 h-4" />
                           </Button>
                           <Button
                             size="sm"
@@ -519,16 +486,7 @@ export default function GuideBookingsPage() {
           )}
         </CardContent>
 
-      {totalPages > 1 && (
-        <div className="flex justify-center mt-10">
-          <GetPagination
-            totalItems={bookings.length}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            itemsPerPage={limit}
-          />
-        </div>
-      )}
+
       </Card>
 
       {/* Status Update Dialog */}
@@ -540,14 +498,14 @@ export default function GuideBookingsPage() {
               Update the status for booking #{selectedBooking?.id}
             </DialogDescription>
           </AlertDialogHeader>
-          
+
           {selectedBooking && (
             <div className="space-y-4">
               <div>
                 <p className="text-sm font-medium mb-2">Current Status</p>
                 {getStatusBadge(selectedBooking.status)}
               </div>
-              
+
               <div>
                 <p className="text-sm font-medium mb-2">Select New Status</p>
                 <Select
@@ -571,7 +529,7 @@ export default function GuideBookingsPage() {
                   </SelectContent>
                 </Select>
               </div>
-              
+
               {selectedStatus === "CANCELLED" && selectedBooking.payment?.status === "PAID" && (
                 <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-md">
                   <div className="flex items-start gap-2">
@@ -586,7 +544,7 @@ export default function GuideBookingsPage() {
                   </div>
                 </div>
               )}
-              
+
               {selectedStatus === "COMPLETED" && (
                 <div className="p-3 bg-green-50 border border-green-200 rounded-md">
                   <div className="flex items-start gap-2">
@@ -604,7 +562,7 @@ export default function GuideBookingsPage() {
               )}
             </div>
           )}
-          
+
           <DialogFooter>
             <Button
               variant="outline"
@@ -613,6 +571,7 @@ export default function GuideBookingsPage() {
               Cancel
             </Button>
             <Button
+              className="bg-green-500 hover:bg-green-600"
               onClick={updateBookingStatus}
               disabled={updatingStatus === selectedBooking?.id || selectedStatus === selectedBooking?.status}
             >
@@ -629,42 +588,16 @@ export default function GuideBookingsPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Quick Stats and Actions */}
-      <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Booking Status Summary</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {["CONFIRMED", "PENDING", "COMPLETED", "CANCELLED"].map((status) => {
-                const count = bookings.filter(b => b.status === status).length;
-                const percentage = totalBookings > 0 ? (count / totalBookings) * 100 : 0;
-                
-                return (
-                  <div key={status} className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="font-medium">{status}</span>
-                      <span>{count} bookings ({percentage.toFixed(1)}%)</span>
-                    </div>
-                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                      <div
-                        className={`h-full rounded-full ${
-                          status === "CONFIRMED" ? "bg-green-500" :
-                          status === "PENDING" ? "bg-yellow-500" :
-                          status === "COMPLETED" ? "bg-blue-500" :
-                          "bg-red-500"
-                        }`}
-                        style={{ width: `${percentage}%` }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      {totalPages > 1 && (
+        <div className="flex justify-center mt-10">
+          <GetPagination
+            totalItems={bookings.length}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            itemsPerPage={limit}
+          />
+        </div>
+      )}
     </div>
   );
 }

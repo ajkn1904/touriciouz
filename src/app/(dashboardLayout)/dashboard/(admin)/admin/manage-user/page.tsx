@@ -167,7 +167,7 @@ export default function ManageUser() {
     <div className="w-full max-w-6xl mx-auto px-5">
       {/* Header */}
       <div className="flex justify-between my-8">
-        <h1 className="text-4xl font-bold text-orange-500 dark:text-orange-400 uppercase mb-24">
+        <h1 className="text-4xl font-bold text-green-600 uppercase mb-24">
           USER: {users.length}
         </h1>
 
@@ -192,22 +192,22 @@ export default function ManageUser() {
       </div>
 
       {/* Users Table */}
-      <div className="border border-muted rounded-md">
-        <Table className="bg-gray-50 dark:bg-gray-900">
-          <TableHeader className="bg-blue-200 dark:bg-blue-900">
+      <div className="border border-muted rounded-md overflow-hidden shadow-lg">
+        <Table className="">
+          <TableHeader className="bg-gradient-to-r from-green-50 to-teal-50 dark:from-gray-700 dark:to-gray-800">
             <TableRow>
-              <TableHead className="uppercase font-bold border-r-2">No.</TableHead>
+              <TableHead className="uppercase font-bold">No.</TableHead>
               <TableHead className="uppercase font-bold">Name</TableHead>
               <TableHead className="uppercase font-bold">Email</TableHead>
               <TableHead className="uppercase font-bold">Current Role</TableHead>
               <TableHead className="uppercase font-bold text-center">Current Status</TableHead>
-              <TableHead className="uppercase font-bold border-l-2 text-center">Update Status</TableHead>
-              <TableHead className="uppercase font-bold border-l-2 text-center">Update Role</TableHead>
-              <TableHead className="uppercase font-bold border-l-2 text-center">Actions</TableHead>
+              <TableHead className="uppercase font-bold text-center">Update Status</TableHead>
+              <TableHead className="uppercase font-bold text-center">Update Role</TableHead>
+              <TableHead className="uppercase font-bold text-center">Actions</TableHead>
             </TableRow>
           </TableHeader>
 
-          <TableBody className="bg-gray-50 dark:bg-gray-900">
+          <TableBody className="bg-white">
             {currentUsers.map((user, index) => {
               // Get the selected status and role for this user
               const selectedStatus = userSelections[user.id]?.status || user.status;
@@ -223,13 +223,10 @@ export default function ManageUser() {
                     setHoveredRow(null);
                   }}
                   className={`cursor-pointer ${
-                    user.status === "DELETED" ? 'bg-red-50 dark:bg-red-900/20' :
-                    activeRow === user.id
-                      ? "bg-blue-500 dark:bg-gray-600"
-                      : "hover:bg-blue-100 hover:text-black dark:hover:bg-gray-800 dark:hover:text-white"
+                    user.status === "DELETED" ? 'bg-red-50 dark:bg-red-900/20' :""
                   }`}
                 >
-                  <TableCell className="font-medium border-r-2">
+                  <TableCell className="font-medium ">
                     {(currentPage - 1) * usersPerPage + index + 1}
                   </TableCell>
                   <TableCell className="font-medium">
@@ -276,7 +273,7 @@ export default function ManageUser() {
                   </TableCell>
 
                   {/* Update Status Selector */}
-                  <TableCell className="border-l-2">
+                  <TableCell className="">
                     <Select
                       value={selectedStatus}
                       onValueChange={(val) => handleStatusChange(user.id, val as UserStatus)}
@@ -308,7 +305,7 @@ export default function ManageUser() {
                   </TableCell>
 
                   {/* Update Role Selector */}
-                  <TableCell className="border-l-2">
+                  <TableCell className="">
                     <Select
                       value={selectedRole}
                       onValueChange={(val) => handleRoleChange(user.id, val as UserRole)}
@@ -343,7 +340,7 @@ export default function ManageUser() {
                   </TableCell>
 
                   {/* Action Buttons */}
-                  <TableCell className="border-l-2">
+                  <TableCell className="">
                     <div className="flex gap-2 justify-center">
                       {/* View Details Button */}
                       <Button

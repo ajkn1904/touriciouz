@@ -8,14 +8,13 @@ export const touristSidebarItems: ISidebarItems[] = [
       { title: "Home", url: "/" },
 
       { title: "Logout", onClick: () => signOut({ callbackUrl: "/login" }) },
+      {title: "All Tours", url:"/tour"}
     ],
   },
   {
     title: "Dashboard",
-    items: [{ title: "My Profile", url: "/dashboard/my-profile" }, {title: "Tours", url:"/tour"}],
-  },
-  {
-    title: "Management",
-    items: [{ title: "My Bookings", url: "/dashboard/tourist/my-booking" }],
-  },
+    items: [
+      { title: "My Profile", url: "/dashboard/my-profile" }, 
+      { title: "My Bookings", url: "/dashboard/tourist/my-booking" }],
+  }
 ];

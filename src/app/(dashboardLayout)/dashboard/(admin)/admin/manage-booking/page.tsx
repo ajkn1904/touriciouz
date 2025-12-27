@@ -23,9 +23,9 @@ export default function AdminBookingManagementPage() {
 
   const statusOptions: { value: BookingStatus | "ALL"; label: string; color: string; icon: any }[] = [
     { value: "ALL", label: "All", color: "bg-gray-100 text-gray-800", icon: null },
-    { value: "PENDING", label: "Pending", color: "bg-yellow-100 text-yellow-800", icon: Clock },
-    { value: "CONFIRMED", label: "Confirmed", color: "bg-blue-100 text-blue-800", icon: CheckCircle },
-    { value: "CANCELLED", label: "Cancelled", color: "bg-red-100 text-red-800", icon: XCircle },
+    { value: "PENDING", label: "Pending", color: "bg-green-100 text-green-800", icon: Clock },
+    { value: "CONFIRMED", label: "Confirmed", color: "bg-green-100 text-green-800", icon: CheckCircle },
+    { value: "CANCELLED", label: "Cancelled", color: "bg-green-100 text-green-800", icon: XCircle },
     { value: "COMPLETED", label: "Completed", color: "bg-green-100 text-green-800", icon: CheckCircle },
   ];
 
@@ -33,7 +33,7 @@ export default function AdminBookingManagementPage() {
     try {
       setLoading(true);
       setError(null);
-      
+
       const query: Record<string, any> = {
         page: currentPage,
         limit,
@@ -44,7 +44,7 @@ export default function AdminBookingManagementPage() {
       }
 
       const result: PaginatedBookings = await BookingService.getAllBookings(query);
-      
+
       setBookings(result.data);
       setTotalPages(result.meta.totalPage);
       setTotalBookings(result.meta.total);
@@ -124,7 +124,7 @@ export default function AdminBookingManagementPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-8">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-orange-500 dark:text-orange-400">
+          <h1 className="text-4xl font-bold text-green-600 uppercase">
             Booking Management
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-2">
@@ -148,17 +148,16 @@ export default function AdminBookingManagementPage() {
                 setSelectedStatus(status.value);
                 setCurrentPage(1);
               }}
-              className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
-                selectedStatus === status.value
+              className={`px-4 py-2 rounded-lg flex items-center gap-2 ${selectedStatus === status.value
                   ? status.color
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
-              }`}
+                }`}
             >
               {status.icon && <status.icon className="w-4 h-4" />}
               {status.label}
             </button>
           ))}
-          
+
           <button
             onClick={() => {
               setSelectedStatus("ALL");
@@ -196,27 +195,27 @@ export default function AdminBookingManagementPage() {
           <>
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead className="bg-gray-50 dark:bg-gray-700">
-                  <tr>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <thead className="bg-gradient-to-r from-green-50 to-teal-50 dark:from-gray-700 dark:to-gray-800 text-black font-bold">
+                  <tr className="text-black font-bold">
+                    <th className="px-4 py-3 text-left text-xs font-bold text-black dark:text-gray-400 uppercase tracking-wider">
                       Tour & Date
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-bold text-black dark:text-gray-400 uppercase tracking-wider">
                       Tourist
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-bold text-black dark:text-gray-400 uppercase tracking-wider">
                       Guide
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-bold text-black dark:text-gray-400 uppercase tracking-wider">
                       Amount
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-bold text-black dark:text-gray-400 uppercase tracking-wider">
                       Status
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-bold text-black dark:text-gray-400 uppercase tracking-wider">
                       Payment
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-bold text-black dark:text-gray-400 uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
@@ -226,72 +225,41 @@ export default function AdminBookingManagementPage() {
                     <tr key={booking.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
                       <td className="px-4 py-4">
                         <div className="flex items-center">
-                          <div className="flex-shrink-0 h-10 w-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-                            <MapPin className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                          </div>
-                          <div className="ml-3">
+
+                          <div className="">
                             <div className="text-sm font-medium text-gray-900 dark:text-white truncate max-w-[180px]" title={booking.tour.title}>
                               {booking.tour.title}
                             </div>
                             <div className="text-sm text-gray-500 dark:text-gray-400">
                               {format(new Date(booking.date), "MMM d, yyyy")}
                             </div>
-                            <div className="text-xs text-gray-400 dark:text-gray-500 truncate max-w-[180px]">
-                              {booking.tour.location}
-                            </div>
+
                           </div>
                         </div>
                       </td>
                       <td className="px-4 py-4">
-                      
-                          {/* Tourist Info */}
-                          <div className="flex items-start">
-                            <div className="flex-shrink-0 h-6 w-6 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mt-0.5">
-                              <User className="w-3 h-3 text-purple-600 dark:text-purple-400" />
-                            </div>
-                            <div className="ml-2 flex-1 min-w-0">
-                              <div className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
-                                Tourist
-                              </div>
-                              <div className="text-sm font-medium text-gray-900 dark:text-white truncate" title={booking.tourist.user.name}>
-                                {booking.tourist.user.name}
-                              </div>
-                              <div className="text-xs text-gray-500 dark:text-gray-400 truncate" title={booking.tourist.user.email}>
-                                {booking.tourist.user.email}
-                              </div>
-                            </div>
+
+                        {/* Tourist Info */}
+                        <div className="flex items-start">
+                          <div className="text-gray-500 dark:text-gray-400 truncate" title={booking.tourist.user.email}>
+                            {booking.tourist.user.email}
                           </div>
-                         </td>
-                         <td className="px-4 py-4"> 
-                          {/* Guide Info */}
-                          <div className="flex items-start">
-                            <div className="flex-shrink-0 h-6 w-6 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mt-0.5">
-                              <Users className="w-3 h-3 text-green-600 dark:text-green-400" />
-                            </div>
-                            <div className="ml-2 flex-1 min-w-0">
-                              <div className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
-                                Guide
-                              </div>
-                              <div className="text-sm font-medium text-gray-900 dark:text-white truncate" title={booking.guide.user.name}>
-                                {booking.guide.user.name}
-                              </div>
-                              <div className="text-xs text-gray-500 dark:text-gray-400 truncate" title={booking.guide.user.email}>
-                                {booking.guide.user.email}
-                              </div>
-                            </div>
+
+                        </div>
+                      </td>
+                      <td className="px-4 py-4">
+                        {/* Guide Info */}
+                        <div className="flex items-start">
+                          <div className="text-gray-500 dark:text-gray-400 truncate" title={booking.guide.user.email}>
+                            {booking.guide.user.email}
                           </div>
-                        
+                        </div>
+
                       </td>
                       <td className="px-4 py-4">
                         <div className="text-sm font-medium text-gray-900 dark:text-white">
                           ${calculateTotalPrice(booking).toFixed(2)}
-                        </div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
-                          {booking.tour.durationDays} days
-                        </div>
-                        <div className="text-xs text-gray-400 dark:text-gray-500">
-                          ${booking.tour.packagePrice} + ${booking.tour.guideFee}/day
-                        </div>
+                        </div> 
                       </td>
                       <td className="px-4 py-4">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusOptions.find(s => s.value === booking.status)?.color || 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300'}`}>
@@ -304,11 +272,6 @@ export default function AdminBookingManagementPage() {
                           <DollarSign className="w-3 h-3 mr-1" />
                           {booking.payment?.status || "UNPAID"}
                         </span>
-                        {booking.payment?.transactionId && (
-                          <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 truncate max-w-[120px]" title={booking.payment.transactionId}>
-                            ID: {booking.payment.transactionId.substring(0, 8)}...
-                          </div>
-                        )}
                       </td>
                       <td className="px-4 py-4">
                         <div className="flex items-center gap-2">
@@ -330,7 +293,7 @@ export default function AdminBookingManagementPage() {
                 </tbody>
               </table>
             </div>
-            
+
             {/* Pagination */}
             {totalPages > 1 && (
               <div className="flex justify-center mt-6 p-4 border-t dark:border-gray-700">

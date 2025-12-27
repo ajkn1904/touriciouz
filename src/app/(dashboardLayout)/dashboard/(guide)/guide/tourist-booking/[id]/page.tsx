@@ -38,12 +38,14 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/src/components/ui/select";
+import Image from "next/image";
 
 interface TouristUserInfo {
     id: string;
     name: string;
     email: string;
     phone?: string;
+    profilePic?: string;
     languages?: string[];
 }
 
@@ -282,21 +284,20 @@ export default function GuideBookingDetailsPage() {
             <div className="mb-8">
                 <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-4">
-                        <Button
-                            variant="ghost"
+                        <div>
+                            <h1 className="text-4xl font-bold text-green-600 uppercase">Booking Details</h1>
+                            <p className="text-gray-600">Booking ID: {booking.id}</p>
+                        </div>
+                    </div>
+                    <div className="flex gap-2">
+                                                <Button
+                            variant="outline"
                             size="sm"
                             onClick={() => router.push("/dashboard/guide/tourist-booking")}
                         >
                             <ArrowLeft className="w-4 h-4 mr-2" />
                             Back to Bookings
                         </Button>
-                        <div>
-                            <h1 className="text-3xl font-bold text-gray-900">Booking Details</h1>
-                            <p className="text-gray-600">Booking ID: {booking.id}</p>
-                        </div>
-                    </div>
-                    <div className="flex gap-2">
-                        {getStatusBadge(booking.status)}
                     </div>
                 </div>
             </div>
@@ -307,8 +308,7 @@ export default function GuideBookingDetailsPage() {
                     {/* Tourist Information Card */}
                     <Card>
                         <CardHeader>
-                            <CardTitle>Tourist Information</CardTitle>
-                            <CardDescription>Details about the tourist who booked</CardDescription>
+                            <CardTitle className="text-2xl">Tourist Information</CardTitle>
                         </CardHeader>
                         <CardContent>
                             {loadingTourist ? (
@@ -318,14 +318,30 @@ export default function GuideBookingDetailsPage() {
                                 </div>
                             ) : touristUser ? (
                                 <div className="space-y-4">
-                                    <div className="flex items-center">
-                                        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center border-2 border-gray-200 mr-4">
-                                            <User className="w-8 h-8 text-blue-600" />
-                                        </div>
+                                    <div className="flex items-center gap-3">
+                    <div className="w-20 h-20 rounded-full border-4 border-white shadow-lg overflow-hidden">
+                      {touristUser?.profilePic ? (
+                        <div className="w-full h-full relative">
+                          <Image
+                            src={touristUser?.profilePic}
+                            alt={touristUser.name}
+                            fill
+                            className="object-cover"
+                            sizes="128px"
+                            priority
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                          <span className="text-4xl font-bold text-gray-400">
+                            {touristUser.name.charAt(0)}
+                          </span>
+                        </div>
+                      )}
+                    </div>
                                         <div>
                                             <h3 className="text-lg font-semibold">{touristUser.name || "N/A"}</h3>
                                             <p className="text-gray-600">Tourist</p>
-                                            <p className="text-sm text-gray-500">User ID: {booking.tourist?.userId}</p>
                                         </div>
                                     </div>
 
@@ -333,9 +349,8 @@ export default function GuideBookingDetailsPage() {
                                         {touristUser.email && (
                                             <div className="flex items-center">
                                                 <Mail className="w-4 h-4 text-gray-400 mr-3" />
-                                                <div>
-                                                    <p className="text-sm text-gray-500">Email</p>
-                                                    <p className="font-medium">{touristUser.email}</p>
+                                                <div>            
+                                                    <p className="font-medium hover:text-blue-500 hover:underline">{touristUser.email}</p>
                                                 </div>
                                             </div>
                                         )}
@@ -344,8 +359,7 @@ export default function GuideBookingDetailsPage() {
                                             <div className="flex items-center">
                                                 <Phone className="w-4 h-4 text-gray-400 mr-3" />
                                                 <div>
-                                                    <p className="text-sm text-gray-500">Phone</p>
-                                                    <p className="font-medium">{touristUser.phone}</p>
+                                                    <p className="font-medium hover:underline hover:text-blue-500">{touristUser.phone}</p>
                                                 </div>
                                             </div>
                                         )}
@@ -369,7 +383,7 @@ export default function GuideBookingDetailsPage() {
 
                                     {(touristUser.email || touristUser.phone) && (
                                         <div className="pt-4 border-t">
-                                            <Button onClick={contactTourist} className="w-full">
+                                            <Button onClick={contactTourist} className="px-6 py-3 bg-green-600 text-white font-semibold rounded-md border border-green-500 shadow-lg transition-all duration-300 hover:border-2 w-full">
                                                 <MessageCircle className="w-4 h-4 mr-2" />
                                                 Contact Tourist
                                             </Button>
@@ -402,8 +416,7 @@ export default function GuideBookingDetailsPage() {
                     {/* Tour Details Card */}
                     <Card>
                         <CardHeader>
-                            <CardTitle>Tour Information</CardTitle>
-                            <CardDescription>Details about the booked tour</CardDescription>
+                            <CardTitle className="text-2xl">Tour Information</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-4">
@@ -477,7 +490,7 @@ export default function GuideBookingDetailsPage() {
                     {/* Status Update Card */}
                     <Card>
                         <CardHeader>
-                            <CardTitle>Update Booking Status</CardTitle>
+                            <CardTitle className="text-2xl">Update Booking Status</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div>
@@ -539,7 +552,7 @@ export default function GuideBookingDetailsPage() {
 
                             <Button
                                 onClick={updateBookingStatus}
-                                className="w-full"
+                                className="px-6 py-3 bg-green-600 text-white font-semibold rounded-md border border-green-500 shadow-lg transition-all duration-300 hover:border-2 w-full"
                                 disabled={updatingStatus || selectedStatus === booking.status}
                             >
                                 {updatingStatus ? (
@@ -557,7 +570,7 @@ export default function GuideBookingDetailsPage() {
                     {/* Payment Summary Card */}
                     <Card>
                         <CardHeader>
-                            <CardTitle>Payment Summary</CardTitle>
+                            <CardTitle className="text-2xl">Payment Summary</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-3">
@@ -603,20 +616,6 @@ export default function GuideBookingDetailsPage() {
                                 )}
                             </div>
 
-                            <div className="mt-6 space-y-3">
-                                <Button
-                                    onClick={downloadInvoice}
-                                    className="w-full"
-                                    variant="outline"
-                                >
-                                    <Download className="w-4 h-4 mr-2" />
-                                    Download Invoice
-                                </Button>
-                                <Button className="w-full" variant="outline">
-                                    <Share2 className="w-4 h-4 mr-2" />
-                                    Share Details
-                                </Button>
-                            </div>
                         </CardContent>
                     </Card>
 

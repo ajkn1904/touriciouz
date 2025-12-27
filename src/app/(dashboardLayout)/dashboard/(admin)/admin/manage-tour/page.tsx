@@ -56,11 +56,11 @@ export default function ManageTours() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalTours, setTotalTours] = useState(0);
-  
+
   const toursPerPage = 10;
 
-  const {data: session} = useSession()
-  
+  const { data: session } = useSession()
+
   // Load tours
   const loadTours = useCallback(async () => {
     setLoading(true);
@@ -69,7 +69,7 @@ export default function ManageTours() {
         page: currentPage,
         limit: toursPerPage,
       });
-      
+
       setTours(result.tours);
       setTotalPages(result.totalPage);
       setTotalTours(result.total);
@@ -93,14 +93,14 @@ export default function ManageTours() {
     const toastId = toast.loading(`Deleting tour...`);
     try {
       const token = session?.user.accessToken || '';
-      
+
       const result = await deleteTourAction(tourId, token);
-      
+
       if (result.error) {
         toast.error(result.error, { id: toastId });
         return;
       }
-      
+
       toast.success(`Tour deleted successfully!`, { id: toastId });
       loadTours(); // Refresh the list
     } catch (err: any) {
@@ -130,12 +130,12 @@ export default function ManageTours() {
   const handleRowClick = (tourId: string, e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
     if (
-      target.closest('button') || 
+      target.closest('button') ||
       target.closest('a')
     ) {
       return;
     }
-    
+
     router.push(`/tour/${tourId}`);
   };
 
@@ -167,7 +167,7 @@ export default function ManageTours() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-8">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-orange-500 dark:text-orange-400">
+          <h1 className="text-4xl font-bold text-green-600 uppercase">
             Manage Tours
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-2">
@@ -185,12 +185,13 @@ export default function ManageTours() {
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700">
         <div className="overflow-x-auto">
           <Table>
-            <TableHeader className="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-gray-700 dark:to-gray-800">
+            <TableHeader className="bg-gradient-to-r from-green-50 to-teal-50 dark:from-gray-700 dark:to-gray-800 uppercase">
               <TableRow className="border-b dark:border-gray-700">
-                <TableHead className="font-bold text-gray-900 dark:text-white py-4 w-[300px]">Tour Details</TableHead>
-                <TableHead className="font-bold text-gray-900 dark:text-white py-4 w-[250px]">Guide Information</TableHead>
-                <TableHead className="font-bold text-gray-900 dark:text-white py-4 text-center w-[200px]">Tour Specifications</TableHead>
-                <TableHead className="font-bold text-gray-900 dark:text-white py-4 w-[200px]">Status & Dates</TableHead>
+                <TableHead className="font-bold text-gray-900 dark:text-white py-4 w-[300px]">Name</TableHead>
+                <TableHead className="font-bold text-gray-900 dark:text-white py-4 w-[250px]">Guide</TableHead>
+                <TableHead className="font-bold text-gray-900 dark:text-white py-4 text-center w-[200px]">Amount</TableHead>
+                <TableHead className="font-bold text-gray-900 dark:text-white py-4 w-[200px]">Status</TableHead>
+                <TableHead className="font-bold text-gray-900 dark:text-white py-4 w-[200px]">Dates</TableHead>
                 <TableHead className="font-bold text-gray-900 dark:text-white py-4 text-center w-[150px]">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -216,10 +217,10 @@ export default function ManageTours() {
                     {/* Tour Details */}
                     <TableCell className="py-4 w-[300px]">
                       <div className="flex items-start space-x-3">
-                        {tour.images && tour.images.length > 0 ? (
+                        {/* {tour.images && tour.images.length > 0 ? (
                           <div className="w-16 h-16 flex-shrink-0">
-                            <Image 
-                              width={64} 
+                            <Image
+                              width={64}
                               height={64}
                               src={tour.images[0]}
                               alt={tour.title}
@@ -227,35 +228,35 @@ export default function ManageTours() {
                             />
                           </div>
                         ) : (
-                          <div className="w-16 h-16 flex-shrink-0 bg-gradient-to-br from-orange-100 to-amber-100 dark:from-gray-600 dark:to-gray-700 rounded-lg flex items-center justify-center">
-                            <Package className="h-6 w-6 text-orange-400 dark:text-orange-300" />
+                          <div className="w-16 h-16 flex-shrink-0 bg-gradient-to-br from-green-100 to-teal-100 dark:from-gray-600 dark:to-gray-700 rounded-lg flex items-center justify-center">
+                            <Package className="h-6 w-6 text-green-400 dark:text-green-300" />
                           </div>
-                        )}
+                        )} */}
                         <div className="min-w-0 flex-1 max-w-[200px]">
-                          
-                          <div className="flex items-center gap-2 mb-1 w-[150px]">
-                            <h3 className="font-bold text-gray-900 dark:text-white truncate" 
-                                title={tour.title}>
+
+                          <div className="flex items-center gap-2 mb-1 w-[150px] mx-2">
+                            <h3 className="font-bold text-gray-900 dark:text-white truncate"
+                              title={tour.title}>
                               {tour.title}
                             </h3>
-                            <Badge variant="outline" className="flex-shrink-0 text-xs bg-orange-50 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300 border-orange-200">
-                              {tour.category}
-                            </Badge>
                           </div>
-                          
-                         
-                          <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 mb-2 w-[150px]" 
-                             title={tour.description}>
+                            {/* <Badge variant="outline" className="flex-shrink-0 text-xs bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300 border-green-200">
+                              {tour.category}
+                            </Badge> */}
+
+
+                          {/* <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 mb-2 w-[150px]"
+                            title={tour.description}>
                             {tour.description}
-                          </p>
-                          
-                          <div className="flex items-center text-xs text-gray-500 dark:text-gray-400 truncate">
+                          </p> */}
+
+                          {/* <div className="flex items-center text-xs text-gray-500 dark:text-gray-400 truncate">
                             <MapPin className="h-3 w-3 mr-1 flex-shrink-0" />
                             <span className="truncate">{tour.location}</span>
                             <span className="mx-2 flex-shrink-0">•</span>
                             <Clock className="h-3 w-3 mr-1 flex-shrink-0" />
                             <span>{tour.durationDays} days</span>
-                          </div>
+                          </div> */}
                         </div>
                       </div>
                     </TableCell>
@@ -265,9 +266,9 @@ export default function ManageTours() {
                       {tour.guide ? (
                         <div className="space-y-2">
                           <div className="flex items-center space-x-3">
-                            {tour.guide.profilePic ? (
-                              <div className="w-10 h-10 flex-shrink-0 rounded-full overflow-hidden border-2 border-orange-200">
-                                <Image 
+                            {/* {tour.guide.profilePic ? (
+                              <div className="w-10 h-10 flex-shrink-0 rounded-full overflow-hidden border-2 border-green-200">
+                                <Image
                                   width={40}
                                   height={40}
                                   src={tour.guide.profilePic}
@@ -281,23 +282,26 @@ export default function ManageTours() {
                                   {tour.guide.name?.charAt(0) || "G"}
                                 </span>
                               </div>
-                            )}
+                            )} */}
                             <div className="min-w-0 flex-1">
-                              <h4 className="font-semibold text-gray-900 dark:text-white truncate" 
-                                  title={tour.guide.name}>
+                              {/* <h4 className="font-semibold text-gray-900 dark:text-white truncate"
+                                title={tour.guide.name}>
                                 {tour.guide.name}
-                              </h4>
-                              <div className="flex items-center gap-1">
-                                <Star className="h-3 w-3 flex-shrink-0 text-amber-500" />
+                              </h4> */}
+                              <span className="truncate" title={tour.guide.email}>
+                                {tour.guide.email}
+                              </span>
+                              {/* <div className="flex items-center gap-1">
+                                <Star className="h-3 w-3 flex-shrink-0 text-teal-500" />
                                 <span className="text-xs font-medium">{tour.guide.rating?.toFixed(1) || "0.0"}</span>
                                 <span className="text-xs text-gray-500 flex-shrink-0">•</span>
                                 <Trophy className="h-3 w-3 flex-shrink-0 text-purple-500" />
                                 <span className="text-xs text-gray-500 truncate">{tour.guide.totalTours || 0} tours</span>
-                              </div>
+                              </div> */}
                             </div>
                           </div>
-                          
-                          <div className="space-y-1 pl-13">
+
+                          {/* <div className="space-y-1 border rounded-md w-24">
                             <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
                               <Mail className="h-3 w-3 mr-2 flex-shrink-0 text-gray-400" />
                               <span className="truncate" title={tour.guide.email}>
@@ -316,11 +320,11 @@ export default function ManageTours() {
                               variant="ghost"
                               size="sm"
                               onClick={(e) => handleViewGuide(tour.guide?.id || "", e)}
-                              className="h-6 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:text-blue-400 dark:hover:text-blue-300"
+                              className="text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:text-blue-400 dark:hover:text-blue-300 w-24"
                             >
-                              View Guide Profile
+                              View Profile
                             </Button>
-                          </div>
+                          </div> */}
                         </div>
                       ) : (
                         <div className="text-center p-4 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg">
@@ -337,15 +341,14 @@ export default function ManageTours() {
                       <div className="flex flex-col items-center space-y-3">
                         <div className="flex flex-col items-center">
                           <div className="flex items-center gap-1">
-                            <DollarSign className="h-4 w-4 text-green-500" />
-                            <span className="font-bold text-lg text-gray-900 dark:text-white truncate">
+                            <span className=" text-gray-900 dark:text-white truncate">
                               {formatPrice(tour.packagePrice)}
                             </span>
                           </div>
-                          <span className="text-xs text-gray-500">Total Package</span>
+                          {/* <span className="text-xs text-gray-500">Total Package</span> */}
                         </div>
-                        
-                        <div className="grid grid-cols-2 gap-2 w-full">
+
+                        {/* <div className="grid grid-cols-2 gap-2 w-full">
                           <div className="text-center p-2 bg-gray-50 dark:bg-gray-700 rounded">
                             <Users className="h-4 w-4 text-purple-500 mx-auto mb-1" />
                             <span className="text-sm font-medium">{tour.maxGroupSize}</span>
@@ -356,54 +359,53 @@ export default function ManageTours() {
                             <span className="text-sm font-medium">{tour.durationDays}</span>
                             <p className="text-xs text-gray-500">Days</p>
                           </div>
-                        </div>
-                        
-                        <Badge 
-                          variant="secondary" 
-                          className={`text-xs truncate ${
-                            tour.physicality === "EASY" ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300" :
-                            tour.physicality === "MODERATE" ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300" :
-                            "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
-                          }`}
+                        </div> */}
+
+                        {/* <Badge
+                          variant="secondary"
+                          className={`text-xs bg-green-500/20 dark:text-green-300"`}
                         >
                           {tour.physicality} Level
-                        </Badge>
+                        </Badge> */}
                       </div>
                     </TableCell>
 
-                    {/* Status & Dates */}
-                    <TableCell className="py-4 w-[200px]">
-                      <div className="space-y-3">
+                    {/* Status */}
+                    <TableCell>
+                      <div>
                         <div>
-                          <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium truncate ${
-                            tour.status === "ACTIVE" ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300" :
+                          <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium truncate ${tour.status === "ACTIVE" ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300" :
                             tour.status === "INACTIVE" ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300" :
-                            tour.status === "PENDING" ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300" :
-                            tour.status === "COMPLETED" ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300" :
-                            "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300"
-                          }`}>
+                              tour.status === "PENDING" ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300" :
+                                tour.status === "COMPLETED" ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300" :
+                                  "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300"
+                            }`}>
                             <div className="w-2 h-2 rounded-full mr-2 bg-current flex-shrink-0"></div>
-                            <span className="truncate">{tour.status || "ACTIVE"}</span>
+                            <span className="truncate text-sm">{tour.status || "ACTIVE"}</span>
                           </div>
                         </div>
-                        
+
+                      </div>
+                    </TableCell>
+                    {/* Dates */}
+                    <TableCell className="">
+                      <div className="space-y-3">
+              
                         <div className="space-y-1 text-sm">
                           <div className="flex items-center text-gray-600 dark:text-gray-300">
-                            <Calendar className="h-3 w-3 mr-2 text-gray-400 flex-shrink-0" />
-                            <span className="truncate">Created: {formatDate(tour.createdAt)}</span>
+                            <span className="truncate">Created At: {formatDate(tour.createdAt)}</span>
                           </div>
                           <div className="flex items-center text-gray-500 dark:text-gray-400 text-xs">
-                            <Clock className="h-3 w-3 mr-2 flex-shrink-0" />
-                            <span className="truncate">Updated: {formatDate(tour.updatedAt)}</span>
+                            <span className="truncate">Updated At: {formatDate(tour.updatedAt)}</span>
                           </div>
                         </div>
-                        
-                        <div className="text-xs">
+
+                        {/* <div className="text-xs">
                           <p className="text-gray-500 dark:text-gray-400 truncate">Departure:</p>
                           <p className="font-medium truncate" title={tour.departure}>
                             {tour.departure}
                           </p>
-                        </div>
+                        </div> */}
                       </div>
                     </TableCell>
 
@@ -414,13 +416,12 @@ export default function ManageTours() {
                           variant="outline"
                           size="sm"
                           onClick={() => handleViewDetails(tour.id)}
-                          className="flex-1 bg-blue-50 text-blue-700 hover:text-blue-800 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-300 dark:hover:text-blue-200 border-blue-200 dark:border-blue-800"
+                          className="flex-1 bg-blue-50 text-green-700 hover:text-green-800 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-300 dark:hover:text-green-200 border-green-200 dark:border-green-800 py-1"
                           title="View Tour Details"
                         >
-                          <Eye className="h-4 w-4 mr-2" />
-                          <span className="truncate">View</span>
+                          <Eye className="h-4 w-4" />
                         </Button>
-                        
+
                         <BlockOrDeleteConfirmation
                           onConfirm={() => handleDeleteTour(tour.id)}
                           actionType="delete"
@@ -430,11 +431,10 @@ export default function ManageTours() {
                           <Button
                             variant="outline"
                             size="sm"
-                            className="flex-1 bg-red-50 text-red-700 hover:text-red-800 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-300 dark:hover:text-red-200 border-red-200 dark:border-red-800"
+                            className="flex-1 bg-red-50 text-red-700 hover:text-red-800 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-300 dark:hover:text-red-200 border-red-200 dark:border-red-800 py-1"
                             title="Delete Tour"
                           >
-                            <Trash2 className="h-4 w-4 mr-2" />
-                            <span className="truncate">Delete</span>
+                            <Trash2 className="h-4 w-4" />
                           </Button>
                         </BlockOrDeleteConfirmation>
                       </div>

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import { revalidate } from "@/src/utils/revalidate";
 import { getSession } from "next-auth/react";
 
 export interface User {
@@ -37,7 +38,12 @@ async function getAuthHeaders() {
 export const UserService = {
   getMe: async (): Promise<User> => {
     const headers = await getAuthHeaders();
-    const res = await fetch(`${API_URL}/me`, { headers, cache: "no-store" });
+    const res = await fetch(`${API_URL}/me`, { 
+      headers, 
+      next: {
+        tags: ["UseProfile"], 
+      } 
+    });
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
       throw new Error(err.message || "Failed to fetch profile");
@@ -63,6 +69,7 @@ export const UserService = {
       throw new Error(err.message || "Failed to update profile");
     }
 
+    revalidate("UseProfile")
     const data = await res.json();
     return data.data ?? data;
   },

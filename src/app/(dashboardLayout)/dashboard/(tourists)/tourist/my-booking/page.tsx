@@ -159,7 +159,7 @@ export default function TouristBookingsPage() {
     <div className="container mx-auto px-4 py-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">My Bookings</h1>
+        <h1 className="text-4xl font-bold text-green-600 uppercase">My Bookings</h1>
         <p className="text-gray-600 mt-2">
           View and manage all your tour bookings
         </p>
@@ -235,7 +235,7 @@ export default function TouristBookingsPage() {
       {/* Bookings Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Booking History</CardTitle>
+          <CardTitle className="text-2xl">Booking History</CardTitle>
           <CardDescription>
             {totalBookings} booking{totalBookings !== 1 ? "s" : ""} found
           </CardDescription>
@@ -255,7 +255,7 @@ export default function TouristBookingsPage() {
           ) : (
             <div className="overflow-x-auto">
               <Table>
-                <TableHeader>
+                <TableHeader className="bg-gradient-to-r from-green-50 to-teal-50 dark:from-gray-700 dark:to-gray-800">
                   <TableRow>
                     <TableHead>Tour</TableHead>
                     <TableHead>Date</TableHead>
@@ -301,26 +301,14 @@ export default function TouristBookingsPage() {
                         {booking.payment && getPaymentStatusBadge(booking.payment.status)}
                       </TableCell>
                       <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
                           <Button
-                            size="sm"
                             variant="outline"
+                            className="bg-blue-100"
                             onClick={() => viewBookingDetails(booking.id)}
                           >
-                            <Eye className="w-4 h-4 mr-2" />
-                            View
+                            <Eye className="w-4 h-4" />
                           </Button>
-                          {booking.payment?.status === "PAID" && (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => downloadInvoice(booking.payment.id)}
-                            >
-                              <Download className="w-4 h-4 mr-2" />
-                              Invoice
-                            </Button>
-                          )}
-                        </div>
+                       
                       </TableCell>
                     </TableRow>
                   ))}

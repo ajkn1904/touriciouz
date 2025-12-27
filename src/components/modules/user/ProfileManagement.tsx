@@ -164,7 +164,7 @@ export default function ProfileManagement() {
       {/* Update Profile Form */}
       <Card>
         <CardHeader>
-          <CardTitle>Update Profile</CardTitle>
+          <CardTitle className="text-2xl">Update Profile</CardTitle>
           <CardDescription>Modify your information below</CardDescription>
         </CardHeader>
         <CardContent>
@@ -266,7 +266,7 @@ export default function ProfileManagement() {
               </div>
             )}
 
-            <Button type="submit" disabled={updating}>
+            <Button type="submit" className="px-6 py-3 bg-green-600 text-white font-semibold rounded-md border border-green-500 shadow-lg transition-all duration-300 hover:border-2 w-full" disabled={updating}>
               {updating ? "Updating..." : "Update Profile"}
             </Button>
           </form>

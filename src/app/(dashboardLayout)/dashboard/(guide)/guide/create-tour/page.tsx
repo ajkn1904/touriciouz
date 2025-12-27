@@ -112,13 +112,13 @@ export default function CreateTourPage() {
 
   return (
     <div className="max-w-lg mx-auto p-6 space-y-6">
-      <h1 className="text-2xl font-bold">Create New Tour</h1>
+      <h1 className="text-4xl font-bold text-green-600 uppercase">Create New Tour</h1>
 
       {serverError && (
         <p className="text-red-500 border border-red-400 p-2 rounded">{serverError}</p>
       )}
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 w-full">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 max-w-6xl w-full md:min-w-md lg:min-w-xl xl:min-w-2xl border rounded-md p-5">
         {/* TITLE */}
         <div>
           <Label>Title</Label>
@@ -300,7 +300,7 @@ export default function CreateTourPage() {
           />
         </div>
 
-        <Button type="submit" disabled={loading} className="w-full mt-3">
+        <Button type="submit" disabled={loading} className="px-6 py-3 bg-green-600 text-white font-semibold rounded-md border border-green-500 shadow-lg transition-all duration-300 hover:border-2 w-full">
           {loading ? "Creating..." : "Create Tour"}
         </Button>
       </form>

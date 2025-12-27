@@ -61,11 +61,11 @@ export default function TourDetailsPage() {
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_BASE_API_URL || "http://localhost:5000/api"}/tours/${id}`
         );
-        
+
         if (!response.ok) {
           throw new Error("Failed to fetch tour");
         }
-        
+
         const data = await response.json();
         setTour(data.data || data);
       } catch (error: any) {
@@ -96,31 +96,31 @@ export default function TourDetailsPage() {
       if (response.ok) {
         const result = await response.json();
         const bookings = result.data || result;
-        
+
         // Find ALL bookings for this tour (including active ones)
-        const allBookingsForThisTour = bookings.filter((booking: any) => 
+        const allBookingsForThisTour = bookings.filter((booking: any) =>
           booking.tour?.id === tour.id
         );
-        
+
         //console.log("All bookings for this tour:", allBookingsForThisTour);
-        
+
         // Check for active bookings (not cancelled or completed)
-        const activeBooking = allBookingsForThisTour.find((booking: any) => 
+        const activeBooking = allBookingsForThisTour.find((booking: any) =>
           !['CANCELLED', 'COMPLETED'].includes(booking.status)
         );
-        
+
         // Check for pending/failed/cancelled bookings
-        const existingBooking = allBookingsForThisTour.find((booking: any) => 
-          booking.tour?.id === tour.id && 
+        const existingBooking = allBookingsForThisTour.find((booking: any) =>
+          booking.tour?.id === tour.id &&
           (booking.status === 'PENDING' || booking.status === 'FAILED' || booking.status === 'CANCELLED')
         );
-        
+
         if (activeBooking) {
           //console.log("Found active booking:", activeBooking);
           setHasActiveBooking(true);
           setBookingId(activeBooking.id);
           setBookingStatus(activeBooking.status);
-          
+
           // Store in localStorage
           localStorage.setItem('pendingBooking', JSON.stringify({
             bookingId: activeBooking.id,
@@ -133,7 +133,7 @@ export default function TourDetailsPage() {
           setHasActiveBooking(false);
           setBookingId(existingBooking.id);
           setBookingStatus(existingBooking.status);
-          
+
           // Store in localStorage
           localStorage.setItem('pendingBooking', JSON.stringify({
             bookingId: existingBooking.id,
@@ -169,34 +169,34 @@ export default function TourDetailsPage() {
       const status = urlParams.get('status');
       const transactionId = urlParams.get('transactionId');
       const tranId = urlParams.get('tran_id');
-      
+
       if (status && (transactionId || tranId)) {
         try {
           // Clear URL parameters
           const newUrl = window.location.pathname;
           window.history.replaceState({}, document.title, newUrl);
-          
+
           if (status === 'success') {
             toast.success("Payment successful! Booking confirmed.");
-            
+
             // Clear stored data and refresh
             localStorage.removeItem('pendingBooking');
             setBookingId(null);
             setBookingStatus(null);
             setHasActiveBooking(true);
-            
+
             // Refresh booking data
             setTimeout(() => {
               checkExistingBooking();
             }, 1000);
-            
+
             // Redirect to bookings page
             setTimeout(() => {
               router.push("/dashboard/tourist/my-booking");
             }, 1500);
           } else if (status === 'fail' || status === 'cancel') {
             toast.error("Payment failed or cancelled. You can try again.");
-            
+
             // Keep the booking for retry
             const storedBooking = localStorage.getItem('pendingBooking');
             if (storedBooking) {
@@ -245,11 +245,11 @@ export default function TourDetailsPage() {
       //console.log("Starting booking process...");
       //console.log("Tour ID:", tour.id);
       //console.log("Session user:", session.user);
-      
+
       // Check if booking already exists 
       if (bookingId && (bookingStatus === 'PENDING' || bookingStatus === 'FAILED')) {
         //console.log("Existing booking found, initiating payment:", bookingId);
-        
+
         // Initiate payment for existing booking
         const initResponse = await fetch(
           `${process.env.NEXT_PUBLIC_BASE_API_URL || "http://localhost:5000/api"}/payment/init/${bookingId}`,
@@ -268,14 +268,14 @@ export default function TourDetailsPage() {
 
         const initResult = await initResponse.json();
         //console.log("Payment initiation result:", initResult);
-        
+
         if (initResult.data?.paymentUrl) {
           toast.success("Redirecting to payment...");
           window.location.href = initResult.data.paymentUrl;
           return;
         }
       }
-      
+
       //console.log("Creating new booking...");
       const result = await BookingService.createBooking({
         tourId: tour.id,
@@ -283,7 +283,7 @@ export default function TourDetailsPage() {
       });
 
       //console.log("Booking result:", result);
-      
+
       if (result.booking?.id) {
         localStorage.setItem('pendingBooking', JSON.stringify({
           bookingId: result.booking.id,
@@ -294,7 +294,7 @@ export default function TourDetailsPage() {
         setBookingStatus('PENDING');
         setHasActiveBooking(true);
       }
-      
+
       if (result.paymentUrl) {
         toast.success("Booking created! Redirecting to payment...");
         window.location.href = result.paymentUrl;
@@ -302,16 +302,16 @@ export default function TourDetailsPage() {
         toast.success("Booking created!");
         router.push("/dashboard/tourist/my-booking");
       }
-      
+
     } catch (error: any) {
       console.error("Booking error details:", error);
-      
-      if (error.message.includes("Tourist profile not found") || 
-          error.message.includes("complete your tourist profile")) {
+
+      if (error.message.includes("Tourist profile not found") ||
+        error.message.includes("complete your tourist profile")) {
         toast.error("Please complete your tourist profile first");
         router.push("/dashboard/my-profile");
-      } else if (error.message.includes("session has expired") || 
-                error.message.includes("No session found")) {
+      } else if (error.message.includes("session has expired") ||
+        error.message.includes("No session found")) {
         toast.error("Your session has expired. Please login again.");
         router.push("/login");
       } else if (error.message.includes("Zod Error")) {
@@ -322,8 +322,8 @@ export default function TourDetailsPage() {
         setTimeout(() => {
           router.push("/dashboard/tourist/my-booking");
         }, 1500);
-      } else if (error.message.includes("already booked") || 
-                error.message.includes("already have an active booking")) {
+      } else if (error.message.includes("already booked") ||
+        error.message.includes("already have an active booking")) {
         toast.error("You already have an active booking for this tour");
         // Refresh booking data
         checkExistingBooking();
@@ -348,7 +348,7 @@ export default function TourDetailsPage() {
 
     try {
       setBookingLoading(true);
-      
+
       const url = `${process.env.NEXT_PUBLIC_BASE_API_URL || "http://localhost:5000/api"}/booking/status/${bookingId}`;
       const requestBody = { status: "CANCELLED" };
       const requestHeaders = {
@@ -360,7 +360,7 @@ export default function TourDetailsPage() {
       //console.log("Request body:", requestBody);
       //console.log("Setting status to CANCELLED for booking:", bookingId);
       //console.log("Current booking status:", bookingStatus);
-      
+
       const response = await fetch(url, {
         method: "PATCH",
         headers: requestHeaders,
@@ -371,7 +371,7 @@ export default function TourDetailsPage() {
       const responseText = await response.text();
       //console.log("Raw Response:", responseText);
       //console.log("Status Code:", response.status);
-      
+
       let result;
       try {
         result = JSON.parse(responseText);
@@ -380,29 +380,29 @@ export default function TourDetailsPage() {
         console.error("Failed to parse JSON response:", e);
         result = { message: responseText };
       }
-      
+
       if (response.ok) {
         //console.log("Cancel booking successful");
-        
+
         // Clear local storage
         localStorage.removeItem('pendingBooking');
-        
+
         // Update state
         setBookingId(null);
         setBookingStatus(null);
         setHasActiveBooking(false);
-        
+
         // Show success message
         toast.success("Booking cancelled successfully");
-        
+
         // Refetch existing bookings to update UI
         setTimeout(() => {
           checkExistingBooking();
         }, 500);
-        
+
       } else {
         console.error("Cancel booking failed:", result);
-        
+
         // Handle specific error cases
         if (response.status === 400) {
           toast.error("Invalid request. Please try again.");
@@ -604,35 +604,33 @@ export default function TourDetailsPage() {
             className="object-cover"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-orange-100 to-amber-100 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center">
-            <BiTimeFive className="h-24 w-24 text-orange-400 dark:text-orange-300" />
+          <div className="w-full h-full bg-gradient-to-br from-green-100 to-teal-100 dark:from-gray-700 dark:to-gray-800 flex items-center justify-center">
+            <BiTimeFive className="h-24 w-24 text-green-400 dark:text-green-300" />
           </div>
         )}
 
         <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-4" style={{ backgroundColor: "rgba(17, 24, 39, 0.6)" }}>
+          <p className="text-lg md:text-xl text-white mt-2 drop-shadow-md">TOUR DETAILS</p>
           <h1 className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg">
-            TOUR DETAILS
+            {tour.title}
           </h1>
-          <p className="text-lg md:text-xl text-white mt-2 drop-shadow-md">{tour.title}</p>
           <div className="mt-4">
             <Badge variant="outline" className="bg-white/20 backdrop-blur-sm text-white border-white/30">
               {tour.category || "Tour"}
             </Badge>
-            <Badge variant="outline" className={`ml-2 ${
-              tour.isActive ? "bg-green-500/20 text-green-300 border-green-400/30" :
+            <Badge variant="outline" className={`ml-2 ${tour.isActive ? "bg-green-500/20 text-green-300 border-green-400/30" :
               "bg-red-500/20 text-red-300 border-red-400/30"
-            }`}>
+              }`}>
               {tour.isActive ? "Available" : "Unavailable"}
             </Badge>
             {bookingId && bookingStatus && (
-              <Badge variant="outline" className={`ml-2 ${
-                bookingStatus === 'PENDING' ? 'bg-yellow-500/20 text-yellow-300 border-yellow-400/30' :
+              <Badge variant="outline" className={`ml-2 ${bookingStatus === 'PENDING' ? 'bg-yellow-500/20 text-yellow-300 border-yellow-400/30' :
                 bookingStatus === 'COMPLETED' ? 'bg-purple-500/20 text-purple-300 border-purple-400/30' :
-                'bg-blue-500/20 text-blue-300 border-blue-400/30'
-              }`}>
+                  'bg-blue-500/20 text-blue-300 border-blue-400/30'
+                }`}>
                 {bookingStatus === 'PENDING' ? 'Payment Pending' :
-                 bookingStatus === 'COMPLETED' ? 'Completed' :
-                 'Active'}
+                  bookingStatus === 'COMPLETED' ? 'Completed' :
+                    'Active'}
               </Badge>
             )}
           </div>
@@ -644,9 +642,9 @@ export default function TourDetailsPage() {
         {/* ---------- Left Side Content ---------- */}
         <div className="lg:w-[70%] w-full flex flex-col gap-6">
           {/* Tour Details Card */}
-          <div className="border shadow-lg rounded-xl p-6 bg-white dark:bg-gray-800">
-            <h1 className="text-3xl font-bold mb-3 text-gray-900 dark:text-white">{tour.title}</h1>
-            <p className="text-lg text-gray-600 dark:text-gray-300 mb-5">{tour.category}</p>
+          <div className="p-6 bg-white dark:bg-gray-800">
+            <h1 className="text-3xl font-bold mb-3 text-gray-900 dark:text-white uppercase">{tour.title}</h1>
+            <div className="border rounded-full w-fit px-2 bg-green-50 text-green-700 font-semibold mb-5">{tour.category}</div>
 
 
             {/* Info Cards */}
@@ -736,24 +734,24 @@ export default function TourDetailsPage() {
 
             {/* Description */}
             <div className="my-5">
-              <h3 className="text-lg font-semibold text-blue-600 dark:text-blue-400 mb-2">Description</h3>
+              <h3 className="text-lg font-semibold uppercase mb-2">Description</h3>
               <p className="text-gray-700 dark:text-gray-300">{tour.description || "No description available for this tour."}</p>
             </div>
           </div>
 
+          <hr />
           {/* Guide Information Card - Keep as is */}
           {tour.guide && (
-            <div className="border shadow-lg rounded-xl p-6 bg-white dark:bg-gray-800">
+            <div className=" p-6 bg-white dark:bg-gray-800">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                  <FaUser className="text-orange-500" />
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2 uppercase">
                   Your Guide
                 </h2>
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={handleViewGuide}
-                  className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:text-blue-400 dark:hover:text-blue-300"
+                  className="text-green-600 hover:text-green-700 hover:bg-green-50 dark:text-green-400 dark:hover:text-green-300"
                 >
                   View Full Profile
                 </Button>
@@ -764,7 +762,7 @@ export default function TourDetailsPage() {
                 <div className="flex-1">
                   <div className="flex items-center gap-4 mb-4">
                     {tour.guide.profilePic ? (
-                      <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-orange-200 dark:border-orange-800">
+                      <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-green-200 dark:border-green-800">
                         <Image
                           width={96}
                           height={96}
@@ -774,29 +772,28 @@ export default function TourDetailsPage() {
                         />
                       </div>
                     ) : (
-                      <div className="w-24 h-24 rounded-full bg-gradient-to-br from-orange-100 to-amber-100 dark:from-orange-900/30 dark:to-amber-900/30 flex items-center justify-center border-4 border-orange-200 dark:border-orange-800">
-                        <span className="text-3xl font-bold text-orange-600 dark:text-orange-300">
+                      <div className="w-20 h-20 rounded-full bg-gradient-to-br from-green-100 to-teal-100 dark:from-green-900/30 dark:to-teal-900/30 flex items-center justify-center border-4 border-green-200 dark:border-green-800">
+                        <span className="text-3xl font-bold text-green-600 dark:text-green-300">
                           {tour.guide.name?.charAt(0) || "G"}
                         </span>
                       </div>
                     )}
-  
+
+                    <div>
                       <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{tour.guide.name}</h3>
-                    
+                          <p className="font-medium text-gray-700 dark:text-white hover:text-blue-500 hover:underline">{tour.guide.email}</p>
+                        
+                    </div>
+
+
                   </div>
 
                   {/* Contact Information */}
                   <div className="space-y-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                        <MdEmail className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Email</p>
-                        <p className="font-medium text-gray-900 dark:text-white">{tour.guide.email}</p>
-                      </div>
-                    </div>
 
+
+
+                    {/* 
                     {tour.guide.phone && (
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
@@ -814,10 +811,10 @@ export default function TourDetailsPage() {
                         <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">About Guide</p>
                         <p className="text-gray-700 dark:text-gray-300">{tour.guide.bio}</p>
                       </div>
-                    )}
+                    )} */}
 
                     {/* Languages */}
-                    {tour.guide.languages && tour.guide.languages.length > 0 && (
+                    {/* {tour.guide.languages && tour.guide.languages.length > 0 && (
                       <div className="mt-4">
                         <p className="text-sm text-gray-500 dark:text-gray-400 mb-2 flex items-center gap-2">
                           <FaLanguage className="h-4 w-4" />
@@ -831,7 +828,7 @@ export default function TourDetailsPage() {
                           ))}
                         </div>
                       </div>
-                    )}
+                    )} */}
 
                     {/* Expertise */}
                     {tour.guide.expertise && tour.guide.expertise.length > 0 && (
@@ -839,7 +836,7 @@ export default function TourDetailsPage() {
                         <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Areas of Expertise</p>
                         <div className="flex flex-wrap gap-2">
                           {tour.guide.expertise.map((exp: string, index: number) => (
-                            <Badge key={index} variant="outline" className="bg-orange-50 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300 border-orange-200">
+                            <Badge key={index} variant="outline" className="bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300 border-green-200">
                               {exp}
                             </Badge>
                           ))}
@@ -869,25 +866,25 @@ export default function TourDetailsPage() {
               </div>
             </div>
           )}
-
+          <hr />
           {/* Tour Details Sections - Keep as is */}
-          <div className="border shadow-lg rounded-xl p-6 bg-white dark:bg-gray-800">
+          <div className=" p-6 bg-white dark:bg-gray-800">
             {/* Departure / Meeting Point */}
             <div className="flex flex-col md:flex-row gap-3 my-5">
-              <h3 className="text-lg font-semibold italic md:w-[40%] text-blue-600 dark:text-blue-400 flex items-center gap-2">
+              <h3 className="text-lg font-semibold md:w-[40%] flex items-center gap-2">
                 <MdLocationOn />
                 MEETING POINT / DEPARTURE
               </h3>
-              <p className="md:w-[60%] text-gray-700 dark:text-gray-300">{tour.meetingPoint || "To be confirmed"} on {tour.departure || "To be confirmed"} at {tour.departureTime || "To be confirmed"} </p>
+              <p className="md:w-[60%] text-gray-700 dark:text-gray-300"><span className="font-bold">{tour.meetingPoint || "To be confirmed"}</span> <br /> {tour.departureTime || "To be confirmed"} <br /> {tour.departure || "To be confirmed"} </p>
             </div>
 
-            <hr className="border-gray-200 dark:border-gray-700" />
+            <hr />
 
             {/* Included Locations */}
             {tour.includedLocations?.length > 0 && (
               <>
                 <div className="flex flex-col md:flex-row gap-3 my-5">
-                  <h3 className="text-lg font-semibold italic md:w-[40%] text-blue-600 dark:text-blue-400">INCLUDED LOCATIONS</h3>
+                  <h3 className="text-lg font-semibold italic md:w-[40%]">INCLUDED LOCATIONS</h3>
                   <div className="flex flex-wrap md:w-[60%] gap-2">
                     {tour.includedLocations.map((inc: string, i: number) => (
                       <div key={i} className="flex items-center gap-2 mx-2">
@@ -905,7 +902,7 @@ export default function TourDetailsPage() {
             {tour.notIncludedLocations?.length > 0 && (
               <>
                 <div className="flex flex-col md:flex-row gap-3 my-5">
-                  <h3 className="text-lg font-semibold italic md:w-[40%] text-blue-600 dark:text-blue-400">NOT INCLUDED LOCATIONS</h3>
+                  <h3 className="text-lg font-semibold italic md:w-[40%]">NOT INCLUDED LOCATIONS</h3>
                   <div className="flex flex-wrap md:w-[60%] gap-2">
                     {tour.notIncludedLocations.map((inc: string, i: number) => (
                       <div key={i} className="flex items-center gap-2 mx-2">
@@ -923,7 +920,7 @@ export default function TourDetailsPage() {
             {tour.priceIncludes?.length > 0 && (
               <>
                 <div className="flex flex-col md:flex-row gap-3 my-5">
-                  <h3 className="text-lg font-semibold italic md:w-[40%] text-blue-600 dark:text-blue-400">PRICE INCLUDES</h3>
+                  <h3 className="text-lg font-semibold italic md:w-[40%]">PRICE INCLUDES</h3>
                   <div className="flex flex-wrap md:w-[60%] gap-2">
                     {tour.priceIncludes.map((inc: string, i: number) => (
                       <div key={i} className="flex items-center gap-2 mx-2">
@@ -941,7 +938,7 @@ export default function TourDetailsPage() {
             {tour.priceExcludes?.length > 0 && (
               <>
                 <div className="flex flex-col md:flex-row gap-3 my-5">
-                  <h3 className="text-lg font-semibold italic md:w-[40%] text-blue-600 dark:text-blue-400">PRICE EXCLUDES</h3>
+                  <h3 className="text-lg font-semibold italic md:w-[40%]">PRICE EXCLUDES</h3>
                   <div className="flex flex-wrap md:w-[60%] gap-2">
                     {tour.priceExcludes.map((inc: string, i: number) => (
                       <div key={i} className="flex items-center gap-2 mx-2">
@@ -959,7 +956,7 @@ export default function TourDetailsPage() {
             {tour.itinerary && (
               <>
                 <div className="my-5">
-                  <h3 className="text-lg font-semibold text-blue-600 dark:text-blue-400 mb-2 flex items-center gap-2">
+                  <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
                     <MdCalendarToday />
                     ITINERARY
                   </h3>
@@ -997,8 +994,8 @@ export default function TourDetailsPage() {
         {/* ---------- Right Side Gallery (30%) ---------- */}
         <div className="lg:w-[30%] w-full space-y-6">
           {/* Gallery Card */}
-          <div className="border shadow-lg rounded-xl p-6 bg-white dark:bg-gray-800">
-            <h2 className="text-2xl font-semibold my-5 text-blue-700 dark:text-blue-400">Gallery</h2>
+          <div className="dark:bg-gray-800">
+            <h2 className="text-2xl font-semibold my-5 uppercase">Gallery</h2>
 
             <PhotoProvider>
               <div className="grid grid-cols-1 gap-3">
@@ -1032,8 +1029,9 @@ export default function TourDetailsPage() {
               </p>
             )}
           </div>
+          {/* 
 
-          {/* Booking Status Card */}
+         
           {bookingId && bookingStatus && (
             <div className="border shadow-lg rounded-xl p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900">
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Booking Status</h3>
@@ -1124,7 +1122,7 @@ export default function TourDetailsPage() {
           )}
 
 
-          {/* Status Card */}
+          
           <div className="border shadow-lg rounded-xl p-6 bg-white dark:bg-gray-800">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Tour Status</h3>
             <div className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium ${
@@ -1141,6 +1139,7 @@ export default function TourDetailsPage() {
               }
             </p>
           </div>
+           */}
         </div>
       </div>
     </div>

@@ -247,7 +247,7 @@ export default function EditTourPage() {
 
   return (
     <div className="max-w-lg mx-auto p-6 space-y-6">
-      <h1 className="text-2xl font-bold">Edit Tour</h1>
+      <h1 className="text-4xl font-bold text-green-600 uppercase">Edit Tour</h1>
 
       {/* Compression status */}
       {compressing && (
@@ -266,7 +266,7 @@ export default function EditTourPage() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 w-full">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 max-w-6xl w-full md:min-w-md lg:min-w-xl xl:min-w-2xl border rounded-md p-5">
         {/* TITLE */}
         <div>
           <Label>Title</Label>
@@ -492,7 +492,7 @@ export default function EditTourPage() {
         <Button 
           type="submit" 
           disabled={loading || compressing} 
-          className="w-full mt-3"
+          className="px-6 py-3 bg-green-600 text-white font-semibold rounded-md border border-green-500 shadow-lg transition-all duration-300 hover:border-2 w-full"
         >
           {compressing ? "Compressing Images..." : 
            loading ? "Updating..." : 

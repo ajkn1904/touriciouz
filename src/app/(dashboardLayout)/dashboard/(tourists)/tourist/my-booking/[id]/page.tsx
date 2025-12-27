@@ -316,19 +316,19 @@ export default function BookingDetailsPage() {
     <div className="container mx-auto px-4 py-8">
       {/* Header */}
       <div className="mb-8">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-3">
           <div className="flex items-center gap-4">
-
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Booking Details</h1>
+              
+              <h1 className="text-4xl font-bold text-green-600 uppercase">Booking Details {getStatusBadge(booking.status)}</h1> 
               <p className="text-gray-600">Booking ID: {booking.id}</p>
             </div>
 
           </div>
           <div className="flex gap-2">
-            {getStatusBadge(booking.status)}
             <Button
               variant="default"
+              className="px-6 py-3 bg-green-600 text-white font-semibold rounded-md border border-green-500 shadow-lg transition-all duration-300 hover:border-2"
               onClick={() => router.push("/dashboard/tourist/my-booking")}
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -344,8 +344,20 @@ export default function BookingDetailsPage() {
           {/* Tour Details Card */}
           <Card>
             <CardHeader>
-              <CardTitle>Tour Information</CardTitle>
-              <CardDescription>Details about the tour you booked</CardDescription>
+              <div className="flex flex-col md:flex-row justify-between md:items-center gap-2">
+                <div>
+                  <CardTitle className="text-2xl">Tour Information</CardTitle>
+                  <CardDescription>Details about the tour you booked</CardDescription>
+                </div>
+                <Button
+                  onClick={() => booking.tour?.id && router.push(`/tour/${booking.tour.id}`)}
+                  className="px-6 py-3 bg-green-600 text-white font-semibold rounded-md border border-green-500 shadow-lg transition-all duration-300 hover:border-2"
+                  variant="default"
+                  disabled={!booking.tour?.id}
+                >
+                  View Tour Details
+                </Button>
+              </div>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -360,11 +372,6 @@ export default function BookingDetailsPage() {
                   </div>
                 </div>
 
-                {booking.tour?.description && (
-                  <div className="mt-4">
-                    <p className="text-gray-700">{booking.tour.description}</p>
-                  </div>
-                )}
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex items-center">
@@ -419,15 +426,6 @@ export default function BookingDetailsPage() {
                   </div>
                 </div>
 
-                <Button
-                  onClick={() => booking.tour?.id && router.push(`/tour/${booking.tour.id}`)}
-                  className="w-full"
-                  variant="default"
-                  disabled={!booking.tour?.id}
-                >
-                  View Tour Details
-                </Button>
-
 
                 {/* Booking Schedule */}
                 <div className="pt-4 border-t">
@@ -455,13 +453,14 @@ export default function BookingDetailsPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle>Guide Information</CardTitle>
+                <CardTitle className="text-2xl">Guide Information</CardTitle>
                 <CardDescription>Your tour guide details</CardDescription>
               </div>
               {guide?.id && (
                 <Button
                   variant="outline"
                   size="sm"
+                  className="bg-green-200"
                   onClick={viewGuideProfile}
                 >
                   View Full Profile
@@ -503,49 +502,13 @@ export default function BookingDetailsPage() {
                           <Trophy className="w-4 h-4 text-purple-500 mr-1" />
                           <span>{guide.guide?.totalTours || 0} tours</span>
                         </div>
-                        <Badge variant={isGuideAvailable ? "default" : "secondary"}>
-                          {isGuideAvailable ? "Active" : "Inactive"}
-                        </Badge>
                       </div>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {guide.email && (
-                      <div className="flex items-center">
-                        <Mail className="w-4 h-4 text-gray-400 mr-3" />
-                        <div>
-                          <p className="text-sm text-gray-500">Email</p>
-                          <p className="font-medium">{guide.email}</p>
-                        </div>
-                      </div>
-                    )}
-
-                    {guide.phone && (
-                      <div className="flex items-center">
-                        <Phone className="w-4 h-4 text-gray-400 mr-3" />
-                        <div>
-                          <p className="text-sm text-gray-500">Phone</p>
-                          <p className="font-medium">{guide.phone}</p>
-                        </div>
-                      </div>
-                    )}
-
-                    {guide.guide?.dailyRate && (
-                      <div className="flex items-center">
-                        <DollarSign className="w-4 h-4 text-gray-400 mr-3" />
-                        <div>
-                          <p className="text-sm text-gray-500">Daily Rate</p>
-                          <p className="font-medium">{formatCurrency(guide.guide.dailyRate)}/day</p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-
                   {(guide.email || guide.phone) && (
-                    <div className="pt-4 border-t">
-                      <Button onClick={contactGuide} className="w-full">
+                    <div className="pt-4">
+                      <Button onClick={contactGuide} className="px-6 py-3 bg-green-600 text-white font-semibold rounded-md border border-green-500 shadow-lg transition-all duration-300 hover:border-2">
                         <MessageCircle className="w-4 h-4 mr-2" />
                         Contact Guide
                       </Button>
@@ -570,7 +533,7 @@ export default function BookingDetailsPage() {
           {/* Payment Summary Card */}
           <Card>
             <CardHeader>
-              <CardTitle>Payment Summary</CardTitle>
+              <CardTitle className="text-2xl">Payment Summary</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
@@ -613,40 +576,10 @@ export default function BookingDetailsPage() {
                   </div>
                 )}
 
-                {booking.payment?.paymentGatewayData && (
-                  <div>
-                    <p className="text-sm text-gray-500 mb-1">Payment Gateway</p>
-                    <Badge variant="outline">
-                      {booking.payment.paymentGatewayData.status || "Unknown"}
-                    </Badge>
-                  </div>
-                )}
               </div>
 
-              <div className="mt-6 space-y-3">
-                <Button
-                  onClick={downloadInvoice}
-                  className="w-full"
-                  variant="outline"
-                  disabled={!booking.payment?.invoiceUrl}
-                >
-                  <Download className="w-4 h-4 mr-2" />
-                  {booking.payment?.invoiceUrl ? "Download Invoice" : "Invoice Unavailable"}
-                </Button>
-                <Button className="w-full" variant="outline">
-                  <Share2 className="w-4 h-4 mr-2" />
-                  Share Booking
-                </Button>
-              </div>
             </CardContent>
           </Card>
-          <Button
-            variant="secondary"
-            onClick={() => router.push("/dashboard/tourist/my-booking")}
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Bookings
-          </Button>
         </div>
       </div>
     </div>

@@ -9,6 +9,7 @@ import { Badge } from "@/src/components/ui/badge";
 import { Separator } from "@/src/components/ui/separator";
 import { ArrowLeft, Mail, Phone, Calendar, Globe, ShieldCheck, Star, DollarSign, Award, RefreshCw, MapPin, BookOpen, Trophy } from "lucide-react";
 import { toast } from "sonner";
+import { useSession } from "next-auth/react";
 
 interface GuideData {
   id: string;
@@ -133,6 +134,8 @@ export default function SimpleGuideProfilePage() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const {data: session} = useSession()
+
 
   const fetchGuideData = useCallback(async (forceRefresh = false) => {
     if (!id) return;
@@ -211,9 +214,8 @@ export default function SimpleGuideProfilePage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-50 to-gray-100">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-orange-500 border-t-transparent mb-4"></div>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-green-500 border-t-transparent mb-4"></div>
           <p className="text-gray-600 text-lg">Loading guide profile...</p>
-          <p className="text-gray-400 text-sm mt-2">Guide ID: {id}</p>
         </div>
       </div>
     );
@@ -295,7 +297,7 @@ export default function SimpleGuideProfilePage() {
             {/* Profile Card */}
             <div className="bg-white rounded-xl shadow-lg overflow-hidden">
               <div className={`h-2 ${
-                guide.role === "GUIDE" ? "bg-gradient-to-r from-orange-500 to-amber-500" :
+                guide.role === "GUIDE" ? "bg-gradient-to-r from-green-500 to-teal-500" :
                 guide.role === "ADMIN" ? "bg-gradient-to-r from-blue-500 to-indigo-500" :
                 "bg-gradient-to-r from-green-500 to-emerald-500"
               }`}></div>
@@ -347,7 +349,7 @@ export default function SimpleGuideProfilePage() {
                           {guide.name}
                         </h2>
                         <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium mb-4 ${
-                          guide.role === "GUIDE" ? "bg-amber-50 text-amber-800" :
+                          guide.role === "GUIDE" ? "bg-teal-50 text-teal-800" :
                           guide.role === "ADMIN" ? "bg-blue-50 text-blue-800" :
                           "bg-green-50 text-green-800"
                         }`}>
@@ -357,7 +359,7 @@ export default function SimpleGuideProfilePage() {
                       </div>
                       <Button
                         onClick={() => window.location.href = `mailto:${guide.email}`}
-                        className="bg-orange-500 hover:bg-orange-600"
+                        className="bg-green-500 hover:bg-green-600"
                       >
                         <Mail className="mr-2 h-4 w-4" />
                         Contact
@@ -367,26 +369,23 @@ export default function SimpleGuideProfilePage() {
                   </div>
                 </div>
               </div>
-            </div>
-
-            {/* Guide Statistics Card */}
-            {hasGuideInfo && (
-              <div className="bg-white rounded-xl shadow-lg p-6">
+        
+        <div className="px-6 pb-6">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <Award className="h-5 w-5 text-amber-500" />
+                  <Award className="h-5 w-5 text-teal-500" />
                   Guide Performance
                 </h3>
                 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                  <div className="bg-amber-50 p-4 rounded-lg text-center">
+                  <div className="bg-teal-50 p-4 rounded-lg text-center">
                     <div className="flex items-center justify-center gap-2 mb-2">
-                      <Star className="h-5 w-5 text-amber-500" />
+                      <Star className="h-5 w-5 text-yellow-600" />
                       <span className="text-2xl font-bold">{guide?.guide?.rating?.toFixed(1) || "0.0"}</span>
                     </div>
                     <p className="text-sm text-gray-600">Rating</p>
                   </div>
                   
-                  <div className="bg-amber-50 p-4 rounded-lg text-center">
+                  <div className="bg-teal-50 p-4 rounded-lg text-center">
                     <div className="flex items-center justify-center gap-2 mb-2">
                       <Trophy className="h-5 w-5 text-blue-500" />
                       <span className="text-2xl font-bold">{guide?.guide?.totalTours || 0}</span>
@@ -394,7 +393,7 @@ export default function SimpleGuideProfilePage() {
                     <p className="text-sm text-gray-600">Total Tours</p>
                   </div>
                   
-                  <div className="bg-amber-50 p-4 rounded-lg text-center">
+                  <div className="bg-teal-50 p-4 rounded-lg text-center">
                     <div className="flex items-center justify-center gap-1 mb-2">
                       <DollarSign className="h-5 w-5 text-green-500" />
                       <span className="text-2xl font-bold">{guide?.guide?.dailyRate || 0}</span>
@@ -402,8 +401,8 @@ export default function SimpleGuideProfilePage() {
                     <p className="text-sm text-gray-600">Daily Rate</p>
                   </div>
                   
-                  {guide?.guide?.balance !== undefined && (
-                    <div className="bg-amber-50 p-4 rounded-lg text-center">
+                  {session?.user.role === "GUIDE" && guide?.guide?.balance !== undefined && (
+                    <div className="bg-teal-50 p-4 rounded-lg text-center">
                       <div className="flex items-center justify-center gap-1 mb-2">
                         <DollarSign className="h-5 w-5 text-purple-500" />
                         <span className="text-2xl font-bold">{guide?.guide?.balance}</span>
@@ -424,7 +423,7 @@ export default function SimpleGuideProfilePage() {
                       </h4>
                       <div className="flex flex-wrap gap-2">
                         {guide.guide.expertise.map((exp: string, index: number) => (
-                          <Badge key={index} className="bg-orange-100 text-orange-800 hover:bg-orange-200 border-orange-200">
+                          <Badge key={index} className="bg-green-100 text-green-800 hover:bg-green-200 border-green-200">
                             {exp}
                           </Badge>
                         ))}
@@ -433,7 +432,7 @@ export default function SimpleGuideProfilePage() {
                   </>
                 )}
               </div>
-            )}
+              </div>
 
             {/* Recent Tours (if available) */}
             {guide.recentTours && guide.recentTours.length > 0 && (
@@ -476,44 +475,33 @@ export default function SimpleGuideProfilePage() {
 
           {/* Right Column - Side Info */}
           <div className="space-y-6">
-            {/* Contact Card */}
+           
             <div className="bg-white rounded-xl shadow-lg p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Contact Details</h3>
-              <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Contact Here</h3>
+              <div className="space-y-2">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-                    <Mail className="h-5 w-5 text-blue-600" />
+                  <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                    <Mail className="h-5 w-5 text-green-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Email Address</p>
-                    <p className="font-medium break-all">{guide.email}</p>
+                    <p className="font-medium break-all hover:text-blue-500 hover:underline">{guide.email}</p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 mb-10">
                   <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
                     <Phone className="h-5 w-5 text-green-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Phone Number</p>
-                    <p className="font-medium">{guide.phone || "Not provided"}</p>
+                    <p className="font-medium hover:text-blue-500 hover:underline">{guide.phone || "Not provided"}</p>
                   </div>
                 </div>
-
-                <Button 
-                  onClick={() => window.location.href = `mailto:${guide.email}`}
-                  className="w-full mt-2"
-                >
-                  <Mail className="mr-2 h-4 w-4" />
-                  Send Message
-                </Button>
+ 
               </div>
-            </div>
-
-            {/* Languages Card */}
-            {guide.languages && guide.languages.length > 0 && (
-              <div className="bg-white rounded-xl shadow-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            
+            {guide.languages && guide.languages.length > 0 && (  
+                <div className="mb-10">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                   <Globe className="h-5 w-5" />
                   Languages
                 </h3>
@@ -527,8 +515,7 @@ export default function SimpleGuideProfilePage() {
               </div>
             )}
 
-            {/* Account Info Card */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
+            
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Account Information</h3>
               <div className="space-y-3">
                 <div>
@@ -539,63 +526,18 @@ export default function SimpleGuideProfilePage() {
                   </div>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500 mb-1">Last Updated</p>
-                  <p className="font-medium">{formatDate(guide.updatedAt)}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500 mb-1">User ID</p>
-                  <code className="text-xs bg-gray-100 px-2 py-1 rounded font-mono block truncate">
-                    {guide.id}
-                  </code>
+                
                 </div>
-                {hasGuideInfo && (
-                  <div>
-                    <p className="text-sm text-gray-500 mb-1">Guide ID</p>
-                    <code className="text-xs bg-gray-100 px-2 py-1 rounded font-mono block truncate">
-                      {guide?.guide?.id}
-                    </code>
-                  </div>
-                )}
+                
               </div>
             </div>
 
-            {/* Quick Actions Card */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
-              <div className="space-y-3">
-                <Button 
-                  variant="outline" 
-                  className="w-full justify-start"
-                  onClick={handleRefresh}
-                  disabled={refreshing}
-                >
-                  <RefreshCw className={`mr-2 h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
-                  {refreshing ? 'Refreshing...' : 'Refresh Data'}
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="w-full justify-start"
-                  onClick={handleBack}
-                >
-                  <ArrowLeft className="mr-2 h-4 w-4" />
-                  Back to List
-                </Button>
-                <div className="pt-4 border-t">
-                  <p className="text-xs text-gray-500 text-center">
-                    Data is cached for 1 hour
-                  </p>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
 
-        {/* Footer Note */}
-        <div className="mt-8 text-center">
-          <p className="text-sm text-gray-500">
-            Need help? <Button variant="link" className="text-orange-500 p-0 h-auto">Contact support</Button>
-          </p>
-        </div>
+      
       </div>
     </div>
   );

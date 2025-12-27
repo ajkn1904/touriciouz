@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaClock, FaPaperPlane, FaCheckCircle, FaLinkedin, FaGithub, FaWhatsapp, FaGlobe, FaExternalLinkAlt, FaGlobeAsia, FaHome } from 'react-icons/fa';
+import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaClock, FaPaperPlane, FaCheckCircle, FaLinkedin, FaGithub, FaWhatsapp, FaGlobe, FaExternalLinkAlt, FaGlobeAsia, FaHome, FaHeadset, FaComments } from 'react-icons/fa';
 import { MdSupportAgent } from 'react-icons/md';
 import 'aos/dist/aos.css';
 
@@ -146,19 +146,105 @@ const ContactPage = () => {
     return (
         <div className="font-serif max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
 
-            {/* Hero Section */}
-            <div className="text-center mb-16">
-                <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6"
-                    data-aos="fade-up">
-                    Get in Touch
-                </h1>
-                <p className="text-xl text-gray-600 max-w-3xl mx-auto"
+            {/* Hero Section - Modified similar to about page */}
+            <div className="relative overflow-hidden mb-20 w-full">
+                <div className="absolute inset-0 z-0">
+                    <div className="absolute top-0 left-0 w-72 h-72 bg-green-300/10 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+                    <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-300/10 rounded-full translate-x-1/3 translate-y-1/3"></div>
+                    <div className="absolute top-1/2 right-1/4 w-48 h-48 bg-yellow-300/10 rounded-full"></div>
+                </div>
+
+                <div className="relative px-4 sm:px-6 lg:px-8 pb-16">
+                    <div className="grid lg:grid-cols-2 gap-12 items-center">
+                        {/* Left Content */}
+                        <div className="space-y-8" data-aos="fade-right">
+                            <div>
+                                <span className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-semibold mb-4">
+                                    <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                                    Always Here to Help
+                                </span>
+
+                                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+                                    We&apos;re Here to
+                                    <span className="block text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-500">
+                                        Help You Journey
+                                    </span>
+                                </h1>
+
+                                <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+                                    Have questions about our tours? Need help with booking? Our travel experts are here to help you plan your perfect adventure with personalized assistance.
+                                </p>
+                            </div>
+
+                            {/* Stats */}
+                            <div className="grid grid-cols-3 gap-6 pt-4">
+                                <div className="text-center p-4 bg-white/50 backdrop-blur-sm rounded-xl border border-green-100">
+                                    <div className="text-2xl font-bold text-green-600 mb-2">24/7</div>
+                                    <div className="text-sm text-gray-600">Support Available</div>
+                                </div>
+                                <div className="text-center p-4 bg-white/50 backdrop-blur-sm rounded-xl border border-green-100">
+                                    <div className="text-2xl font-bold text-green-600 mb-2">2-4h</div>
+                                    <div className="text-sm text-gray-600">Avg Response Time</div>
+                                </div>
+                                <div className="text-center p-4 bg-white/50 backdrop-blur-sm rounded-xl border border-green-100">
+                                    <div className="text-2xl font-bold text-green-600 mb-2">100%</div>
+                                    <div className="text-sm text-gray-600">Satisfaction Rate</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Right Image */}
+                        <div className="relative" data-aos="fade-left">
+                            <div className="relative h-[400px] lg:h-[500px] rounded-2xl overflow-hidden shadow-2xl">
+                                <Image
+                                    src="https://images.unsplash.com/photo-1560264280-88b68371db39?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                    alt="Customer support team helping travelers"
+                                    fill
+                                    className="object-cover hover:scale-110 transition-transform duration-700"
+                                    priority
+                                />
+                                {/* Overlay Gradient */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-green-900/30 via-transparent to-transparent"></div>
+                            </div>
+
+                            {/* Floating Card */}
+                            <div className="absolute -bottom-6 -right-6 w-64 bg-white/90 backdrop-blur-sm rounded-xl p-6 shadow-xl border border-green-100"
+                                data-aos="fade-up"
+                                data-aos-delay="300">
+                                <div className="flex items-center gap-4 mb-4">
+                                    <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-blue-400 rounded-full flex items-center justify-center">
+                                        <FaHeadset className="w-6 h-6 text-white" />
+                                    </div>
+                                    <div>
+                                        <div className="text-2xl font-bold text-gray-800">4.8/5</div>
+                                        <div className="text-sm text-gray-600">Support Rating</div>
+                                    </div>
+                                </div>
+                                <p className="text-sm text-gray-700 italic">
+                                    &quot;Exceptional support that made our trip planning effortless!&quot;
+                                </p>
+                            </div>
+
+                            {/* Decorative Elements */}
+                            <div className="absolute -top-4 -left-4 w-8 h-8 bg-green-400/20 rounded-lg rotate-12"></div>
+                            <div className="absolute -bottom-4 -left-8 w-12 h-12 bg-blue-400/20 rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Scroll Indicator */}
+                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10"
                     data-aos="fade-up"
-                    data-aos-delay="200">
-                    Have questions about our tours? Need help with booking? Our travel experts are here to help you plan your perfect adventure.
-                </p>
+                    data-aos-delay="500">
+                    <div className="animate-bounce">
+                        <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                        </svg>
+                    </div>
+                </div>
             </div>
 
+            {/* Rest of your existing contact page content remains the same */}
             {/* Contact Info Cards */}
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
                 {contactInfo.map((info, index) => (
@@ -454,8 +540,6 @@ const ContactPage = () => {
                     </div>
                 </div>
             </div>
-
-
         </div>
     );
 };

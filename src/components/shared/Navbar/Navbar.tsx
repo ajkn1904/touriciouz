@@ -8,12 +8,16 @@ import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
 import { Logo } from "./logo";
 import { NavMenu } from "./nav-menu";
 import { NavigationSheet } from "./navigation-sheet";
+import { useSession } from "next-auth/react";
+import { UserProfileDropdown } from "./user-profile-dropdown";
 
 const Navbar = () => {
+  const { data: session } = useSession();
+
   return (
     <Headroom>
       {/* Top Bar */}
-      <div className="bg-slate-900/90 px-5 lg:px-24 xl:px-52 py-2 text-gray-500 flex justify-between">
+      <div className="bg-slate-900/90 px-5 lg:px-24 xl:px-52 py-2 text-gray-400 flex justify-between">
         <div className="flex items-center gap-5">
           <div className="flex items-center gap-2">
             <MdPhone />
@@ -48,9 +52,12 @@ const Navbar = () => {
           </span>
         </Link>
 
-        {/* Desktop Menu */}
-        <div className="hidden lg:block">
+        {/* Desktop Navigation with NavMenu */}
+        <div className="hidden lg:flex items-center gap-4">
           <NavMenu orientation="horizontal" />
+          
+          {/* User Profile Dropdown for Desktop */}
+          {session && <UserProfileDropdown />}
         </div>
 
         {/* Mobile Menu */}

@@ -7,6 +7,9 @@ interface GetAllToursParams {
   search?: string;
   category?: string;
   sort?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  location?: string;
 }
 
 export async function getAllTours({
@@ -15,34 +18,71 @@ export async function getAllTours({
   search,
   category,
   sort,
+  minPrice,
+  maxPrice,
+  location,
 }: GetAllToursParams = {}) {
   const params = new URLSearchParams({
     page: page.toString(),
     limit: limit.toString(),
   });
 
-  if (search) params.append("search", search);
+  // Add search term
+  if (search) params.append("searchTerm", search);
+  
+  // Add category
   if (category) params.append("category", category);
-  if (sort) params.append("sort", sort);
+  
+  // Add location
+  if (location) params.append("location", location);
+  
+  // Add price range
+  if (minPrice !== undefined) params.append("minPrice", minPrice.toString());
+  if (maxPrice !== undefined) params.append("maxPrice", maxPrice.toString());
+  
+  // Add sort parameters
+  if (sort) {
+    if (sort === "createdAt" || sort === "-createdAt") {
+      params.append("sortBy", "createdAt");
+      params.append("sortOrder", sort.startsWith("-") ? "desc" : "asc");
+    } else if (sort === "packagePrice" || sort === "-packagePrice") {
+      params.append("sortBy", "packagePrice");
+      params.append("sortOrder", sort.startsWith("-") ? "desc" : "asc");
+    } else if (sort === "title") {
+      params.append("sortBy", "title");
+      params.append("sortOrder", "asc");
+    }
+  }
 
   const url = `${process.env.NEXT_PUBLIC_BASE_API_URL || "http://localhost:5000/api"}/tours?${params.toString()}`;
 
-  const res = await fetch(url, {
-    next: { revalidate: 8850 * 7, tags: ["tours"] },
-  });
+  console.log("Fetching tours from URL:", url); // Debug log
 
-  const text = await res.text();
-  // console.log("Fetch tours status:", res.status);
-  // console.log("Fetch tours body:", text);
+  try {
+    const res = await fetch(url, {
+      next: { revalidate: 8850 * 7, tags: ["tours"] },
+    });
 
-  if (!res.ok) throw new Error(`Failed to fetch tours: ${text}`);
-  if (res.ok) revalidateTag("tours", { expire: 0 });
+    const text = await res.text();
+    
+    if (!res.ok) {
+      console.error("API Error Response:", text);
+      throw new Error(`Failed to fetch tours: ${res.status} ${res.statusText}`);
+    }
 
-  const data = JSON.parse(text);
+    const data = JSON.parse(text);
+    
+    // Revalidate cache
+    revalidateTag("tours", { expire: 0 });
 
-  return {
-    tours: data.data || [],
-    total: data.meta?.total || 0,
-    totalPage: data.meta?.totalPage || 1,
-  };
+    return {
+      tours: data.data || [],
+      total: data.meta?.total || 0,
+      totalPage: data.meta?.totalPage || 1,
+      meta: data.meta || {},
+    };
+  } catch (error) {
+    console.error("Error in getAllTours:", error);
+    throw error;
+  }
 }

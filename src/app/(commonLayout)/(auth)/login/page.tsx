@@ -129,51 +129,6 @@ export default function LoginPage() {
               Welcome Back
             </h1>
 
-            {/* Demo Credentials Section */}
-            <div className="space-y-3">
-              <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider">
-                Demo Credentials
-              </h3>
-              <div className="grid grid-cols-3 gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="flex flex-col items-center justify-center h-20 p-2 hover:bg-green-50 hover:border-green-300 transition-colors"
-                  onClick={() => handleDemoLogin('tourist')}
-                >
-                  <FaUser className="h-5 w-5 text-green-600 mb-1" />
-                  <span className="uppercase text-sm font-medium">Tourist</span>
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="flex flex-col items-center justify-center h-20 p-2 hover:bg-green-50 hover:border-green-300 transition-colors"
-                  onClick={() => handleDemoLogin('guide')}
-                >
-                  <FaUserTie className="h-5 w-5 text-green-600 mb-1" />
-                  <span className="uppercase text-sm font-medium">Guide</span>
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="flex flex-col items-center justify-center h-20 p-2 hover:bg-green-50 hover:border-green-300 transition-colors"
-                  onClick={() => handleDemoLogin('admin')}
-                >
-                  <FaUserShield className="h-5 w-5 text-green-600 mb-1" />
-                  <span className="uppercase text-sm font-medium">Admin</span>
-                </Button>
-              </div>
-            </div>
-
-            {/* Divider */}
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">Or sign in manually</span>
-              </div>
-            </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Email Field */}
@@ -232,6 +187,54 @@ export default function LoginPage() {
                 </Link>
               </p>
             </form>
+
+                        {/* Divider */}
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white/70 text-gray-500">Use Demo Credentials</span>
+              </div>
+            </div>
+
+            {/* Demo Credentials Section */}
+            <div className="space-t-3">
+              <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider">
+                Demo Credentials
+              </h3>
+              <p className="mb-3 text-sm text-gray-700">Click to fill the form above.</p>
+              <div className="grid grid-cols-3 gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="flex flex-col items-center justify-center h-20 p-2 hover:bg-green-50 hover:border-green-300 transition-colors"
+                  onClick={() => handleDemoLogin('tourist')}
+                >
+                  <FaUser className="h-5 w-5 text-green-600 mb-1" />
+                  <span className="uppercase text-sm font-medium">Tourist</span>
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="flex flex-col items-center justify-center h-20 p-2 hover:bg-green-50 hover:border-green-300 transition-colors"
+                  onClick={() => handleDemoLogin('guide')}
+                >
+                  <FaUserTie className="h-5 w-5 text-green-600 mb-1" />
+                  <span className="uppercase text-sm font-medium">Guide</span>
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="flex flex-col items-center justify-center h-20 p-2 hover:bg-green-50 hover:border-green-300 transition-colors"
+                  onClick={() => handleDemoLogin('admin')}
+                >
+                  <FaUserShield className="h-5 w-5 text-green-600 mb-1" />
+                  <span className="uppercase text-sm font-medium">Admin</span>
+                </Button>
+              </div>
+            </div>
+
           </CardContent>
         </Card>
       </div>
