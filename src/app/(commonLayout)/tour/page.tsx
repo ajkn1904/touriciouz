@@ -5,7 +5,7 @@ import { useEffect, useState, useCallback } from "react";
 import { toast } from "sonner";
 import Image from "next/image";
 import GetPagination from "@/src/utils/GetPagination";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation"; // Add useSearchParams
 import { getAllTours } from "@/src/services/tour/getAllTours";
 import { 
   MapPin, 
@@ -41,7 +41,7 @@ const TourCardSkeleton = () => (
   <SkeletonLoader/>
 );
 
-// Tour Card Component
+// Tour Card Component (unchanged)
 const TourCard = ({ tour }: { tour: Tour }) => {
   const router = useRouter();
   
@@ -107,10 +107,6 @@ const TourCard = ({ tour }: { tour: Tour }) => {
               <span className="truncate max-w-[120px]">Location not specified</span>
             </div>
           )}
-          {/* <div className="flex items-center gap-1 text-sm text-gray-600">
-            <CalendarDays className="w-4 h-4 text-green-500" />
-            <span>{formatDate(tour.createdAt)}</span>
-          </div> */}
         </div>
         {/* Meta Info - Bottom Row */}
         <div className="grid grid-cols-2 gap-3 mb-4">
@@ -157,7 +153,7 @@ const TourCard = ({ tour }: { tour: Tour }) => {
   );
 };
 
-// Price Range Slider Component
+// Price Range Slider Component (unchanged)
 const PriceRangeSlider = ({ 
   minPrice, 
   maxPrice, 
@@ -270,6 +266,7 @@ const PriceRangeSlider = ({
 
 export default function ToursPage() {
   const router = useRouter();
+  const searchParams = useSearchParams(); // Get URL search params
 
   const [tours, setTours] = useState<Tour[]>([]);
   const [loading, setLoading] = useState(true);
@@ -281,15 +278,34 @@ export default function ToursPage() {
   // Store all tours
   const [allTours, setAllTours] = useState<Tour[]>([]);
   
+  // Initialize filters from URL params or defaults
   const [filters, setFilters] = useState({
-    search: "",
-    category: "",
-    sort: "-createdAt",
-    minPrice: 0,
-    maxPrice: 10000
+    search: searchParams.get('search') || "",
+    category: searchParams.get('category') || "",
+    sort: searchParams.get('sort') || "-createdAt",
+    minPrice: Number(searchParams.get('minPrice')) || 0,
+    maxPrice: Number(searchParams.get('maxPrice')) || 10000
   });
+  
   const toursPerPage = 10;
-  const [searchInput, setSearchInput] = useState("");
+  const [searchInput, setSearchInput] = useState(searchParams.get('search') || "");
+
+  // Function to update URL params
+  const updateUrlParams = (newFilters: typeof filters, page: number) => {
+    const params = new URLSearchParams();
+    
+    if (newFilters.search) params.set('search', newFilters.search);
+    if (newFilters.category) params.set('category', newFilters.category);
+    if (newFilters.sort && newFilters.sort !== "-createdAt") params.set('sort', newFilters.sort);
+    if (newFilters.minPrice > 0) params.set('minPrice', newFilters.minPrice.toString());
+    if (newFilters.maxPrice < 10000) params.set('maxPrice', newFilters.maxPrice.toString());
+    if (page > 1) params.set('page', page.toString());
+    
+    const queryString = params.toString();
+    const newUrl = queryString ? `/tour?${queryString}` : '/tour';
+    
+    router.push(newUrl, { scroll: false });
+  };
 
   // Fetch all tours once
   const fetchAllTours = useCallback(async () => {
@@ -299,13 +315,6 @@ export default function ToursPage() {
         page: 1,
         limit: 1000, 
       });
-
-      //console.log("Fetched tours count:", fetchedTours.length);
-      // console.log("Sample tour:", {
-      //   title: fetchedTours[0]?.title,
-      //   price: fetchedTours[0]?.packagePrice,
-      //   category: fetchedTours[0]?.category
-      // });
 
       setAllTours(fetchedTours);
       
@@ -322,8 +331,6 @@ export default function ToursPage() {
 
   // Apply filters to tours
   const applyFilters = useCallback((toursToFilter: Tour[]) => {
-    // console.log("Applying filters:", filters);
-    
     let filteredTours = [...toursToFilter];
 
     // Apply search filter
@@ -341,18 +348,13 @@ export default function ToursPage() {
       );
     }
 
-    // Apply price filter - FIXED THIS PART
-    // console.log("Price filter range:", filters.minPrice, "-", filters.maxPrice);
+    // Apply price filter
     filteredTours = filteredTours.filter((tour: Tour) => {
       const price = tour.packagePrice;
       const min = filters.minPrice;
       const max = filters.maxPrice;
-      const inRange = price >= min && price <= max;
-      // console.log(`Tour "${tour.title}": $${price} - in range ${min}-${max}: ${inRange}`);
-      return inRange;
+      return price >= min && price <= max;
     });
-
-    // console.log("Tours after price filter:", filteredTours.length);
 
     // Apply sorting
     if (filters.sort) {
@@ -380,30 +382,30 @@ export default function ToursPage() {
     setTours(paginatedTours);
     setTotalTours(filteredTours.length);
     setTotalPages(Math.ceil(filteredTours.length / toursPerPage));
-    
-    // console.log("Final result:", {
-    //   filteredCount: filteredTours.length,
-    //   paginatedCount: paginatedTours.length,
-    //   currentPage,
-    //   totalPages: Math.ceil(filteredTours.length / toursPerPage)
-    // });
   }, [filters, currentPage]);
 
-  // Handle search with debounce
+  // Handle search with debounce AND update URL
   useEffect(() => {
     const timer = setTimeout(() => {
-      setFilters(prev => ({
-        ...prev,
+      const newFilters = {
+        ...filters,
         search: searchInput
-      }));
+      };
+      setFilters(newFilters);
       setCurrentPage(1);
+      updateUrlParams(newFilters, 1);
     }, 500);
 
     return () => clearTimeout(timer);
   }, [searchInput]);
 
-  // Initial load
+  // Initial load - also handle URL params
   useEffect(() => {
+    // Set current page from URL
+    const page = Number(searchParams.get('page')) || 1;
+    setCurrentPage(page);
+    
+    // Fetch tours
     fetchAllTours();
   }, []);
 
@@ -414,35 +416,46 @@ export default function ToursPage() {
     }
   }, [filters, currentPage, allTours, applyFilters]);
 
-  // Handle filter changes
+  // Handle filter changes with URL updates
   const handleFilterChange = (key: string, value: any) => {
-    setFilters(prev => ({
-      ...prev,
+    const newFilters = {
+      ...filters,
       [key]: value
-    }));
+    };
+    setFilters(newFilters);
     setCurrentPage(1);
+    updateUrlParams(newFilters, 1);
   };
 
   const handlePriceRangeChange = (min: number, max: number) => {
-    // console.log("Price range changed to:", min, "-", max);
-    setFilters(prev => ({
-      ...prev,
+    const newFilters = {
+      ...filters,
       minPrice: min,
       maxPrice: max
-    }));
+    };
+    setFilters(newFilters);
     setCurrentPage(1);
+    updateUrlParams(newFilters, 1);
   };
 
   const clearAllFilters = () => {
-    setFilters({
+    const newFilters = {
       search: "",
       category: "",
       sort: "-createdAt",
       minPrice: 0,
       maxPrice: 10000
-    });
+    };
+    setFilters(newFilters);
     setSearchInput("");
     setCurrentPage(1);
+    updateUrlParams(newFilters, 1);
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    updateUrlParams(filters, page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const categories = ["HISTORY", "FOOD", "NIGHTLIFE", "SHOPPING", "ADVENTURE", "CULTURE", "ART", "NATURE"];
@@ -450,63 +463,16 @@ export default function ToursPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header Section */}
-{/* Hero Section with Background Image */}
-<div className="relative min-h-[70vh] flex items-center justify-center overflow-hidden">
-  {/* Background Image with Overlay */}
-  <div className="absolute inset-0 z-0">
-    <Image
-      src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
-      alt="Beautiful mountain landscape"
-      fill
-      className="object-cover"
-      priority
-      quality={100}
-    />
-    <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-green-500/50" />
-  </div>
-
-  {/* Animated Elements */}
-  <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-black/20 to-transparent z-10" />
-  <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/10 to-transparent z-10" />
-
-  {/* Floating Elements */}
-  <div className="absolute top-1/4 left-10 animate-float">
-    <div className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm border border-white/20" />
-  </div>
-  <div className="absolute top-1/3 right-16 animate-float-delayed">
-    <div className="w-6 h-6 rounded-full bg-yellow-400/20 backdrop-blur-sm" />
-  </div>
-  <div className="absolute bottom-1/4 right-1/4 animate-float">
-    <div className="w-10 h-10 rounded-full bg-white/5 backdrop-blur-sm border border-white/10" />
-  </div>
-
-  {/* Main Content */}
-  <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center font-serif">
-
-    {/* Main Heading */}
-    <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight animate-slide-up">
-      <span className="bg-clip-text text-white">
-        Explore the World&apos;s
-      </span>
-      <br />
-      <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-100 to-teal-200">
-        Most Amazing Tours
-      </span>
-    </h1>
-
-    {/* Subtitle */}
-    <p className="text-xl md:text-2xl text-green-50 max-w-3xl mx-auto mb-10 animate-slide-up-delayed">
-      Journey beyond the ordinary with expertly crafted adventures, 
-      immersive cultural experiences, and unforgettable memories
-    </p>
-</div>
-
-  {/* Animated Background Pattern */}
-  <div className="absolute inset-0 overflow-hidden opacity-10">
-    <div className="absolute -top-40 -right-40 w-80 h-80 rounded-full bg-gradient-to-r from-green-400 to-teal-300 blur-3xl" />
-    <div className="absolute -bottom-40 -left-40 w-80 h-80 rounded-full bg-gradient-to-r from-blue-400 to-purple-300 blur-3xl" />
-  </div>
-</div>
+      <div className="bg-gradient-to-r from-green-900 to-green-700 text-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">Discover Amazing Tours</h1>
+            <p className="text-xl text-green-100 max-w-3xl mx-auto mb-8">
+              Explore unforgettable experiences with expert guides around the world
+            </p>
+          </div>
+        </div>
+      </div>
 
       {/* Main Content with Flex Layout */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -530,7 +496,7 @@ export default function ToursPage() {
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                     <input
-                      type="text"
+                      type="search"
                       placeholder="Search tours..."
                       className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                       value={searchInput}
@@ -802,13 +768,13 @@ export default function ToursPage() {
                     ))}
                   </div>
 
-                  {/* Pagination */}
+                  {/* Pagination - Updated to use handlePageChange */}
                   {totalPages > 1 && (
                     <div className="mt-12">
                       <GetPagination
                         totalItems={totalTours}
                         currentPage={currentPage}
-                        setCurrentPage={setCurrentPage}
+                        setCurrentPage={handlePageChange} // Changed to handlePageChange
                         itemsPerPage={toursPerPage}
                       />
                     </div>
