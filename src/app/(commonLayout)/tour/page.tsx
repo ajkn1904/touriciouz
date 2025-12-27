@@ -300,12 +300,12 @@ export default function ToursPage() {
         limit: 1000, 
       });
 
-      console.log("Fetched tours count:", fetchedTours.length);
-      console.log("Sample tour:", {
-        title: fetchedTours[0]?.title,
-        price: fetchedTours[0]?.packagePrice,
-        category: fetchedTours[0]?.category
-      });
+      //console.log("Fetched tours count:", fetchedTours.length);
+      // console.log("Sample tour:", {
+      //   title: fetchedTours[0]?.title,
+      //   price: fetchedTours[0]?.packagePrice,
+      //   category: fetchedTours[0]?.category
+      // });
 
       setAllTours(fetchedTours);
       
@@ -322,7 +322,7 @@ export default function ToursPage() {
 
   // Apply filters to tours
   const applyFilters = useCallback((toursToFilter: Tour[]) => {
-    console.log("Applying filters:", filters);
+    // console.log("Applying filters:", filters);
     
     let filteredTours = [...toursToFilter];
 
@@ -342,17 +342,17 @@ export default function ToursPage() {
     }
 
     // Apply price filter - FIXED THIS PART
-    console.log("Price filter range:", filters.minPrice, "-", filters.maxPrice);
+    // console.log("Price filter range:", filters.minPrice, "-", filters.maxPrice);
     filteredTours = filteredTours.filter((tour: Tour) => {
       const price = tour.packagePrice;
       const min = filters.minPrice;
       const max = filters.maxPrice;
       const inRange = price >= min && price <= max;
-      console.log(`Tour "${tour.title}": $${price} - in range ${min}-${max}: ${inRange}`);
+      // console.log(`Tour "${tour.title}": $${price} - in range ${min}-${max}: ${inRange}`);
       return inRange;
     });
 
-    console.log("Tours after price filter:", filteredTours.length);
+    // console.log("Tours after price filter:", filteredTours.length);
 
     // Apply sorting
     if (filters.sort) {
@@ -381,12 +381,12 @@ export default function ToursPage() {
     setTotalTours(filteredTours.length);
     setTotalPages(Math.ceil(filteredTours.length / toursPerPage));
     
-    console.log("Final result:", {
-      filteredCount: filteredTours.length,
-      paginatedCount: paginatedTours.length,
-      currentPage,
-      totalPages: Math.ceil(filteredTours.length / toursPerPage)
-    });
+    // console.log("Final result:", {
+    //   filteredCount: filteredTours.length,
+    //   paginatedCount: paginatedTours.length,
+    //   currentPage,
+    //   totalPages: Math.ceil(filteredTours.length / toursPerPage)
+    // });
   }, [filters, currentPage]);
 
   // Handle search with debounce
@@ -424,7 +424,7 @@ export default function ToursPage() {
   };
 
   const handlePriceRangeChange = (min: number, max: number) => {
-    console.log("Price range changed to:", min, "-", max);
+    // console.log("Price range changed to:", min, "-", max);
     setFilters(prev => ({
       ...prev,
       minPrice: min,

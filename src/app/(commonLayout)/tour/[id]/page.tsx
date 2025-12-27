@@ -50,6 +50,7 @@ export default function TourDetailsPage() {
   const [bookingId, setBookingId] = useState<string | null>(null);
   const [bookingStatus, setBookingStatus] = useState<string | null>(null);
   const [hasActiveBooking, setHasActiveBooking] = useState<boolean>(false);
+  const [itineraryData, setItineraryData] = useState<string[]>([]);
 
   // Fetch tour data
   useEffect(() => {
@@ -68,6 +69,29 @@ export default function TourDetailsPage() {
 
         const data = await response.json();
         setTour(data.data || data);
+
+        // Parse itinerary data
+        if (data.data?.itinerary || data?.itinerary) {
+          const itinerary = data.data?.itinerary || data?.itinerary;
+          try {
+            // Check if it's a JSON string
+            if (itinerary.startsWith('[')) {
+              const parsed = JSON.parse(itinerary);
+              setItineraryData(Array.isArray(parsed) ? parsed : [parsed]);
+            } else if (itinerary.includes(',')) {
+              // Handle comma-separated string
+              const items = itinerary.split(',').map((item: string) => item.trim());
+              setItineraryData(items);
+            } else {
+              // Single string
+              setItineraryData([itinerary]);
+            }
+          } catch (e) {
+            // If parsing fails, use as is
+            console.log("Itinerary parsing error:", e);
+            setItineraryData([itinerary]);
+          }
+        }
       } catch (error: any) {
         console.error("Error fetching tour:", error);
         toast.error(error.message || "Failed to load tour details");
@@ -78,6 +102,9 @@ export default function TourDetailsPage() {
 
     fetchTour();
   }, [id]);
+
+  console.log("Tour data:", tour);
+  console.log("Itinerary data:", itineraryData);
 
   // Function to check existing bookings
   const checkExistingBooking = async () => {
@@ -102,8 +129,6 @@ export default function TourDetailsPage() {
           booking.tour?.id === tour.id
         );
 
-        //console.log("All bookings for this tour:", allBookingsForThisTour);
-
         // Check for active bookings (not cancelled or completed)
         const activeBooking = allBookingsForThisTour.find((booking: any) =>
           !['CANCELLED', 'COMPLETED'].includes(booking.status)
@@ -116,7 +141,6 @@ export default function TourDetailsPage() {
         );
 
         if (activeBooking) {
-          //console.log("Found active booking:", activeBooking);
           setHasActiveBooking(true);
           setBookingId(activeBooking.id);
           setBookingStatus(activeBooking.status);
@@ -129,7 +153,6 @@ export default function TourDetailsPage() {
             tourTitle: tour.title
           }));
         } else if (existingBooking) {
-          //console.log("Found existing booking (pending/failed/cancelled):", existingBooking);
           setHasActiveBooking(false);
           setBookingId(existingBooking.id);
           setBookingStatus(existingBooking.status);
@@ -143,7 +166,6 @@ export default function TourDetailsPage() {
           }));
         } else {
           // No existing booking found, clear everything
-          //console.log("No existing booking found");
           setHasActiveBooking(false);
           setBookingId(null);
           setBookingStatus(null);
@@ -242,14 +264,9 @@ export default function TourDetailsPage() {
 
     try {
       setBookingLoading(true);
-      //console.log("Starting booking process...");
-      //console.log("Tour ID:", tour.id);
-      //console.log("Session user:", session.user);
 
       // Check if booking already exists 
       if (bookingId && (bookingStatus === 'PENDING' || bookingStatus === 'FAILED')) {
-        //console.log("Existing booking found, initiating payment:", bookingId);
-
         // Initiate payment for existing booking
         const initResponse = await fetch(
           `${process.env.NEXT_PUBLIC_BASE_API_URL || "http://localhost:5000/api"}/payment/init/${bookingId}`,
@@ -267,7 +284,6 @@ export default function TourDetailsPage() {
         }
 
         const initResult = await initResponse.json();
-        //console.log("Payment initiation result:", initResult);
 
         if (initResult.data?.paymentUrl) {
           toast.success("Redirecting to payment...");
@@ -276,13 +292,10 @@ export default function TourDetailsPage() {
         }
       }
 
-      //console.log("Creating new booking...");
       const result = await BookingService.createBooking({
         tourId: tour.id,
         date: new Date().toISOString(),
       });
-
-      //console.log("Booking result:", result);
 
       if (result.booking?.id) {
         localStorage.setItem('pendingBooking', JSON.stringify({
@@ -356,34 +369,22 @@ export default function TourDetailsPage() {
         "Authorization": `Bearer ${session.user.accessToken}`
       };
 
-      //console.log("Sending cancel request to:", url);
-      //console.log("Request body:", requestBody);
-      //console.log("Setting status to CANCELLED for booking:", bookingId);
-      //console.log("Current booking status:", bookingStatus);
-
       const response = await fetch(url, {
         method: "PATCH",
         headers: requestHeaders,
         body: JSON.stringify(requestBody)
       });
 
-      // Get the raw response text first
       const responseText = await response.text();
-      //console.log("Raw Response:", responseText);
-      //console.log("Status Code:", response.status);
-
       let result;
       try {
         result = JSON.parse(responseText);
-        //console.log("Parsed Response:", result);
       } catch (e) {
         console.error("Failed to parse JSON response:", e);
         result = { message: responseText };
       }
 
       if (response.ok) {
-        //console.log("Cancel booking successful");
-
         // Clear local storage
         localStorage.removeItem('pendingBooking');
 
@@ -781,8 +782,8 @@ export default function TourDetailsPage() {
 
                     <div>
                       <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{tour.guide.name}</h3>
-                          <p className="font-medium text-gray-700 dark:text-white hover:text-blue-500 hover:underline">{tour.guide.email}</p>
-                        
+                      <p className="font-medium text-gray-700 dark:text-white hover:text-blue-500 hover:underline">{tour.guide.email}</p>
+
                     </div>
 
 
@@ -953,24 +954,32 @@ export default function TourDetailsPage() {
             )}
 
             {/* Itinerary */}
-            {tour.itinerary && (
+            {itineraryData.length > 0 && (
               <>
                 <div className="my-5">
                   <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
                     <MdCalendarToday />
-                    ITINERARY
+                    ITINERARY - {tour.durationDays} DAYS
                   </h3>
-                  <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-                    <ul className="space-y-2">
-                      {tour.itinerary.split(",\n").map((item: string, i: number) => (
-                        <li key={i} className="flex items-start gap-2 text-gray-700 dark:text-gray-300">
-                          <div className="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center flex-shrink-0">
-                            <span className="text-xs font-bold text-blue-600 dark:text-blue-300">{i + 1}</span>
+                  <div className="space-y-4">
+                    {itineraryData.map((item: string, i: number) => {
+                      // Clean up the item by removing quotes and backslashes
+                      const cleanItem = item
+                        .replace(/^["']+|["']+$/g, '') // Remove surrounding quotes
+                        .replace(/\\/g, '') // Remove backslashes
+                        .trim();
+
+                      return (
+                        <div key={i} className="border-l-4 border-green-500 pl-4 py-2 bg-gray-50 dark:bg-gray-700 rounded-r-lg">
+                          <div className="flex items-start gap-3">
+
+                            <div className="flex-1">
+                              <p className="text-gray-700 dark:text-gray-300 font-medium">{cleanItem}</p>
+                            </div>
                           </div>
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
                 <hr className="border-gray-200 dark:border-gray-700" />
@@ -1029,117 +1038,6 @@ export default function TourDetailsPage() {
               </p>
             )}
           </div>
-          {/* 
-
-         
-          {bookingId && bookingStatus && (
-            <div className="border shadow-lg rounded-xl p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Booking Status</h3>
-              <div className="space-y-4">
-                <div className={`p-3 rounded-lg ${
-                  bookingStatus === 'PENDING' ? 'bg-yellow-100 dark:bg-yellow-900/30' :
-                  bookingStatus === 'COMPLETED' ? 'bg-purple-100 dark:bg-purple-900/30' :
-                  'bg-green-100 dark:bg-green-900/30'
-                }`}>
-                  <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                      bookingStatus === 'PENDING' ? 'bg-yellow-500' :
-                      bookingStatus === 'COMPLETED' ? 'bg-purple-500' :
-                      'bg-green-500'
-                    }`}>
-                      {bookingStatus === 'PENDING' ? (
-                        <BiTimeFive className="h-5 w-5 text-white" />
-                      ) : bookingStatus === 'COMPLETED' ? (
-                        <TiTick className="h-5 w-5 text-white" />
-                      ) : (
-                        <TiTick className="h-5 w-5 text-white" />
-                      )}
-                    </div>
-                    <div>
-                      <p className="font-semibold text-gray-900 dark:text-white">
-                        {bookingStatus === 'PENDING' ? 'Payment Pending' :
-                         bookingStatus === 'COMPLETED' ? 'Tour Completed' :
-                         'Booking Active'}
-                      </p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        {bookingStatus === 'PENDING' ? 'Complete payment to confirm' :
-                         bookingStatus === 'COMPLETED' ? 'This tour has been completed' :
-                         'Your booking is confirmed'}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Booking ID:</p>
-                  <code className="block bg-gray-100 dark:bg-gray-700 p-2 rounded text-sm font-mono text-gray-800 dark:text-gray-300 break-all">
-                    {bookingId}
-                  </code>
-                </div>
-
-                {(bookingStatus === 'PENDING' || bookingStatus === 'FAILED') && (
-                  <div className="flex gap-2">
-                    <Button
-                      onClick={handleBookNow}
-                      className="flex-1 bg-green-600 hover:bg-green-700 text-white"
-                      size="sm"
-                    >
-                      {bookingStatus === 'FAILED' ? 'Retry Payment' : 'Pay Now'}
-                    </Button>
-                    <Button
-                      onClick={handleCancelBooking}
-                      variant="outline"
-                      className="flex-1 border-red-300 text-red-600 hover:bg-red-50"
-                      size="sm"
-                    >
-                      Cancel
-                    </Button>
-                  </div>
-                )}
-              
-                
-                {bookingStatus === 'COMPLETED' && (
-                  <div className="flex gap-2">
-                    <Button
-                      onClick={handleBookNow}
-                      className="flex-1 bg-yellow-600 hover:bg-yellow-700 text-white"
-                      size="sm"
-                    >
-                      Book Again
-                    </Button>
-                  </div>
-                )}
-                
-                {hasActiveBooking && !['PENDING', 'COMPLETED'].includes(bookingStatus) && (
-                  <div className="text-center p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                    <p className="text-sm text-green-700 dark:text-green-300">
-                      ✓ You have an active booking for this tour
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-
-          
-          <div className="border shadow-lg rounded-xl p-6 bg-white dark:bg-gray-800">
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Tour Status</h3>
-            <div className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium ${
-              tour.isActive ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300" :
-              "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
-            }`}>
-              <div className={`w-3 h-3 rounded-full mr-2 ${tour.isActive ? "bg-green-500" : "bg-red-500"}`}></div>
-              {tour.isActive ? "Available for Booking" : "Currently Unavailable"}
-            </div>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-3">
-              {tour.isActive 
-                ? "This tour is ready to book. Click 'Book Now' to proceed with payment."
-                : "This tour is not accepting bookings at the moment."
-              }
-            </p>
-          </div>
-           */}
         </div>
       </div>
     </div>

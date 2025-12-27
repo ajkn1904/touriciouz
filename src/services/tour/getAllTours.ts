@@ -56,7 +56,7 @@ export async function getAllTours({
 
   const url = `${process.env.NEXT_PUBLIC_BASE_API_URL || "http://localhost:5000/api"}/tours?${params.toString()}`;
 
-  console.log("Fetching tours from URL:", url); // Debug log
+  // console.log("Fetching tours from URL:", url); // Debug log
 
   try {
     const res = await fetch(url, {
