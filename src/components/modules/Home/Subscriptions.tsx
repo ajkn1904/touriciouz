@@ -16,13 +16,13 @@ const Subscriptions = () => {
 
     return (
         <div
-            className="max-w-7xl w-[95%] mx-auto rounded-2xl font-serif bg-gradient-to-b from-green-600 to-blue-400 shadow-2xl shadow-blue-700 p-8 py-20 my-24 flex flex-col items-center"
-            data-aos="zoom-in-left"
+            className="w-[80%] md:w-[90%] max-w-7xl mx-auto rounded-2xl font-serif bg-gradient-to-b from-green-600 to-blue-400 shadow-2xl shadow-blue-700 p-8 py-20 my-24 flex flex-col items-center"
+            data-aos="fade-up"
             data-aos-offset="10"
             data-aos-delay="50"
             data-aos-duration="1000"
             data-aos-easing="ease-in-out"
-            data-aos-once="false"
+            data-aos-once="true"
         >
             <h1 className="text-xl sm:text-3xl font-semibold text-center text-white mb-4 leading-snug">
                 Get Special Offers & <br />

@@ -304,6 +304,7 @@ export default function ToursPage() {
     const queryString = params.toString();
     const newUrl = queryString ? `/tour?${queryString}` : '/tour';
     
+    // Update URL without refreshing the page
     router.push(newUrl, { scroll: false });
   };
 
@@ -463,16 +464,63 @@ export default function ToursPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header Section */}
-      <div className="bg-gradient-to-r from-green-900 to-green-700 text-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Discover Amazing Tours</h1>
-            <p className="text-xl text-green-100 max-w-3xl mx-auto mb-8">
-              Explore unforgettable experiences with expert guides around the world
-            </p>
-          </div>
-        </div>
-      </div>
+     
+<div className="relative min-h-[70vh] flex items-center justify-center overflow-hidden">
+  {/* Background Image with Overlay */}
+  <div className="absolute inset-0 z-0">
+    <Image
+      src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
+      alt="Beautiful mountain landscape"
+      fill
+      className="object-cover"
+      priority
+      quality={100}
+    />
+    <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-green-500/50" />
+  </div>
+
+  {/* Animated Elements */}
+  <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-black/20 to-transparent z-10" />
+  <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/10 to-transparent z-10" />
+
+  {/* Floating Elements */}
+  <div className="absolute top-1/4 left-10 animate-float">
+    <div className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm border border-white/20" />
+  </div>
+  <div className="absolute top-1/3 right-16 animate-float-delayed">
+    <div className="w-6 h-6 rounded-full bg-yellow-400/20 backdrop-blur-sm" />
+  </div>
+  <div className="absolute bottom-1/4 right-1/4 animate-float">
+    <div className="w-10 h-10 rounded-full bg-white/5 backdrop-blur-sm border border-white/10" />
+  </div>
+
+  {/* Main Content */}
+  <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center font-serif">
+
+    {/* Main Heading */}
+    <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight animate-slide-up">
+      <span className="bg-clip-text text-white">
+        Explore the World&apos;s
+      </span>
+      <br />
+      <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-100 to-teal-200">
+        Most Amazing Tours
+      </span>
+    </h1>
+
+    {/* Subtitle */}
+    <p className="text-xl md:text-2xl text-green-50 max-w-3xl mx-auto mb-10 animate-slide-up-delayed">
+      Journey beyond the ordinary with expertly crafted adventures, 
+      immersive cultural experiences, and unforgettable memories
+    </p>
+</div>
+
+  {/* Animated Background Pattern */}
+  <div className="absolute inset-0 overflow-hidden opacity-10">
+    <div className="absolute -top-40 -right-40 w-80 h-80 rounded-full bg-gradient-to-r from-green-400 to-teal-300 blur-3xl" />
+    <div className="absolute -bottom-40 -left-40 w-80 h-80 rounded-full bg-gradient-to-r from-blue-400 to-purple-300 blur-3xl" />
+  </div>
+</div>
 
       {/* Main Content with Flex Layout */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

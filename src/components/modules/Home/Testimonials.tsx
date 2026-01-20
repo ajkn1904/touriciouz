@@ -73,7 +73,7 @@ const Testimonials = () => {
                 data-aos-delay="50"
                 data-aos-duration="1000"
                 data-aos-easing="ease-in-out"
-                data-aos-once="false"
+                data-aos-once="true"
             >
                 <div className="text-center mb-12">
                     <h1 className="text-2xl font-semibold text-green-600 italic mb-4">

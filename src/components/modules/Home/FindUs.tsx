@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 import React, { useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import {motion} from 'framer-motion';
+import { motion } from 'framer-motion';
 
 const MapComponent = dynamic(() => import('@/src/utils/MapContainer'), {
     ssr: false,
@@ -26,7 +26,7 @@ const FindUs = () => {
     }, []);
 
     return (
-        <motion.div className='my-32 font-serif max-w-7xl w-[95%] mx-auto' data-aos="fade-up" data-aos-offset="10" data-aos-delay="50" data-aos-duration="1000" data-aos-easing="ease-in-out" data-aos-once="false">
+        <motion.div className='my-32 font-serif max-w-7xl w-[90%] mx-auto' data-aos="fade-up" data-aos-offset="10" data-aos-delay="50" data-aos-duration="1000" data-aos-easing="ease-in-out" data-aos-once="true">
             <h2 className="text-center font-semibold text-2xl text-green-600 italic">Find Touriciouz____</h2>
 
             <h1 className="text-3xl font-semibold my-5 text-center">We Create Worth Journeys!</h1>
@@ -34,7 +34,7 @@ const FindUs = () => {
             <p className="text-lg lg:w-[50vw] mx-auto mt-5 mb-10 text-center">Visit our headquarters or connect with our local guides across popular destinations. We operate in major tourist hubs and remote locations alike, ensuring quality tours wherever adventure calls. Check our map for locations and contact points.
             </p>
 
-            <div data-aos="flip-up" data-aos-offset="10" data-aos-delay="50" data-aos-duration="1000" data-aos-easing="ease-in-out" data-aos-once="false" className='h-[500px] mx-auto'>
+            <div data-aos="fade-up" data-aos-offset="10" data-aos-delay="50" data-aos-duration="1000" data-aos-easing="ease-in-out" data-aos-once="true" className='mx-auto'>
                 <MapComponent />
             </div>
         </motion.div>

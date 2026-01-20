@@ -51,7 +51,7 @@ const StatCounter = () => {
         data-aos-offset="10"
         data-aos-duration="1000"
         data-aos-easing="ease-in-out"
-        data-aos-once="false"
+        data-aos-once="true"
       >
         {stats.map((stat, idx) => {
           const Icon = stat.icon;

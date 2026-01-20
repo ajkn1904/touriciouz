@@ -18,7 +18,7 @@ const AboutUs = () => {
 
 
     return (
-        <div className="flex flex-col lg:flex-row my-24 max-w-7xl w-[95%] mx-auto font-serif overflow-hidden">
+        <div className="flex flex-col lg:flex-row my-24 max-w-7xl w-[90%] mx-auto font-serif overflow-hidden">
 
             {/* Left Image Section */}
             <div
@@ -29,7 +29,7 @@ const AboutUs = () => {
                 data-aos-delay="50"
                 data-aos-duration="1000"
                 data-aos-easing="ease-in-out"
-                data-aos-once="false"
+                data-aos-once="true"
             >
                 <Image
                     width={560}
@@ -55,21 +55,21 @@ const AboutUs = () => {
                 data-aos-delay="100"
                 data-aos-duration="1000"
                 data-aos-easing="ease-in-out"
-                data-aos-once="false"
+                data-aos-once="true"
             >
                 <h2 className="text-2xl font-semibold mb-4 text-green-600 italic">Get About Us____</h2>
                 <h1 className="text-3xl font-semibold my-5">We Create Journeys Worth Taking For The Tourists</h1>
                 <p className="text-gray-700">
-                        At Touriciouz, we believe travel should be transformative, not transactional. Since our founding, we`&apos;`ve connected adventurous souls with authentic local experiences through our platform of certified guides.
-                    </p>
-                    
-                    <p className="text-gray-700">
-                        Our mission is simple: to make extraordinary travel accessible to everyone. We carefully vet every guide, curate unique itineraries, and ensure seamless experiences from booking to journey`&apos;`s end.
-                    </p>
-                    
-                    <p className="text-gray-700 mb-5">
-                        Whether you`&apos;`re seeking mountain adventures, cultural immersions, or relaxing getaways, we bridge the gap between passionate travelers and knowledgeable local experts who share their world with authenticity.
-                    </p>
+                    At Touriciouz, we believe travel should be transformative, not transactional. Since our founding, we`&apos;`ve connected adventurous souls with authentic local experiences through our platform of certified guides.
+                </p>
+
+                <p className="text-gray-700">
+                    Our mission is simple: to make extraordinary travel accessible to everyone. We carefully vet every guide, curate unique itineraries, and ensure seamless experiences from booking to journey`&apos;`s end.
+                </p>
+
+                <p className="text-gray-700 mb-5">
+                    Whether you`&apos;`re seeking mountain adventures, cultural immersions, or relaxing getaways, we bridge the gap between passionate travelers and knowledgeable local experts who share their world with authenticity.
+                </p>
 
                 {/* Stats Section */}
                 <div className="flex flex-col sm:flex-row justify-between gap-6 mb-5">

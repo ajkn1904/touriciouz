@@ -15,11 +15,11 @@ const OurStory = () => {
 
 
     return (
-        <div className="w-[95%] max-w-7xl mx-auto font-serif mt-36 overflow-hidden">
+        <div className="w-[90%] max-w-7xl mx-auto font-serif mt-36 overflow-hidden">
             <h2 className="text-2xl font-semibold text-green-600 italic mb-3">Watch Our Story____</h2>
             <div className="flex flex-col-reverse lg:flex-row justify-between items-center gap-12 lg:gap-16">
                 {/* Text Content */}
-                <div className="lg:w-[500px] flex flex-col" data-aos="fade-left" data-aos-offset="10" data-aos-delay="50" data-aos-duration="1000" data-aos-easing="ease-in-out" data-aos-once="false">
+                <div className="lg:w-[500px] flex flex-col" data-aos="fade-left" data-aos-offset="10" data-aos-delay="50" data-aos-duration="1000" data-aos-easing="ease-in-out" data-aos-once="true">
                     <h1 className="text-3xl sm:text-4xl font-semibold mb-5">Unforgettable Travel Experiences Get Your Guide</h1>
                     <p className="text-md mb-10">The real voyage of discovery consists not in seeking new landscapes, but in having new eyes.</p>
 
@@ -35,7 +35,7 @@ const OurStory = () => {
                 </div>
 
                 {/* Video */}
-                <div className="w-full lg:w-[50%] flex justify-center" data-aos="fade-right" data-aos-offset="10" data-aos-delay="50" data-aos-duration="1500" data-aos-easing="ease-in-out" data-aos-once="false">
+                <div className="w-full lg:w-[50%] flex justify-center" data-aos="fade-right" data-aos-offset="10" data-aos-delay="50" data-aos-duration="1500" data-aos-easing="ease-in-out" data-aos-once="true">
                     <iframe
                         className="w-full h-[215px] sm:h-[315px] md:h-[350px] shadow-xl rounded-lg"
                         src="https://www.youtube.com/embed/FCPdIvXo2rU"

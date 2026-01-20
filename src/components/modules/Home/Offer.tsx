@@ -35,11 +35,11 @@ const Offer = () => {
         ];
 
     return (
-        <div className='flex flex-col lg:flex-row gap-12 lg:gap-7 xl:gap-16 justify-center items-center my-48 max-w-7xl w-[95%] mx-auto'>
+        <div className='flex flex-col lg:flex-row gap-12 lg:gap-7 xl:gap-16 justify-center items-center my-48 max-w-7xl w-[90%] mx-auto'>
             {offers.map(ofr => (
                 <div
                     key={ofr.id}
-                    className="relative w-full h-[350px] shadow-xl rounded-xl overflow-hidden"
+                    className="relative w-full h-[390px] shadow-xl rounded-xl overflow-hidden"
                     style={{
                         backgroundImage: `url(${ofr.img})`,
                         backgroundRepeat: 'no-repeat',
@@ -51,7 +51,7 @@ const Offer = () => {
                     data-aos-delay="50"
                     data-aos-duration="1000"
                     data-aos-easing="ease-in-out"
-                    data-aos-once="false"
+                    data-aos-once="true"
                 >
                     <div className="absolute inset-0 bg-gradient-to-r from-green-900 via-purple-600/60 to-green-600/40 rounded-xl p-6 flex flex-col justify-center font-serif text-white border-2 border-yellow-400 shadow-lg shadow-yellow-200">
                         <h2 className={`${styles.glow} text-4xl lg:text-5xl font-bold`}>{ofr.title}</h2>

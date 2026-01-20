@@ -55,7 +55,7 @@ const Banner = () => {
       <Swiper
         spaceBetween={30}
         centeredSlides={true}
-        autoplay={{ delay: 4000, disableOnInteraction: false }}
+        autoplay={{ delay: 5000, disableOnInteraction: false }}
         loop={true}
         pagination={{ clickable: true, type: "progressbar" }}
         navigation={true}
@@ -77,13 +77,13 @@ const Banner = () => {
 
             <div className="absolute inset-0 bg-black/20"></div>
 
-            <div className="absolute top-0 left-0 h-full w-full flex items-center px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20">
+            <div className="absolute -top-7 md:top-0 left-0 h-full w-full flex items-center px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20">
               <div className="max-w-7xl w-[95%] mx-auto">
                 <motion.h1
                   initial={textVariants.right.initial}
                   animate={textVariants.right.animate}
                   transition={{ duration: 1 }}
-                  className="text-3xl md:text-4xl lg:text-5xl font-serif text-white mb-4 md:mb-6"
+                  className="text-2xl md:text-3xl lg:text-4xl font-serif text-white md:mb-2"
                 >
                   {slide.title1}
                 </motion.h1>
@@ -92,7 +92,7 @@ const Banner = () => {
                   initial={textVariants.right.initial}
                   animate={textVariants.right.animate}
                   transition={{ duration: 1, delay: 0.3 }}
-                  className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif text-white mb-6 md:mb-8"
+                  className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-serif text-white mb-6 md:mb-8"
                 >
                   With{" "}
                   <span className="text-green-700 bg-white px-4 py-2 font-bold inline-block">
@@ -104,7 +104,7 @@ const Banner = () => {
                     animate={textVariants.bottom.animate}
                     transition={{ duration: 1, delay: 0.5 }}>
                   <p        
-                    className="text-white text-lg sm:text-xl max-w-2xl lg:max-w-3xl mb-8 md:mb-10 bg-gradient-to-r from-black/30 to-transparent p-4 rounded-lg"
+                    className="text-white sm:text-lg max-w-xl lg:max-w-2xl mb-8 md:mb-10 bg-gradient-to-r from-black/30 to-transparent p-4 rounded-lg"
                   >
                     {slide.desc}
                   </p>
